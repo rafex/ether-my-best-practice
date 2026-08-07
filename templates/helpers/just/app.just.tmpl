@@ -6,12 +6,23 @@ python_helper := env_var_or_default("APP_PY_HELPER", "helpers/python/app.py")
 
 # Operativa de aplicación: crear usuario
 @create-user username email:
+    project_name="$$(basename "$$(pwd)")"; \
+    ts="$$(date -u +%Y%m%dT%H%M%SZ)"; \
+    var_log_dir="/var/log/$$project_name"; \
+    tmp_log_dir="/tmp/$$project_name"; \
+    if mkdir -p "$$var_log_dir" 2>/dev/null && [ -w "$$var_log_dir" ]; then \
+        log_file="$$var_log_dir/log-app-$$ts.log"; \
+    else \
+        mkdir -p "$$tmp_log_dir"; \
+        log_file="$$tmp_log_dir/log-app-$$ts.log"; \
+    fi; \
+    echo "Audit log: $$log_file"; \
     if [ -f "{{shell_helper}}" ]; then \
-        bash "{{shell_helper}}" --action create-user --username "{{username}}" --email "{{email}}"; \
+        bash "{{shell_helper}}" --action create-user --username "{{username}}" --email "{{email}}" --log-file "$$log_file"; \
     elif [ -f "{{shell_helper_sh}}" ]; then \
-        sh "{{shell_helper_sh}}" --action create-user --username "{{username}}" --email "{{email}}"; \
+        sh "{{shell_helper_sh}}" --action create-user --username "{{username}}" --email "{{email}}" --log-file "$$log_file"; \
     elif [ -f "{{python_helper}}" ]; then \
-        uv run python "{{python_helper}}" --action create-user --username "{{username}}" --email "{{email}}"; \
+        uv run python "{{python_helper}}" --action create-user --username "{{username}}" --email "{{email}}" --log-file "$$log_file"; \
     else \
         echo "No app helper found. Expected helpers/shell/app.bash, app.sh or helpers/python/app.py"; \
         exit 1; \
@@ -19,12 +30,23 @@ python_helper := env_var_or_default("APP_PY_HELPER", "helpers/python/app.py")
 
 # Operativa de aplicación: login
 @login username password:
+    project_name="$$(basename "$$(pwd)")"; \
+    ts="$$(date -u +%Y%m%dT%H%M%SZ)"; \
+    var_log_dir="/var/log/$$project_name"; \
+    tmp_log_dir="/tmp/$$project_name"; \
+    if mkdir -p "$$var_log_dir" 2>/dev/null && [ -w "$$var_log_dir" ]; then \
+        log_file="$$var_log_dir/log-app-$$ts.log"; \
+    else \
+        mkdir -p "$$tmp_log_dir"; \
+        log_file="$$tmp_log_dir/log-app-$$ts.log"; \
+    fi; \
+    echo "Audit log: $$log_file"; \
     if [ -f "{{shell_helper}}" ]; then \
-        bash "{{shell_helper}}" --action login --username "{{username}}" --password "{{password}}"; \
+        bash "{{shell_helper}}" --action login --username "{{username}}" --password "{{password}}" --log-file "$$log_file"; \
     elif [ -f "{{shell_helper_sh}}" ]; then \
-        sh "{{shell_helper_sh}}" --action login --username "{{username}}" --password "{{password}}"; \
+        sh "{{shell_helper_sh}}" --action login --username "{{username}}" --password "{{password}}" --log-file "$$log_file"; \
     elif [ -f "{{python_helper}}" ]; then \
-        uv run python "{{python_helper}}" --action login --username "{{username}}" --password "{{password}}"; \
+        uv run python "{{python_helper}}" --action login --username "{{username}}" --password "{{password}}" --log-file "$$log_file"; \
     else \
         echo "No app helper found. Expected helpers/shell/app.bash, app.sh or helpers/python/app.py"; \
         exit 1; \
@@ -32,12 +54,23 @@ python_helper := env_var_or_default("APP_PY_HELPER", "helpers/python/app.py")
 
 # Operativa de aplicación: crear en base de datos
 @db-create entity payload:
+    project_name="$$(basename "$$(pwd)")"; \
+    ts="$$(date -u +%Y%m%dT%H%M%SZ)"; \
+    var_log_dir="/var/log/$$project_name"; \
+    tmp_log_dir="/tmp/$$project_name"; \
+    if mkdir -p "$$var_log_dir" 2>/dev/null && [ -w "$$var_log_dir" ]; then \
+        log_file="$$var_log_dir/log-app-$$ts.log"; \
+    else \
+        mkdir -p "$$tmp_log_dir"; \
+        log_file="$$tmp_log_dir/log-app-$$ts.log"; \
+    fi; \
+    echo "Audit log: $$log_file"; \
     if [ -f "{{shell_helper}}" ]; then \
-        bash "{{shell_helper}}" --action db-create --entity "{{entity}}" --payload "{{payload}}"; \
+        bash "{{shell_helper}}" --action db-create --entity "{{entity}}" --payload "{{payload}}" --log-file "$$log_file"; \
     elif [ -f "{{shell_helper_sh}}" ]; then \
-        sh "{{shell_helper_sh}}" --action db-create --entity "{{entity}}" --payload "{{payload}}"; \
+        sh "{{shell_helper_sh}}" --action db-create --entity "{{entity}}" --payload "{{payload}}" --log-file "$$log_file"; \
     elif [ -f "{{python_helper}}" ]; then \
-        uv run python "{{python_helper}}" --action db-create --entity "{{entity}}" --payload "{{payload}}"; \
+        uv run python "{{python_helper}}" --action db-create --entity "{{entity}}" --payload "{{payload}}" --log-file "$$log_file"; \
     else \
         echo "No app helper found. Expected helpers/shell/app.bash, app.sh or helpers/python/app.py"; \
         exit 1; \

@@ -67,14 +67,30 @@ make test LANG=rust BUILD_TOOL=cargo MODULE=core PROFILE=ci
 - Evitar parámetros posicionales ambiguos.
 - Usar flags explícitos y estables.
 - Validar flags obligatorios y fallar rápido con mensaje claro.
+- Incluir logging de auditoría en toda ejecución de helper.
+
+## Auditoría y Logging (Obligatorio)
+
+Todo helper (`sh`, `bash` o `python`) debe escribir log de ejecución.
+
+Política de ruta:
+
+1. Intentar escribir en `/var/log/<nombre-proyecto>/`.
+2. Si no hay permisos, usar fallback en `/tmp/<nombre-proyecto>/`.
+3. Nombre de archivo recomendado: `log-<script>-<timestamp>.log`.
+
+Contrato mínimo de flags para helpers:
+
+- `--log-file <ruta>` obligatorio.
+- Opcionalmente `--log-level <nivel>` según necesidad del proyecto.
 
 Ejemplo:
 
 ```bash
-bash helpers/shell/java.bash --tool maven --goal package --skip-tests
-sh helpers/shell/javascript.sh --tool pnpm --goal test --module web
-sh helpers/shell/rust.sh --tool cargo --goal build --module core
-python3 helpers/python/release.py --version 1.2.0 --dry-run
+bash helpers/shell/java.bash --tool maven --goal package --skip-tests --log-file /var/log/my-api/log-java-20260807T120000Z.log
+sh helpers/shell/javascript.sh --tool pnpm --goal test --module web --log-file /tmp/my-api/log-javascript-20260807T120000Z.log
+sh helpers/shell/rust.sh --tool cargo --goal build --module core --log-file /var/log/my-api/log-rust-20260807T120000Z.log
+python3 helpers/python/release.py --version 1.2.0 --dry-run --log-file /tmp/my-api/log-release-20260807T120000Z.log
 ```
 
 ## Estándares por Tipo de Script
