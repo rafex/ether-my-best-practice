@@ -71,7 +71,9 @@ make pages-build
 make pages
 ```
 
-`make pages` dispara el workflow de GitHub Pages definido en [.github/workflows/pages.yml](../.github/workflows/pages.yml).
+`make pages` dispara el workflow de GitHub Pages definido en [.github/workflows/static.yml](../.github/workflows/static.yml).
+
+El workflow real es [.github/workflows/static.yml](../.github/workflows/static.yml) y genera [site](../site/) en el runner; no necesitas subir `site/` al repositorio.
 
 ## Integrar en tu Proyecto
 

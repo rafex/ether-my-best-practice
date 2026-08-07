@@ -52,3 +52,5 @@ Para publicar en GitHub Pages usando el workflow del repositorio:
 make pages-build
 make pages
 ```
+
+El workflow que publica el sitio es [.github/workflows/static.yml](.github/workflows/static.yml). El directorio [site](site) no se sube al repositorio: se genera en el workflow y se publica como artefacto de Pages.

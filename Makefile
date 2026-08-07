@@ -1,7 +1,7 @@
-.PHONY: help docs pages-build pages serve clean pages
+.PHONY: help docs pages-build pages serve clean
 
 SITE_DIR ?= site
-PAGES_WORKFLOW ?= pages.yml
+PAGES_WORKFLOW ?= static.yml
 PAGES_REF ?= main
 
 help:
@@ -23,7 +23,7 @@ pages:
 		gh workflow run "$(PAGES_WORKFLOW)" --ref "$(PAGES_REF)"; \
 		echo "Workflow $(PAGES_WORKFLOW) disparado en $(PAGES_REF)"; \
 	else \
-		echo "GitHub CLI (gh) no está disponible. Usa 'make pages-build' o instala gh para disparar el workflow."; \
+		echo "GitHub CLI (gh) no está disponible. Usa 'make pages-build' o instala gh para disparar el workflow static.yml."; \
 		exit 1; \
 	fi
 
