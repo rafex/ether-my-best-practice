@@ -1,0 +1,44 @@
+set dotenv-load
+
+shell_helper := env_var_or_default("APP_SHELL_HELPER", "helpers/shell/app.bash")
+shell_helper_sh := env_var_or_default("APP_SHELL_HELPER_SH", "helpers/shell/app.sh")
+python_helper := env_var_or_default("APP_PY_HELPER", "helpers/python/app.py")
+
+# Operativa de aplicación: crear usuario
+@create-user username email:
+    if [ -f "{{shell_helper}}" ]; then \
+        bash "{{shell_helper}}" --action create-user --username "{{username}}" --email "{{email}}"; \
+    elif [ -f "{{shell_helper_sh}}" ]; then \
+        sh "{{shell_helper_sh}}" --action create-user --username "{{username}}" --email "{{email}}"; \
+    elif [ -f "{{python_helper}}" ]; then \
+        uv run python "{{python_helper}}" --action create-user --username "{{username}}" --email "{{email}}"; \
+    else \
+        echo "No app helper found. Expected helpers/shell/app.bash, app.sh or helpers/python/app.py"; \
+        exit 1; \
+    fi
+
+# Operativa de aplicación: login
+@login username password:
+    if [ -f "{{shell_helper}}" ]; then \
+        bash "{{shell_helper}}" --action login --username "{{username}}" --password "{{password}}"; \
+    elif [ -f "{{shell_helper_sh}}" ]; then \
+        sh "{{shell_helper_sh}}" --action login --username "{{username}}" --password "{{password}}"; \
+    elif [ -f "{{python_helper}}" ]; then \
+        uv run python "{{python_helper}}" --action login --username "{{username}}" --password "{{password}}"; \
+    else \
+        echo "No app helper found. Expected helpers/shell/app.bash, app.sh or helpers/python/app.py"; \
+        exit 1; \
+    fi
+
+# Operativa de aplicación: crear en base de datos
+@db-create entity payload:
+    if [ -f "{{shell_helper}}" ]; then \
+        bash "{{shell_helper}}" --action db-create --entity "{{entity}}" --payload "{{payload}}"; \
+    elif [ -f "{{shell_helper_sh}}" ]; then \
+        sh "{{shell_helper_sh}}" --action db-create --entity "{{entity}}" --payload "{{payload}}"; \
+    elif [ -f "{{python_helper}}" ]; then \
+        uv run python "{{python_helper}}" --action db-create --entity "{{entity}}" --payload "{{payload}}"; \
+    else \
+        echo "No app helper found. Expected helpers/shell/app.bash, app.sh or helpers/python/app.py"; \
+        exit 1; \
+    fi

@@ -13,6 +13,7 @@ La regla principal es responsabilidad única en la capa de build: el `Makefile` 
 - La lógica de compilación/ejecución vive en archivos de helpers (`.mk`, `sh`/`bash`, `python`).
 - Los scripts de helpers siempre reciben parámetros por flags.
 - La construcción debe ejecutarse en contenedores cuando sea posible para no ensuciar el host local.
+- `Justfile` es task manager de operativas de aplicación (acciones de negocio/operación), no de compilación.
 
 ## Arquitectura Recomendada
 
@@ -148,8 +149,25 @@ Artefactos típicos a generar:
 
 ### Justfile
 - Sintaxis más moderna que Makefile
-- Útil como interfaz adicional
-- Si existe, debe mantener paridad funcional con Makefile
+- Punto de control para tareas operativas (ejemplo: `just create-user`, `just login`, `just db-create`)
+- Puede invocar `make` cuando una operación necesite artefactos o CI
+- Debe delegar operativas en `helpers/just/*.just`
+
+### Relación de Responsabilidad (Obligatoria)
+
+- Flujo permitido: `Justfile -> helpers/just -> shell/python/binarios`.
+- Flujo permitido: `Justfile -> Makefile`.
+- Flujo prohibido: `Makefile -> Justfile`.
+- La capa de build/artefactos pertenece a Makefile; la capa de tareas operativas pertenece a Justfile.
+
+Ejemplo de flujo operativo:
+
+```text
+just create-user --username alice --email alice@example.com
+	-> helpers/just/app.just:create-user
+		-> helpers/shell/app.bash o helpers/python/app.py
+			-> ejecuta jar / npm run / binario generado por CI
+```
 
 ### npm scripts / cargo / gradle / maven
 - Se ejecutan detrás de `make` (directamente o vía helpers)

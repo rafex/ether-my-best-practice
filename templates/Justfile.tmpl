@@ -5,10 +5,39 @@ build_tool := env_var_or_default("BUILD_TOOL", "maven")
 module := env_var_or_default("MODULE", ".")
 profile := env_var_or_default("PROFILE", "dev")
 skip_tests := env_var_or_default("SKIP_TESTS", "false")
+app_justfile := env_var_or_default("APP_JUSTFILE", "helpers/just/app.just")
 
 # Mostrar tareas disponibles
 @default:
     just --list
+
+# Cargar tareas operativas de aplicación desde helpers/just/app.just
+# Si no existe, se imprime guía sin fallar el flujo base.
+@ops:
+    if [ -f "{{app_justfile}}" ]; then \
+        just --justfile "{{app_justfile}}" --list; \
+    else \
+        echo "No existe {{app_justfile}}"; \
+        echo "Agrega helpers/just/app.just para tareas como create-user/login/db-create"; \
+    fi
+
+# Ejemplo operativo: crear usuario
+@create-user username email:
+    if [ -f "{{app_justfile}}" ]; then \
+        just --justfile "{{app_justfile}}" create-user "{{username}}" "{{email}}"; \
+    else \
+        echo "No existe {{app_justfile}}"; \
+        exit 1; \
+    fi
+
+# Ejemplo operativo: login
+@login username password:
+    if [ -f "{{app_justfile}}" ]; then \
+        just --justfile "{{app_justfile}}" login "{{username}}" "{{password}}"; \
+    else \
+        echo "No existe {{app_justfile}}"; \
+        exit 1; \
+    fi
 
 # Construir el proyecto
 @build:
@@ -55,6 +84,10 @@ skip_tests := env_var_or_default("SKIP_TESTS", "false")
 
 # Ejecutar CI local en contenedor
 @ci:
+    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} SKIP_TESTS={{skip_tests}} make ci
+
+# Asegurar artefactos antes de operativas que lo requieran
+@ensure-artifact:
     LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} SKIP_TESTS={{skip_tests}} make ci
 
 # Ejecutar todas las validaciones
