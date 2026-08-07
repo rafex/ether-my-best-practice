@@ -12,6 +12,7 @@ La regla principal es responsabilidad única en la capa de build: el `Makefile` 
 - El `Makefile` no implementa lógica compleja por lenguaje.
 - La lógica de compilación/ejecución vive en archivos de helpers (`.mk`, `sh`/`bash`, `python`).
 - Los scripts de helpers siempre reciben parámetros por flags.
+- La construcción debe ejecutarse en contenedores cuando sea posible para no ensuciar el host local.
 
 ## Arquitectura Recomendada
 
@@ -111,7 +112,32 @@ Opcionales frecuentes:
 make lint
 make format
 make serve
+make ci
+make image
 ```
+
+## Build en Contenedor (Recomendado por Defecto)
+
+Para mantener el host limpio y lograr reproducibilidad:
+
+- Detectar runtime disponible: `podman` o `docker`.
+- Construir imagen de CI para el proyecto.
+- Ejecutar build/test dentro del contenedor montando el workspace.
+- Publicar artefactos en rutas estándar del proyecto (`target/`, `dist/`, etc.).
+
+Ejemplo de flujo:
+
+```bash
+make image LANG=java BUILD_TOOL=maven
+make ci LANG=java BUILD_TOOL=maven
+```
+
+Artefactos típicos a generar:
+
+- Java: `target/*.class`, `target/*.jar`
+- Python: `dist/*`, `build/*`, `*.pyc`
+- JavaScript: `dist/*`, `build/*`
+- Rust: `target/release/*`
 
 ## Herramientas Complementarias
 

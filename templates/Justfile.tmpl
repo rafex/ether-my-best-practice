@@ -45,6 +45,18 @@ skip_tests := env_var_or_default("SKIP_TESTS", "false")
 @format:
     LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} make format
 
+# Detectar runtime de contenedor
+@runtime:
+    make runtime
+
+# Construir imagen de CI
+@image:
+    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} SKIP_TESTS={{skip_tests}} make image
+
+# Ejecutar CI local en contenedor
+@ci:
+    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} SKIP_TESTS={{skip_tests}} make ci
+
 # Ejecutar todas las validaciones
 @validate: lint test
 

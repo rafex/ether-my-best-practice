@@ -1,4 +1,4 @@
-.PHONY: help build test clean docs serve lint format
+.PHONY: help build test clean docs serve lint format runtime image ci
 
 # Punto de entrada universal.
 # La lógica específica por lenguaje se delega a helpers.
@@ -8,6 +8,9 @@ BUILD_TOOL ?= maven
 MODULE ?= .
 PROFILE ?= dev
 SKIP_TESTS ?= false
+CONTAINER_RUNTIME ?=
+CI_IMAGE ?= project-ci:local
+CI_DOCKERFILE ?= Dockerfile.ci
 
 # Include opcional por lenguaje.
 -include helpers/mk/$(LANG).mk
@@ -16,6 +19,9 @@ help:
 	@echo "Tareas disponibles:"
 	@echo "  make build    - Construir el proyecto"
 	@echo "  make test     - Ejecutar tests"
+	@echo "  make runtime  - Detectar podman/docker"
+	@echo "  make image    - Construir imagen de CI"
+	@echo "  make ci       - Ejecutar build+test en contenedor"
 	@echo "  make clean    - Limpiar artefactos"
 	@echo "  make docs     - Generar documentación"
 	@echo "  make serve    - Servir documentación localmente"
@@ -27,6 +33,59 @@ help:
 	@echo "  make test LANG=python BUILD_TOOL=uv"
 	@echo "  make build LANG=javascript BUILD_TOOL=pnpm"
 	@echo "  make test LANG=rust BUILD_TOOL=cargo"
+	@echo "  make ci LANG=java BUILD_TOOL=gradle"
+
+runtime:
+	@runtime="$(CONTAINER_RUNTIME)"; \
+	if [ -z "$$runtime" ]; then \
+		if command -v podman >/dev/null 2>&1; then runtime=podman; \
+		elif command -v docker >/dev/null 2>&1; then runtime=docker; \
+		else \
+			echo "No container runtime found. Install podman or docker."; \
+			exit 1; \
+		fi; \
+	fi; \
+	echo "Container runtime: $$runtime"
+
+image:
+	@runtime="$(CONTAINER_RUNTIME)"; \
+	if [ -z "$$runtime" ]; then \
+		if command -v podman >/dev/null 2>&1; then runtime=podman; \
+		elif command -v docker >/dev/null 2>&1; then runtime=docker; \
+		else \
+			echo "No container runtime found. Install podman or docker."; \
+			exit 1; \
+		fi; \
+	fi; \
+	if [ ! -f "$(CI_DOCKERFILE)" ]; then \
+		echo "Missing $(CI_DOCKERFILE). Add CI container definition first."; \
+		exit 1; \
+	fi; \
+	echo "Building CI image $(CI_IMAGE) with $$runtime using $(CI_DOCKERFILE)..."; \
+	"$$runtime" build -f "$(CI_DOCKERFILE)" -t "$(CI_IMAGE)" .
+
+ci:
+	@runtime="$(CONTAINER_RUNTIME)"; \
+	if [ -z "$$runtime" ]; then \
+		if command -v podman >/dev/null 2>&1; then runtime=podman; \
+		elif command -v docker >/dev/null 2>&1; then runtime=docker; \
+		else \
+			echo "No container runtime found. Install podman or docker."; \
+			exit 1; \
+		fi; \
+	fi; \
+	echo "Running containerized CI with $$runtime..."; \
+	"$$runtime" run --rm \
+		-v "$$(pwd)":/workspace \
+		-w /workspace \
+		-e LANG="$(LANG)" \
+		-e BUILD_TOOL="$(BUILD_TOOL)" \
+		-e MODULE="$(MODULE)" \
+		-e PROFILE="$(PROFILE)" \
+		-e SKIP_TESTS="$(SKIP_TESTS)" \
+		"$(CI_IMAGE)" \
+		sh -lc 'make build && make test'; \
+	mkdir -p target dist build
 
 build:
 	@echo "Building project (lang=$(LANG), tool=$(BUILD_TOOL), module=$(MODULE), profile=$(PROFILE))..."
