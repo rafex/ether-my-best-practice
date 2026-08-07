@@ -8,9 +8,6 @@ BUILD_TOOL ?= maven
 MODULE ?= .
 PROFILE ?= dev
 SKIP_TESTS ?= false
-CONTAINER_RUNTIME ?=
-CI_IMAGE ?= project-ci:local
-CI_DOCKERFILE ?= Dockerfile.ci
 MK_FILES ?= $(wildcard helpers/mk/*.mk)
 SITE_DIR ?= site
 PAGES_WORKFLOW ?= static.yml
@@ -41,58 +38,6 @@ help:
 	@echo "  make test LANG=rust BUILD_TOOL=cargo"
 	@echo "  make ci LANG=java BUILD_TOOL=gradle"
 	@echo "  make pages"
-
-runtime:
-	@runtime="$(CONTAINER_RUNTIME)"; \
-	if [ -z "$$runtime" ]; then \
-		if command -v podman >/dev/null 2>&1; then runtime=podman; \
-		elif command -v docker >/dev/null 2>&1; then runtime=docker; \
-		else \
-			echo "No container runtime found. Install podman or docker."; \
-			exit 1; \
-		fi; \
-	fi; \
-	echo "Container runtime: $$runtime"
-
-image:
-	@runtime="$(CONTAINER_RUNTIME)"; \
-	if [ -z "$$runtime" ]; then \
-		if command -v podman >/dev/null 2>&1; then runtime=podman; \
-		elif command -v docker >/dev/null 2>&1; then runtime=docker; \
-		else \
-			echo "No container runtime found. Install podman or docker."; \
-			exit 1; \
-		fi; \
-	fi; \
-	if [ ! -f "$(CI_DOCKERFILE)" ]; then \
-		echo "Missing $(CI_DOCKERFILE). Add CI container definition first."; \
-		exit 1; \
-	fi; \
-	echo "Building CI image $(CI_IMAGE) with $$runtime using $(CI_DOCKERFILE)..."; \
-	"$$runtime" build -f "$(CI_DOCKERFILE)" -t "$(CI_IMAGE)" .
-
-ci:
-	@runtime="$(CONTAINER_RUNTIME)"; \
-	if [ -z "$$runtime" ]; then \
-		if command -v podman >/dev/null 2>&1; then runtime=podman; \
-		elif command -v docker >/dev/null 2>&1; then runtime=docker; \
-		else \
-			echo "No container runtime found. Install podman or docker."; \
-			exit 1; \
-		fi; \
-	fi; \
-	echo "Running containerized CI with $$runtime..."; \
-	"$$runtime" run --rm \
-		-v "$$(pwd)":/workspace \
-		-w /workspace \
-		-e LANG="$(LANG)" \
-		-e BUILD_TOOL="$(BUILD_TOOL)" \
-		-e MODULE="$(MODULE)" \
-		-e PROFILE="$(PROFILE)" \
-		-e SKIP_TESTS="$(SKIP_TESTS)" \
-		"$(CI_IMAGE)" \
-		sh -lc 'make build && make test'; \
-	mkdir -p target dist build
 
 build:
 	@echo "Building project (lang=$(LANG), tool=$(BUILD_TOOL), module=$(MODULE), profile=$(PROFILE))..."

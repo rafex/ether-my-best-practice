@@ -3,10 +3,17 @@
 SITE_DIR ?= site
 PAGES_WORKFLOW ?= static.yml
 PAGES_REF ?= main
+MK_FILES ?= $(wildcard helpers/mk/*.mk)
+
+# Carga modular de helpers por dominio, contenedor o lenguaje.
+-include $(MK_FILES)
 
 help:
 	@echo "Tareas disponibles:"
-	@echo "  make docs        - Generar el sitio MkDocs localmente"
+	@echo "  make runtime  - Detectar podman/docker"
+	@echo "  make image    - Construir imagen de CI"
+	@echo "  make ci       - Ejecutar build+test en contenedor"
+	@echo "  make docs     - Generar el sitio MkDocs localmente"
 	@echo "  make pages-build - Generar el sitio en $(SITE_DIR)"
 	@echo "  make pages       - Disparar el workflow de GitHub Pages"
 	@echo "  make serve       - Servir la documentación localmente"
