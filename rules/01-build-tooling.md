@@ -14,6 +14,7 @@ La regla principal es responsabilidad única en la capa de build: el `Makefile` 
 - Los scripts de helpers siempre reciben parámetros por flags.
 - La construcción debe ejecutarse en contenedores cuando sea posible para no ensuciar el host local.
 - `Justfile` es task manager de operativas de aplicación (acciones de negocio/operación), no de compilación.
+- Tanto `Makefile` como `Justfile` pueden componerse con N archivos modulares por dominio o funcionalidad.
 
 ## Arquitectura Recomendada
 
@@ -22,12 +23,19 @@ Estructura sugerida:
 ```text
 .
 ├── Makefile
+├── Justfile
 └── helpers/
 	├── mk/
 	│   ├── java.mk
 	│   ├── python.mk
 	│   ├── javascript.mk
-	│   └── rust.mk
+	│   ├── rust.mk
+	│   ├── auth.mk
+	│   └── billing.mk
+	├── just/
+	│   ├── app.just
+	│   ├── auth.just
+	│   └── billing.just
 	├── shell/
 	│   ├── java.sh (o java.bash)
 	│   ├── python.sh (o python.bash)
@@ -43,6 +51,34 @@ Flujo recomendado (aplica a cualquier lenguaje):
 2. `Makefile` incluye `helpers/mk/{lenguaje}.mk`.
 3. `helpers/mk/{lenguaje}.mk` delega en `helpers/shell/{lenguaje}.sh` o `helpers/shell/{lenguaje}.bash`.
 4. El helper shell o python ejecuta la herramienta nativa según flags (`--tool ...`).
+
+## Modularidad de N Archivos
+
+### Makefile + N archivos `.mk`
+
+- `Makefile` puede incluir N archivos `helpers/mk/*.mk`.
+- Útil para separar por lenguaje, dominio o capability (`auth.mk`, `billing.mk`, `observability.mk`).
+- Mantener nombres claros y evitar duplicar target names sin prefijo de dominio.
+
+Ejemplo:
+
+```make
+MK_FILES ?= $(wildcard helpers/mk/*.mk)
+-include $(MK_FILES)
+```
+
+### Justfile + N archivos `.just`
+
+- `Justfile` puede enrutar tareas hacia N archivos en `helpers/just/*.just`.
+- Cada archivo debe contener operativas de un dominio funcional.
+- Recomendación: usar naming de tareas con prefijo (`auth-login`, `billing-create-invoice`) para evitar colisiones.
+
+Ejemplo:
+
+```bash
+just --justfile helpers/just/auth.just login alice secret
+just --justfile helpers/just/billing.just create-invoice c123 99.90
+```
 
 ## Matriz por Lenguaje
 

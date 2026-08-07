@@ -11,9 +11,10 @@ SKIP_TESTS ?= false
 CONTAINER_RUNTIME ?=
 CI_IMAGE ?= project-ci:local
 CI_DOCKERFILE ?= Dockerfile.ci
+MK_FILES ?= $(wildcard helpers/mk/*.mk)
 
-# Include opcional por lenguaje.
--include helpers/mk/$(LANG).mk
+# Carga modular: permite N archivos .mk por lenguaje, dominio o capability.
+-include $(MK_FILES)
 
 help:
 	@echo "Tareas disponibles:"

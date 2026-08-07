@@ -6,6 +6,7 @@ module := env_var_or_default("MODULE", ".")
 profile := env_var_or_default("PROFILE", "dev")
 skip_tests := env_var_or_default("SKIP_TESTS", "false")
 app_justfile := env_var_or_default("APP_JUSTFILE", "helpers/just/app.just")
+just_dir := env_var_or_default("JUST_DIR", "helpers/just")
 
 # Mostrar tareas disponibles
 @default:
@@ -19,6 +20,24 @@ app_justfile := env_var_or_default("APP_JUSTFILE", "helpers/just/app.just")
     else \
         echo "No existe {{app_justfile}}"; \
         echo "Agrega helpers/just/app.just para tareas como create-user/login/db-create"; \
+    fi
+
+# Listar módulos just disponibles (N archivos por dominio/funcionalidad)
+@ops-modules:
+    if [ -d "{{just_dir}}" ]; then \
+        ls "{{just_dir}}"/*.just 2>/dev/null || echo "No hay módulos .just en {{just_dir}}"; \
+    else \
+        echo "No existe {{just_dir}}"; \
+    fi
+
+# Ejecutar receta en un módulo just específico
+@ops-run module recipe *args:
+    module_file="{{just_dir}}/{{module}}.just"; \
+    if [ -f "$$module_file" ]; then \
+        just --justfile "$$module_file" "{{recipe}}" {{args}}; \
+    else \
+        echo "No existe $$module_file"; \
+        exit 1; \
     fi
 
 # Ejemplo operativo: crear usuario
