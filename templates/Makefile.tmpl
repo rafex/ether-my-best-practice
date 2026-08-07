@@ -1,0 +1,41 @@
+.PHONY: help build test clean docs serve lint format
+
+help:
+	@echo "Tareas disponibles:"
+	@echo "  make build    - Construir el proyecto"
+	@echo "  make test     - Ejecutar tests"
+	@echo "  make clean    - Limpiar artefactos"
+	@echo "  make docs     - Generar documentación"
+	@echo "  make serve    - Servir documentación localmente"
+	@echo "  make lint     - Validar estilo de código"
+	@echo "  make format   - Formatear código"
+
+build:
+	@echo "Building project..."
+	# Agregar comando de build específico del proyecto
+
+test:
+	@echo "Running tests..."
+	# Agregar comando de tests específico del proyecto
+
+clean:
+	@echo "Cleaning build artifacts..."
+	rm -rf build/
+	rm -rf dist/
+	rm -rf site/
+
+docs:
+	@echo "Building documentation..."
+	mkdocs build
+
+serve:
+	@echo "Serving documentation on http://localhost:8000"
+	mkdocs serve
+
+lint:
+	@echo "Linting code..."
+	# Agregar comando de lint específico del proyecto
+
+format:
+	@echo "Formatting code..."
+	# Agregar comando de format específico del proyecto

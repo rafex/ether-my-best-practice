@@ -1,0 +1,50 @@
+set dotenv-load
+
+# Mostrar tareas disponibles
+@default:
+    just --list
+
+# Construir el proyecto
+@build:
+    echo "Building project..."
+    # Agregar comando de build específico del proyecto
+
+# Ejecutar tests
+@test:
+    echo "Running tests..."
+    # Agregar comando de tests específico del proyecto
+
+# Limpiar artefactos
+@clean:
+    echo "Cleaning build artifacts..."
+    rm -rf build/
+    rm -rf dist/
+    rm -rf site/
+
+# Generar documentación
+@docs:
+    echo "Building documentation..."
+    mkdocs build
+
+# Servir documentación localmente
+@serve:
+    echo "Serving documentation on http://localhost:8000"
+    mkdocs serve
+
+# Validar estilo de código
+@lint:
+    echo "Linting code..."
+    # Agregar comando de lint específico del proyecto
+
+# Formatear código
+@format:
+    echo "Formatting code..."
+    # Agregar comando de format específico del proyecto
+
+# Ejecutar todas las validaciones
+@validate: lint test
+
+# Preparar para release
+@prepare-release version:
+    git tag -a v{{ version }} -m "Release v{{ version }}"
+    git push origin v{{ version }}

@@ -1,0 +1,37 @@
+site_name: Ether My Best Practice
+site_description: Mejores prácticas y estándares para desarrollo de software
+site_author: Rafael Exner
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+  language: es
+
+nav:
+  - Inicio: index.md
+  - Guía de Inicio: getting-started.md
+  - Contribuyendo: contributing.md
+  - Reglas:
+      - Índice: ../rules/00-index.md
+      - Herramientas de Construcción: ../rules/01-build-tooling.md
+      - Arquitectura: ../rules/02-architecture.md
+      - Testing: ../rules/03-testing.md
+      - Documentación: ../rules/04-documentation.md
+      - Control de Versiones: ../rules/05-version-control.md
+      - CI/CD: ../rules/06-ci-cd.md
+      - Agentes IA y MCP: ../rules/07-agents-mcp.md
+
+plugins:
+  - search:
+      lang: es
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - extra
+  - tables
+  - toc:
+      permalink: true

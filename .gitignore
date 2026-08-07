@@ -1,0 +1,24 @@
+# Build
+build/
+dist/
+target/
+*.class
+*.jar
+*.pyc
+*.o
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Dependencies
+node_modules/
+venv/
+env/
+
+# Documentation
+site/
