@@ -1,4 +1,4 @@
-.PHONY: help build test clean docs serve lint format runtime image ci
+.PHONY: help build test clean docs serve lint format runtime image ci pages-build pages
 
 # Punto de entrada universal.
 # La lógica específica por lenguaje se delega a helpers.
@@ -12,6 +12,9 @@ CONTAINER_RUNTIME ?=
 CI_IMAGE ?= project-ci:local
 CI_DOCKERFILE ?= Dockerfile.ci
 MK_FILES ?= $(wildcard helpers/mk/*.mk)
+SITE_DIR ?= site
+PAGES_WORKFLOW ?= pages.yml
+PAGES_REF ?= main
 
 # Carga modular: permite N archivos .mk por lenguaje, dominio o capability.
 -include $(MK_FILES)
@@ -23,6 +26,8 @@ help:
 	@echo "  make runtime  - Detectar podman/docker"
 	@echo "  make image    - Construir imagen de CI"
 	@echo "  make ci       - Ejecutar build+test en contenedor"
+	@echo "  make pages-build - Generar el sitio MkDocs en $(SITE_DIR)"
+	@echo "  make pages       - Disparar el workflow de GitHub Pages"
 	@echo "  make clean    - Limpiar artefactos"
 	@echo "  make docs     - Generar documentación"
 	@echo "  make serve    - Servir documentación localmente"
@@ -35,6 +40,7 @@ help:
 	@echo "  make build LANG=javascript BUILD_TOOL=pnpm"
 	@echo "  make test LANG=rust BUILD_TOOL=cargo"
 	@echo "  make ci LANG=java BUILD_TOOL=gradle"
+	@echo "  make pages"
 
 runtime:
 	@runtime="$(CONTAINER_RUNTIME)"; \
@@ -118,7 +124,19 @@ clean:
 
 docs:
 	@echo "Building documentation..."
-	mkdocs build
+	mkdocs build --site-dir "$(SITE_DIR)"
+
+pages-build: docs
+	@echo "Sitio generado en $(SITE_DIR)"
+
+pages:
+	@if command -v gh >/dev/null 2>&1; then \
+		gh workflow run "$(PAGES_WORKFLOW)" --ref "$(PAGES_REF)"; \
+		echo "Workflow $(PAGES_WORKFLOW) disparado en $(PAGES_REF)"; \
+	else \
+		echo "GitHub CLI (gh) no está disponible. Usa 'make pages-build' o instala gh para disparar el workflow."; \
+		exit 1; \
+	fi
 
 serve:
 	@echo "Serving documentation on http://localhost:8000"

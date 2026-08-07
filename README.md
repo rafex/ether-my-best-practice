@@ -39,9 +39,16 @@ La intención no es solo documentar estándares, sino permitir que un agente ent
 bash helpers/shell/validate-rules.sh
 ```
 
-Si tienes MkDocs instalado:
+Para construir el sitio localmente:
 
 ```bash
 mkdocs build
 mkdocs serve
+```
+
+Para publicar en GitHub Pages usando el workflow del repositorio:
+
+```bash
+make pages-build
+make pages
 ```

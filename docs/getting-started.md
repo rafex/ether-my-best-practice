@@ -62,6 +62,17 @@ Luego abre `http://localhost:8000`
 
 Si copias las plantillas de [templates](templates) a otro proyecto, allí sí puedes exponer estos comandos mediante `make docs` o `just docs`.
 
+## Publicar en GitHub Pages
+
+En este repositorio puedes usar:
+
+```bash
+make pages-build
+make pages
+```
+
+`make pages` dispara el workflow de GitHub Pages definido en [.github/workflows/pages.yml](../.github/workflows/pages.yml).
+
 ## Integrar en tu Proyecto
 
 Agrega referencia a las reglas en tu README:
