@@ -1,5 +1,17 @@
 .PHONY: help build test clean docs serve lint format
 
+# Punto de entrada universal.
+# La lógica específica por lenguaje se delega a helpers.
+
+LANG ?= java
+BUILD_TOOL ?= maven
+MODULE ?= .
+PROFILE ?= dev
+SKIP_TESTS ?= false
+
+# Include opcional por lenguaje.
+-include helpers/mk/$(LANG).mk
+
 help:
 	@echo "Tareas disponibles:"
 	@echo "  make build    - Construir el proyecto"
@@ -9,14 +21,34 @@ help:
 	@echo "  make serve    - Servir documentación localmente"
 	@echo "  make lint     - Validar estilo de código"
 	@echo "  make format   - Formatear código"
+	@echo ""
+	@echo "Ejemplos multi-lenguaje:"
+	@echo "  make build LANG=java BUILD_TOOL=maven"
+	@echo "  make test LANG=python BUILD_TOOL=uv"
+	@echo "  make build LANG=javascript BUILD_TOOL=pnpm"
+	@echo "  make test LANG=rust BUILD_TOOL=cargo"
 
 build:
-	@echo "Building project..."
-	# Agregar comando de build específico del proyecto
+	@echo "Building project (lang=$(LANG), tool=$(BUILD_TOOL), module=$(MODULE), profile=$(PROFILE))..."
+	@if [ -f "helpers/shell/$(LANG).bash" ]; then \
+		bash "helpers/shell/$(LANG).bash" --tool "$(BUILD_TOOL)" --goal build --module "$(MODULE)" --profile "$(PROFILE)" --skip-tests "$(SKIP_TESTS)"; \
+	elif [ -f "helpers/shell/$(LANG).sh" ]; then \
+		sh "helpers/shell/$(LANG).sh" --tool "$(BUILD_TOOL)" --goal build --module "$(MODULE)" --profile "$(PROFILE)" --skip-tests "$(SKIP_TESTS)"; \
+	else \
+		echo "No helper script found for LANG=$(LANG). Expected helpers/shell/$(LANG).bash or .sh"; \
+		exit 1; \
+	fi
 
 test:
-	@echo "Running tests..."
-	# Agregar comando de tests específico del proyecto
+	@echo "Running tests (lang=$(LANG), tool=$(BUILD_TOOL), module=$(MODULE), profile=$(PROFILE))..."
+	@if [ -f "helpers/shell/$(LANG).bash" ]; then \
+		bash "helpers/shell/$(LANG).bash" --tool "$(BUILD_TOOL)" --goal test --module "$(MODULE)" --profile "$(PROFILE)"; \
+	elif [ -f "helpers/shell/$(LANG).sh" ]; then \
+		sh "helpers/shell/$(LANG).sh" --tool "$(BUILD_TOOL)" --goal test --module "$(MODULE)" --profile "$(PROFILE)"; \
+	else \
+		echo "No helper script found for LANG=$(LANG). Expected helpers/shell/$(LANG).bash or .sh"; \
+		exit 1; \
+	fi
 
 clean:
 	@echo "Cleaning build artifacts..."
@@ -34,8 +66,16 @@ serve:
 
 lint:
 	@echo "Linting code..."
-	# Agregar comando de lint específico del proyecto
+	@if [ -f "helpers/python/lint.py" ]; then \
+		uv run python helpers/python/lint.py --lang "$(LANG)" --module "$(MODULE)"; \
+	else \
+		echo "Add helpers/python/lint.py (Python 3.11+ with uv) to implement lint logic"; \
+	fi
 
 format:
 	@echo "Formatting code..."
-	# Agregar comando de format específico del proyecto
+	@if [ -f "helpers/python/format.py" ]; then \
+		uv run python helpers/python/format.py --lang "$(LANG)" --module "$(MODULE)"; \
+	else \
+		echo "Add helpers/python/format.py (Python 3.11+ with uv) to implement format logic"; \
+	fi

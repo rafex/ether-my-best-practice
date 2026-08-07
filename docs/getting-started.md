@@ -39,11 +39,14 @@ Las plantillas están en `templates/`:
 1. Copiar `Makefile.tmpl` → `Makefile` en tu proyecto
 2. Adaptar según necesidades
 3. Lo mismo con `Justfile.tmpl`
+4. Usarlas como cascarón para que un agente genere una API REST consistente con las reglas del repositorio
 
 ```bash
 cp templates/Makefile.tmpl mi-proyecto/Makefile
 cp templates/Justfile.tmpl mi-proyecto/Justfile
 ```
+
+También puedes tomar [templates/project-structure/README.md](../templates/project-structure/README.md) como base de estructura para un servicio nuevo y complementar el proyecto con las reglas de [../rules/02-architecture.md](../rules/02-architecture.md), [../rules/03-testing.md](../rules/03-testing.md) y [../rules/07-agents-mcp.md](../rules/07-agents-mcp.md).
 
 ## Generar Documentación
 
@@ -70,6 +73,18 @@ Reglas aplicables:
 - [Arquitectura Hexagonal](https://github.com/rafex/ether-my-best-practice/blob/main/rules/02-architecture.md)
 - [Testing y TDD](https://github.com/rafex/ether-my-best-practice/blob/main/rules/03-testing.md)
 ```
+
+Si el proyecto va a trabajar con agentes de IA, expón también estas reglas por lectura directa del repositorio o mediante MCP para que el agente pueda decidir cómo construir endpoints, tests, documentación y automatizaciones siguiendo este estándar.
+
+## Integrar con MCP o agentes
+
+La forma mínima de integrar este repositorio con un agente es:
+
+1. Hacer disponible la carpeta [../rules/](../rules/) como contexto.
+2. Indicar qué reglas son obligatorias para el proyecto consumidor.
+3. Permitir que el agente use [../templates/](../templates/) como punto de partida para generar el esqueleto de la API REST.
+
+El detalle de este enfoque está en [../rules/07-agents-mcp.md](../rules/07-agents-mcp.md).
 
 ## Próximos Pasos
 

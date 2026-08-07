@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Este repositorio mantiene reglas de mejores prácticas, documentación MkDocs y plantillas reutilizables. Antes de proponer o aplicar cambios, usa como fuentes principales:
+Este repositorio mantiene reglas de mejores prácticas para APIs REST, documentación MkDocs y plantillas reutilizables pensadas para que agentes de IA puedan entender las reglas y generar cascarones de proyecto consistentes. Antes de proponer o aplicar cambios, usa como fuentes principales:
 
 - [README.md](README.md)
 - [docs/getting-started.md](docs/getting-started.md)
@@ -12,9 +12,9 @@ Este repositorio mantiene reglas de mejores prácticas, documentación MkDocs y 
 
 ## Qué editar
 
-- Edita contenido fuente en [rules](rules), [docs](docs), [templates](templates), [scripts](scripts) y [mkdocs.yml](mkdocs.yml).
+- Edita contenido fuente en [rules](rules), [docs](docs), [templates](templates), [helpers](helpers) y [mkdocs.yml](mkdocs.yml).
 - No edites [site](site) manualmente. Es salida generada.
-- Trata los archivos en [templates](templates) como plantillas genéricas. No conviertas placeholders en decisiones específicas de un proyecto consumidor.
+- Trata los archivos en [templates](templates) como plantillas genéricas y cascarones para proyectos consumidores. No conviertas placeholders en decisiones específicas de un proyecto consumidor.
 
 ## Convenciones del repositorio
 
@@ -26,7 +26,7 @@ Este repositorio mantiene reglas de mejores prácticas, documentación MkDocs y 
 
 ## Validación y comprobaciones
 
-- Ejecuta [scripts/validate-rules.sh](scripts/validate-rules.sh) cuando cambies archivos en [rules](rules).
+- Ejecuta [helpers/shell/validate-rules.sh](helpers/shell/validate-rules.sh) cuando cambies archivos en [rules](rules).
 - Si tocas navegación o páginas de documentación, valida también con `mkdocs build` cuando MkDocs esté disponible en el entorno.
 - No asumas que existe un Makefile o un archivo requirements en la raíz del repositorio actual; esos comandos aparecen como plantillas o ejemplos para proyectos consumidores.
 
@@ -36,6 +36,7 @@ Este repositorio mantiene reglas de mejores prácticas, documentación MkDocs y 
 - Al crear una regla nueva, sigue la numeración existente y evita renumerar archivos ya publicados.
 - Si cambias plantillas de proyecto, mantén coherencia con la estructura hexagonal descrita en [templates/project-structure/README.md](templates/project-structure/README.md) y en [rules/02-architecture.md](rules/02-architecture.md).
 - Si modificas guía para agentes o MCP, mantén alineación con [rules/07-agents-mcp.md](rules/07-agents-mcp.md).
+- Si el cambio afecta cómo un agente genera una API REST, ajusta tanto la regla aplicable como el template relacionado para que intención y cascarón no diverjan.
 
 ## Riesgos a evitar
 

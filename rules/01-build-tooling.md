@@ -4,31 +4,135 @@
 
 Todo proyecto debe tener un sistema de construcción declarativo y reproducible, independientemente del lenguaje.
 
-## Herramientas Recomendadas
+La regla principal es responsabilidad única en la capa de build: el `Makefile` orquesta objetivos y variables, y la lógica específica vive en helpers reutilizables.
+
+## Regla Base
+
+- `Makefile` es la puerta de entrada universal para construir, testear y limpiar.
+- El `Makefile` no implementa lógica compleja por lenguaje.
+- La lógica de compilación/ejecución vive en archivos de helpers (`.mk`, `sh`/`bash`, `python`).
+- Los scripts de helpers siempre reciben parámetros por flags.
+
+## Arquitectura Recomendada
+
+Estructura sugerida:
+
+```text
+.
+├── Makefile
+└── helpers/
+	├── mk/
+	│   ├── java.mk
+	│   ├── python.mk
+	│   ├── javascript.mk
+	│   └── rust.mk
+	├── shell/
+	│   ├── java.sh (o java.bash)
+	│   ├── python.sh (o python.bash)
+	│   ├── javascript.sh (o javascript.bash)
+	│   └── rust.sh (o rust.bash)
+	└── python/
+		└── *.py
+```
+
+Flujo recomendado (aplica a cualquier lenguaje):
+
+1. `Makefile` recibe parámetros y define variables (`BUILD_TOOL`, `MODULE`, `PROFILE`, etc.).
+2. `Makefile` incluye `helpers/mk/{lenguaje}.mk`.
+3. `helpers/mk/{lenguaje}.mk` delega en `helpers/shell/{lenguaje}.sh` o `helpers/shell/{lenguaje}.bash`.
+4. El helper shell o python ejecuta la herramienta nativa según flags (`--tool ...`).
+
+## Matriz por Lenguaje
+
+El patrón es el mismo para Java, Python, JavaScript y Rust:
+
+- Java: `LANG=java`, `BUILD_TOOL=maven|gradle`, helper en `helpers/mk/java.mk`.
+- Python: `LANG=python`, `BUILD_TOOL=uv|poetry|pip`, helper en `helpers/mk/python.mk`.
+- JavaScript: `LANG=javascript`, `BUILD_TOOL=npm|pnpm|yarn`, helper en `helpers/mk/javascript.mk`.
+- Rust: `LANG=rust`, `BUILD_TOOL=cargo`, helper en `helpers/mk/rust.mk`.
+
+Ejemplos de invocación:
+
+```bash
+make build LANG=java BUILD_TOOL=maven MODULE=api PROFILE=dev
+make test LANG=python BUILD_TOOL=uv MODULE=service PROFILE=ci
+make build LANG=javascript BUILD_TOOL=pnpm MODULE=web PROFILE=dev
+make test LANG=rust BUILD_TOOL=cargo MODULE=core PROFILE=ci
+```
+
+## Contrato de Flags en Helpers
+
+- Evitar parámetros posicionales ambiguos.
+- Usar flags explícitos y estables.
+- Validar flags obligatorios y fallar rápido con mensaje claro.
+
+Ejemplo:
+
+```bash
+bash helpers/shell/java.bash --tool maven --goal package --skip-tests
+sh helpers/shell/javascript.sh --tool pnpm --goal test --module web
+sh helpers/shell/rust.sh --tool cargo --goal build --module core
+python3 helpers/python/release.py --version 1.2.0 --dry-run
+```
+
+## Estándares por Tipo de Script
+
+### Shell helpers
+
+- Permitido: `sh` o `bash`.
+- Recomendado: `bash` cuando haya parsing de flags, arrays o validaciones más ricas.
+
+### Python helpers
+
+- Requerido: Python 3.11 o superior.
+- Dependencias gestionadas con `uv`.
+- Ubicación sugerida: `helpers/python/`.
+
+Ejemplo de ejecución:
+
+```bash
+uv run python helpers/python/my_helper.py --flag value
+```
+
+## Objetivos Mínimos del Makefile
+
+Todo proyecto debe exponer al menos:
+
+```text
+make build
+make test
+make clean
+make docs
+```
+
+Opcionales frecuentes:
+
+```text
+make lint
+make format
+make serve
+```
+
+## Herramientas Complementarias
 
 ### Makefile
 - Clásica, universal, disponible en prácticamente todos los sistemas
-- Ideal para tareas simple
-- Usar para: build, test, clean, deploy
+- Ideal para orquestación declarativa
+- Usar para: build, test, clean, docs, lint, format
 
 ### Justfile
 - Sintaxis más moderna que Makefile
-- Mejor para proyectos complejos
-- Reemplaza Makefile gradualmente
+- Útil como interfaz adicional
+- Si existe, debe mantener paridad funcional con Makefile
 
 ### npm scripts / cargo / gradle / maven
-- Usar cuando sea nativo del ecosistema del proyecto
+- Se ejecutan detrás de `make` (directamente o vía helpers)
+- Mantener un único punto de entrada para agentes y humanos
 
-## Estructura Mínima
-
-Todo proyecto debe tener:
-```
-make build    # Construir
-make test     # Ejecutar tests
-make clean    # Limpiar artefactos
-make docs     # Generar documentación
-```
+### uv / poetry / pip
+- Para proyectos Python, exponer igual un objetivo `make` y delegar en helpers
+- Si se usa Python helper, ejecutar con Python 3.11+ y dependencias gestionadas por `uv`
 
 ## Plantilla
 
-Ver `templates/Makefile.tmpl` y `templates/Justfile.tmpl`
+Ver [templates/Makefile.tmpl](../templates/Makefile.tmpl) y [templates/Justfile.tmpl](../templates/Justfile.tmpl).

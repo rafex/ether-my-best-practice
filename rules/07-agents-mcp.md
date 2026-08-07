@@ -141,6 +141,27 @@ Reglas aplicables:
 - [05-version-control.md](../rules/05-version-control.md)
 ```
 
+## Uso de Templates por Agentes
+
+Además de consultar reglas, los agentes pueden usar [templates](../templates/) como cascarones iniciales para crear proyectos alineados con este estándar.
+
+### Objetivo de los templates
+
+- Dar una estructura base consistente a una API REST.
+- Reducir decisiones repetitivas al crear un proyecto nuevo.
+- Asegurar que el código generado por agentes siga las reglas del repositorio desde el inicio.
+
+### Cómo debe usarlos un agente
+
+1. Leer primero el índice en [00-index.md](00-index.md).
+2. Consultar las reglas aplicables al tipo de cambio.
+3. Copiar el template más cercano al objetivo.
+4. Adaptar el contenido en el proyecto consumidor sin modificar este repositorio como si fuera el servicio final.
+
+### Restricción importante
+
+Los templates son esqueletos reutilizables. No deben llenarse aquí con detalles concretos de un servicio real salvo que el objetivo del cambio sea mejorar la plantilla misma.
+
 ## Ejemplo de Prompt a Agente
 
 ```

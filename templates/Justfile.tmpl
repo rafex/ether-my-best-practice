@@ -1,18 +1,24 @@
 set dotenv-load
 
+lang := env_var_or_default("LANG", "java")
+build_tool := env_var_or_default("BUILD_TOOL", "maven")
+module := env_var_or_default("MODULE", ".")
+profile := env_var_or_default("PROFILE", "dev")
+skip_tests := env_var_or_default("SKIP_TESTS", "false")
+
 # Mostrar tareas disponibles
 @default:
     just --list
 
 # Construir el proyecto
 @build:
-    echo "Building project..."
-    # Agregar comando de build específico del proyecto
+    echo "Building project (lang={{lang}}, tool={{build_tool}}, module={{module}}, profile={{profile}})..."
+    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} SKIP_TESTS={{skip_tests}} make build
 
 # Ejecutar tests
 @test:
-    echo "Running tests..."
-    # Agregar comando de tests específico del proyecto
+    echo "Running tests (lang={{lang}}, tool={{build_tool}}, module={{module}}, profile={{profile}})..."
+    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} make test
 
 # Limpiar artefactos
 @clean:
@@ -33,13 +39,11 @@ set dotenv-load
 
 # Validar estilo de código
 @lint:
-    echo "Linting code..."
-    # Agregar comando de lint específico del proyecto
+    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} make lint
 
 # Formatear código
 @format:
-    echo "Formatting code..."
-    # Agregar comando de format específico del proyecto
+    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} make format
 
 # Ejecutar todas las validaciones
 @validate: lint test
