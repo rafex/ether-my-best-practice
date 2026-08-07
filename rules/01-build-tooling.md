@@ -60,6 +60,12 @@ Para contenedores, usa un módulo dedicado:
 2. `helpers/mk/container.mk` delega en `helpers/shell/container.sh` o `helpers/python/container.py`.
 3. El helper resuelve runtime, imagen y ejecución de CI.
 
+Para build/test/clean, usa también un módulo dedicado:
+
+1. `helpers/mk/build.mk` define los targets `build`, `test` y `clean`.
+2. `helpers/mk/build.mk` delega en `helpers/shell/build.sh`, `helpers/shell/test.sh` y `helpers/shell/clean.sh`.
+3. Los scripts reciben el comando o las rutas del proyecto por flags y solo ejecutan la operación.
+
 ## Modularidad de N Archivos
 
 ### Makefile + N archivos `.mk`

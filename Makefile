@@ -10,6 +10,9 @@ MK_FILES ?= $(wildcard helpers/mk/*.mk)
 
 help:
 	@echo "Tareas disponibles:"
+	@echo "  make build    - Ejecutar build del proyecto"
+	@echo "  make test     - Ejecutar tests del proyecto"
+	@echo "  make clean    - Limpiar artefactos del proyecto"
 	@echo "  make runtime  - Detectar podman/docker"
 	@echo "  make image    - Construir imagen de CI"
 	@echo "  make ci       - Ejecutar build+test en contenedor"

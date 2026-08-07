@@ -12,14 +12,18 @@ MK_FILES ?= $(wildcard helpers/mk/*.mk)
 SITE_DIR ?= site
 PAGES_WORKFLOW ?= static.yml
 PAGES_REF ?= main
+BUILD_CMD ?=
+TEST_CMD ?=
+CLEAN_PATHS ?= build dist site
 
 # Carga modular: permite N archivos .mk por lenguaje, dominio o capability.
 -include $(MK_FILES)
 
 help:
 	@echo "Tareas disponibles:"
-	@echo "  make build    - Construir el proyecto"
-	@echo "  make test     - Ejecutar tests"
+	@echo "  make build    - Ejecutar build del proyecto"
+	@echo "  make test     - Ejecutar tests del proyecto"
+	@echo "  make clean    - Limpiar artefactos del proyecto"
 	@echo "  make runtime  - Detectar podman/docker"
 	@echo "  make image    - Construir imagen de CI"
 	@echo "  make ci       - Ejecutar build+test en contenedor"
@@ -38,34 +42,6 @@ help:
 	@echo "  make test LANG=rust BUILD_TOOL=cargo"
 	@echo "  make ci LANG=java BUILD_TOOL=gradle"
 	@echo "  make pages"
-
-build:
-	@echo "Building project (lang=$(LANG), tool=$(BUILD_TOOL), module=$(MODULE), profile=$(PROFILE))..."
-	@if [ -f "helpers/shell/$(LANG).bash" ]; then \
-		bash "helpers/shell/$(LANG).bash" --tool "$(BUILD_TOOL)" --goal build --module "$(MODULE)" --profile "$(PROFILE)" --skip-tests "$(SKIP_TESTS)"; \
-	elif [ -f "helpers/shell/$(LANG).sh" ]; then \
-		sh "helpers/shell/$(LANG).sh" --tool "$(BUILD_TOOL)" --goal build --module "$(MODULE)" --profile "$(PROFILE)" --skip-tests "$(SKIP_TESTS)"; \
-	else \
-		echo "No helper script found for LANG=$(LANG). Expected helpers/shell/$(LANG).bash or .sh"; \
-		exit 1; \
-	fi
-
-test:
-	@echo "Running tests (lang=$(LANG), tool=$(BUILD_TOOL), module=$(MODULE), profile=$(PROFILE))..."
-	@if [ -f "helpers/shell/$(LANG).bash" ]; then \
-		bash "helpers/shell/$(LANG).bash" --tool "$(BUILD_TOOL)" --goal test --module "$(MODULE)" --profile "$(PROFILE)"; \
-	elif [ -f "helpers/shell/$(LANG).sh" ]; then \
-		sh "helpers/shell/$(LANG).sh" --tool "$(BUILD_TOOL)" --goal test --module "$(MODULE)" --profile "$(PROFILE)"; \
-	else \
-		echo "No helper script found for LANG=$(LANG). Expected helpers/shell/$(LANG).bash or .sh"; \
-		exit 1; \
-	fi
-
-clean:
-	@echo "Cleaning build artifacts..."
-	rm -rf build/
-	rm -rf dist/
-	rm -rf site/
 
 docs:
 	@echo "Building documentation..."
