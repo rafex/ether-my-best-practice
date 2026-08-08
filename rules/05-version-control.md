@@ -58,4 +58,4 @@ Formato: `v{MAJOR}.{MINOR}.{PATCH}`
 
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Semantic Versioning](https://semver.org/)
-- [Regla 06: CI/CD](06-ci-cd.md) — releases automatizados
+- [Regla 10: Git Hooks](10-githooks.md) — commit-msg valida Conventional Commits en cada commit.

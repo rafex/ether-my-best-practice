@@ -138,7 +138,23 @@ just_dir := env_var_or_default("JUST_DIR", "helpers/just")
 # Ejecutar todas las validaciones
 @validate: lint test
 
-# Preparar para release
+# Instalar git hooks (core.hooksPath → .githooks)
+@hooks-install:
+    bash helpers/shell/hooks.sh --action install
+
+# Leer o bumpear VERSION (release-time, no hook)
+@version bump="":
+    uv run python helpers/python/version.py {{if bump=="" { "" } else { "--bump " + bump } }}
+
+# Generar CHANGELOG.md desde Conventional Commits (release-time)
+@changelog:
+    uv run python helpers/python/changelog.py
+
+# Preparar para release: version + changelog + commit + tag + push
 @prepare-release version:
-    git tag -a v{{ version }} -m "Release v{{ version }}"
-    git push origin v{{ version }}
+    uv run python helpers/python/version.py --version {{version}}
+    uv run python helpers/python/changelog.py
+    git add VERSION CHANGELOG.md
+    git commit -m "chore(release): v{{version}}"
+    git tag -a v{{version}} -m "Release v{{version}}"
+    git push origin v{{version}}

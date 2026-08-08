@@ -17,6 +17,7 @@ Este repositorio contiene un conjunto de premisas y estándares para el desarrol
 | 7 | **[07-agents-mcp.md](07-agents-mcp.md)** | Reglas para agentes de IA y Model Context Protocol |
 | 8 | **[08-stack.md](08-stack.md)** | Stack tecnológico recomendado (versiones, runtimes, contenedores) |
 | 9 | **[09-repository-structure.md](09-repository-structure.md)** | Estructura de repositorio multi-lenguaje por rol |
+| 10 | **[10-githooks.md](10-githooks.md)** | Git hooks — gates de lint/test/commit-msg y flujo de release |
 
 > **Estado:** cada regla declara su estado (`Definida` | `Borrador`) en el frontmatter YAML del archivo. Las reglas en **Borrador** contienen premisa y restricciones pero aún no alcanzan la profundidad completa (Comandos, Estructura detallada, etc.).
 

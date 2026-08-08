@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+PRE_COMMIT_TARGET=validate exec bash helpers/shell/hooks.sh --action pre-commit

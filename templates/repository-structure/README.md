@@ -11,7 +11,14 @@ proyecto/
 ├── Makefile                         # orquestación: build, test, ci
 ├── Justfile                         # operativas: serve, login, create-user, ...
 ├── .gitignore
+├── VERSION                          # versión actual (bumpeada en release)
+├── CHANGELOG.md                     # generado en release desde Conventional Commits
 ├── mkdocs.yml                       # configuración del sitio de documentación
+│
+├── .githooks/                       # git hooks (instalados con just hooks-install)
+│   ├── pre-commit                   # → make lint (gate de lint antes de commit)
+│   ├── pre-push                     # → make test (gate de test antes de push)
+│   └── commit-msg                   # → validar Conventional Commits
 │
 ├── docs/                            # documentación en Markdown + MermaidJS
 │   ├── index.md
@@ -79,6 +86,8 @@ proyecto/
 3. **Nombre de proyecto en kebab-case:** `patos`, `web`, `domain`.
 4. **Helpers en raíz:** la capa `helpers/` es compartida por todos los roles; nunca se duplica dentro de cada lenguaje.
 5. **Hexagonal en cada backend:** bajo `source/backend/<lang>/<proyecto>/src/` se aplica la arquitectura de puertos y adaptadores (dominio, aplicación, infraestructura, puertos).
+6. **Git hooks como gates:** `.githooks/` contiene gates puros (sin efectos laterales): lint antes de commit, test antes de push, validación de Conventional Commits. Instalar con `just hooks-install`.
+7. **CHANGELOG y VERSION solo en release:** `VERSION` y `CHANGELOG.md` se actualizan exclusivamente con `just prepare-release <versión>`, nunca en hooks.
 
 ## Ejemplo: proyecto "patos" (backend Java + frontend NodeJS + libs compartidas)
 
@@ -136,3 +145,4 @@ source/
 - [Regla 02: Arquitectura Hexagonal](../rules/02-architecture.md) — domain/application/infrastructure/ports.
 - [Regla 08: Stack Tecnológico](../rules/08-stack.md) — versiones, Podman, Containerfile.
 - [Regla 09: Estructura de Repositorio](../rules/09-repository-structure.md) — esta estructura como estándar.
+- [Regla 10: Git Hooks](../rules/10-githooks.md) — prefieres, flujo de release.

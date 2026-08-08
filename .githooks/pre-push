@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+PRE_PUSH_TARGET=docs exec bash helpers/shell/hooks.sh --action pre-push

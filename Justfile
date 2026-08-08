@@ -37,3 +37,24 @@
 # Limpiar sitio generado
 @clean:
     make clean
+
+# Instalar git hooks (core.hooksPath → .githooks)
+@hooks-install:
+    bash helpers/shell/hooks.sh --action install
+
+# Leer o bumpear VERSION (release-time, no hook)
+@version bump="" lang="" tool="" module="" profile="" skip_tests="" app_justfile="" just_dir="":
+    uv run python helpers/python/version.py {{if bump=="" { "" } else { "--bump " + bump } }}
+
+# Generar CHANGELOG.md desde Conventional Commits (release-time)
+@changelog lang="" tool="" module="" profile="" skip_tests="" app_justfile="" just_dir="":
+    uv run python helpers/python/changelog.py
+
+# Preparar para release: version + changelog + commit + tag + push
+@prepare-release version lang="" tool="" module="" profile="" skip_tests="" app_justfile="" just_dir="":
+    uv run python helpers/python/version.py --version {{version}}
+    uv run python helpers/python/changelog.py
+    git add VERSION CHANGELOG.md
+    git commit -m "chore(release): v{{version}}"
+    git tag -a v{{version}} -m "Release v{{version}}"
+    git push origin v{{version}}

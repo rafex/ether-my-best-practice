@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec bash helpers/shell/hooks.sh --action commit-msg "$1"

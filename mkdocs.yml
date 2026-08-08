@@ -25,6 +25,7 @@ nav:
       - Agentes IA y MCP: ../rules/07-agents-mcp.md
       - Stack Tecnológico: ../rules/08-stack.md
       - Estructura de Repositorio: ../rules/09-repository-structure.md
+      - Git Hooks: ../rules/10-githooks.md
 
 plugins:
   - search:
