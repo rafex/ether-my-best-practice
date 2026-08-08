@@ -143,6 +143,21 @@ source/
 
 - Código que ambos roles necesitan (DTOs, tipos TypeScript/Java records, contratos, validaciones).
 
+## Biblioteca de .gitignore
+
+Los templates de `.gitignore` por contexto viven en [templates/gitignore/](../gitignore/). Cada ubicación del proyecto arma su `.gitignore` tomando el template correspondiente:
+
+| Ubicación en el proyecto | Template de referencia |
+|---|---|
+| Raíz (`proyecto/`) | `.gitignore.raiz.tmpl` |
+| `source/backend/java/<proyecto>/` | `.gitignore.java.tmpl` |
+| `source/backend/python/<proyecto>/` | `.gitignore.python.tmpl` |
+| `source/backend/rust/<proyecto>/` | `.gitignore.rust.tmpl` |
+| `source/frontend/nodejs/<proyecto>/` | `.gitignore.nodejs.tmpl` |
+| `containers/` | `.gitignore.container.tmpl` |
+
+**Complementos combinables** (el agente decide si añadirlos según el proyecto): `.gitignore.secretos.tmpl`, `.gitignore.temporales.tmpl`, `.gitignore.mcp.tmpl`.
+
 ## Referencias
 
 - [Regla 01: Build Tooling](../rules/01-build-tooling.md) — Makefile, Justfile, helpers.

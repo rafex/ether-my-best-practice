@@ -1,0 +1,28 @@
+# .gitignore — backend Python (uv / poetry / pip)
+# Template de referencia: templates/gitignore/.gitignore.python.tmpl
+# Para el agente de IA: copiar a source/backend/python/<proyecto>/.
+
+# Bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Entorno virtual (uv / poetry / venv)
+.venv/
+venv/
+env/
+
+# Build / distribución
+dist/
+build/
+*.egg-info/
+
+# Cachés de herramientas de calidad
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Dependencias (gestionadas por uv / poetry / pip)
+# requirements.txt  # descomentar si se genera, pero uv/poetry lo gestionan

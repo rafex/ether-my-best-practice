@@ -1,11 +1,24 @@
-# Build
-build/
-dist/
-target/
-*.class
-*.jar
-*.pyc
-*.o
+# .gitignore — raíz del repositorio (placeholder)
+# La biblioteca completa de templates está en templates/gitignore/.
+# Cada ubicación del proyecto arma su .gitignore tomando el template por contexto:
+#
+#   Raíz → templates/gitignore/.gitignore.raiz.tmpl
+#   source/backend/java/<proyecto>/  → templates/gitignore/.gitignore.java.tmpl
+#   source/backend/python/<proyecto>/ → templates/gitignore/.gitignore.python.tmpl
+#   source/backend/rust/<proyecto>/   → templates/gitignore/.gitignore.rust.tmpl
+#   source/frontend/nodejs/<proyecto>/ → templates/gitignore/.gitignore.nodejs.tmpl
+#   containers/ → templates/gitignore/.gitignore.container.tmpl
+#
+# Complementos combinables (el agente decide según el proyecto):
+#   templates/gitignore/.gitignore.secretos.tmpl
+#   templates/gitignore/.gitignore.temporales.tmpl
+#   templates/gitignore/.gitignore.mcp.tmpl
+
+# Generado por MkDocs (documentación)
+site/
+
+# Commitizen virtual environment (no trackeable)
+.githooks/.tools/.commitizen-venv/
 
 # IDE
 .vscode/
@@ -14,14 +27,3 @@ target/
 *.swo
 *~
 .DS_Store
-
-# Dependencies
-node_modules/
-venv/
-env/
-
-# Commitizen virtual environment (no trackeable)
-.githooks/.tools/.commitizen-venv/
-
-# Documentation
-site/

@@ -1,0 +1,35 @@
+# .gitignore — frontend Node.js (npm / pnpm / yarn)
+# Template de referencia: templates/gitignore/.gitignore.nodejs.tmpl
+# Para el agente de IA: copiar a source/frontend/nodejs/<proyecto>/.
+
+# Dependencias
+node_modules/
+
+# Build / distribución
+dist/
+build/
+
+# Frameworks (descomentar según corresponda)
+# .next/          # Next.js
+# .nuxt/          # Nuxt
+# .output/        # Nuxt / Nitro
+# .astro/         # Astro
+# .svelte-kit/    # SvelteKit
+
+# Cachés
+.vite/
+
+# Coverage y tests
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env (manejar con .env.example)
+.env
+.env.local
+.env.*.local

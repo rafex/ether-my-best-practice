@@ -1,0 +1,19 @@
+# .gitignore — contenedores (Podman / Docker)
+# Template de referencia: templates/gitignore/.gitignore.container.tmpl
+# Para el agente de IA: copiar a containers/.
+
+# Credenciales de registry
+.env
+*.secret
+
+# Imágenes exportadas
+*.tar
+*.tar.gz
+
+# Cachés locales de build (descomentar si es necesario)
+# .build-cache/
+# .cache-build/
+
+# Volúmenes locales de desarrollo
+# data/
+# vol/

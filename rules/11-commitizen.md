@@ -192,10 +192,12 @@ uv run python helpers/python/changelog.py
 - [Commitizen Documentation](https://commitizen-tools.github.io/commitizen/)
 - [templates/pyproject.toml.tmpl](../templates/repository-structure/pyproject.toml.tmpl) — configuración base.
 - [templates/helpers/shell/cz.sh.tmpl](../templates/repository-structure/helpers/shell/cz.sh.tmpl) — wrapper.
-- [templates/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — incluye `.githooks/.tools/.commitizen-venv/`.
+- [templates/gitignore/.gitignore.raiz.tmpl](../templates/gitignore/.gitignore.raiz.tmpl) — incluye `.githooks/.tools/.commitizen-venv/`.
+- [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder del espejo.
 
 ## Plantilla
 
 - [templates/pyproject.toml.tmpl](../templates/repository-structure/pyproject.toml.tmpl)
 - [templates/helpers/shell/cz.sh.tmpl](../templates/repository-structure/helpers/shell/cz.sh.tmpl)
-- [templates/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl)
+- [templates/gitignore/.gitignore.raiz.tmpl](../templates/gitignore/.gitignore.raiz.tmpl)
+- [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder
