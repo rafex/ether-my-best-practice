@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ------------------------------------------------------------------
+# Wrapper de Commitizen — asistente de commit + release management.
+# Bootstrap de venv interno no trackeable en .githooks/.tools/.
+# Reutilizable por Makefile y Justfile.
+#
+# Contrato (regla 01):
+#   --action bootstrap|commit|changelog|version|bump|init
+#   --log-file /ruta/al/log            Obligatorio para acciones con side-effect
+#   --log-level info                   (opcional)
+#
+# Bootstrap automático:
+#   Si no existe .githooks/.tools/.commitizen-venv, se crea con uv (preferido)
+#   o python3 -m venv como fallback.
+#
+# Para agentes de IA: este script es la capa única de ejecución de Commitizen.
+# Usar just commit / just changelog / just version / just cz-init, nunca cz directo.
+#
+# Configuración:
+#   pyproject.toml → [tool.commitizen] con version_files multi-lenguaje.
+#
+# Auditoría: /var/log/<proyecto>/log-cz-<ts>.log
+#             Fallback → /tmp/<proyecto>/log-cz-<ts>.log
+# ------------------------------------------------------------------
+
+action=""
+cz_args=()
+log_file=""
+log_level="info"
+workspace="$(pwd)"
+VENV_DIR=".githooks/.tools/.commitizen-venv"
+CZ_BIN="${VENV_DIR}/bin/cz"
+
+project_name="$(basename "$workspace")"
+script_name="cz"
+ts="$(date -u +%Y%m%dT%H%M%SZ)"
+
+ensure_venv() {
+	if [[ -x "$CZ_BIN" ]]; then
+		return 0
+	fi
+	echo "Bootstrapping Commitizen venv in $VENV_DIR..."
+	mkdir -p "$(dirname "$VENV_DIR")"
+	if command -v uv >/dev/null 2>&1; then
+		uv venv "$VENV_DIR" --python 3.12
+		uv pip install --python "$VENV_DIR/bin/python3" commitizen
+	elif command -v python3 >/dev/null 2>&1; then
+		python3 -m venv "$VENV_DIR"
+		"${VENV_DIR}/bin/pip" install --quiet commitizen
+	else
+		echo "No se encontró python3 ni uv. Instala Python 3.12+ para usar Commitizen." >&2
+		exit 1
+	fi
+	if [[ -x "$CZ_BIN" ]]; then
+		echo "Commitizen instalado en $VENV_DIR"
+	else
+		echo "Fallo al instalar Commitizen" >&2
+		exit 1
+	fi
+}
+
+init_log() {
+	if [[ -z "$log_file" ]]; then
+		if mkdir -p "/var/log/$project_name" 2>/dev/null && [[ -w "/var/log/$project_name" ]]; then
+			log_file="/var/log/$project_name/log-$script_name-$ts.log"
+		else
+			mkdir -p "/tmp/$project_name"
+			log_file="/tmp/$project_name/log-$script_name-$ts.log"
+		fi
+	fi
+	mkdir -p "$(dirname "$log_file")"
+}
+
+# Parse flags
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--action)
+			action="${2:-}"; shift 2 ;;
+		--log-file)
+			log_file="${2:-}"; shift 2 ;;
+		--log-level)
+			log_level="${2:-}"; shift 2 ;;
+		*)
+			cz_args+=("$1"); shift ;;
+	esac
+done
+
+if [[ -z "$action" ]]; then
+	echo "Missing required flag --action" >&2
+	exit 1
+fi
+
+# Bootstrap (no necesita log obligatorio, se ejecuta en hooks-install)
+case "$action" in
+	bootstrap)
+		ensure_venv
+		echo "Commitizen venv ready at $VENV_DIR"
+		exit 0
+		;;
+esac
+
+# Resto de acciones requieren logging y venv
+init_log
+exec > >(tee -a "$log_file") 2>&1
+
+echo "Audit log: $log_file"
+echo "Action: $action"
+echo "Workspace: $workspace"
+
+ensure_venv
+
+case "$action" in
+	commit)
+		echo "Starting interactive commit assistant..."
+		exec "$CZ_BIN" commit "${cz_args[@]}"
+		;;
+	changelog)
+		echo "Generating changelog..."
+		"$CZ_BIN" changelog "${cz_args[@]}"
+		;;
+	version)
+		"$CZ_BIN" version "${cz_args[@]}"
+		;;
+	bump)
+		echo "Bumping version with Commitizen..."
+		"$CZ_BIN" bump "${cz_args[@]}"
+		;;
+	init)
+		echo "Iniciando configuración interactiva de Commitizen..."
+		echo "Si eres un agente de IA, usa las siguientes instrucciones en vez de cz init interactivo:"
+		echo "  1. Crea o edita pyproject.toml con [tool.commitizen] (ver templates/pyproject.toml.tmpl)."
+		echo "  2. Ajusta version_files según los lenguajes del proyecto."
+		echo "  3. Ejecuta 'just version' para verificar la versión configurada."
+		echo ""
+		exec "$CZ_BIN" init "${cz_args[@]}"
+		;;
+	*)
+		echo "Unknown action: $action. Expected bootstrap|commit|changelog|version|bump|init" >&2
+		exit 1 ;;
+esac

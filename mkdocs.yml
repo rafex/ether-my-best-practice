@@ -26,6 +26,7 @@ nav:
       - Stack Tecnológico: ../rules/08-stack.md
       - Estructura de Repositorio: ../rules/09-repository-structure.md
       - Git Hooks: ../rules/10-githooks.md
+      - Commitizen: ../rules/11-commitizen.md
 
 plugins:
   - search:

@@ -11,6 +11,8 @@ tags: [git, hooks, pre-commit, pre-push, commit-msg, release, conventional-commi
 
 Todo proyecto debe tener gates locales de calidad mediante git hooks que reutilicen la capa única de ejecución de `helpers/`. Los hooks son **gates puros** (sin efectos laterales): lint antes de commit y test antes de push. El `CHANGELOG.md` y el archivo `VERSION` se generan exclusivamente en release (`just prepare-release`), nunca en hooks.
 
+> **Co-propiedad con [Regla 11: Commitizen](11-commitizen.md):** esta regla define los gates (pre-commit, pre-push, commit-msg); la regla 11 define la herramienta que los respalda — Commitizen como asistente de commit convencional, generador de changelog y gestor de versiones. Ambas son **co-propietarias** del objetivo: commit + release gestionado.
+
 ## Estructura
 
 ### Árbol de hooks
@@ -180,6 +182,7 @@ CHANGELOG.md generated (version 1.2.0, changes since v1.1.0)
 - [Regla 05: Control de Versiones](05-version-control.md) — Conventional Commits.
 - [Regla 06: CI/CD](06-ci-cd.md) — pipeline local como complemento a los hooks.
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — `.githooks/` en el árbol del proyecto.
+- [Regla 11: Commitizen](11-commitizen.md) — asistente de commit + release (co-propietaria del objetivo).
 - [templates/repository-structure/.githooks/](../templates/repository-structure/.githooks/) — dispatchers pre-commit, pre-push, commit-msg.
 - [templates/helpers/shell/hooks.sh.tmpl](../templates/helpers/shell/hooks.sh.tmpl)
 - [templates/helpers/shell/commit-msg.sh.tmpl](../templates/helpers/shell/commit-msg.sh.tmpl)

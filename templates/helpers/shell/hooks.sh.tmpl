@@ -84,6 +84,11 @@ case "$action" in
 	install)
 		git config core.hooksPath .githooks
 		echo "Git hooks instalados: core.hooksPath = .githooks"
+		if [ -f "helpers/shell/cz.sh" ]; then
+			bash helpers/shell/cz.sh --action bootstrap
+		else
+			echo "No cz.sh helper found. Commitizen no se instalará."
+		fi
 		;;
 	pre-commit)
 		local_target="${target:-${PRE_COMMIT_TARGET:-lint}}"

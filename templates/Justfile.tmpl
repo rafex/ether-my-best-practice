@@ -138,23 +138,28 @@ just_dir := env_var_or_default("JUST_DIR", "helpers/just")
 # Ejecutar todas las validaciones
 @validate: lint test
 
-# Instalar git hooks (core.hooksPath → .githooks)
+# Instalar git hooks + bootstrap Commitizen en venv interno
 @hooks-install:
     bash helpers/shell/hooks.sh --action install
 
-# Leer o bumpear VERSION (release-time, no hook)
-@version bump="":
-    uv run python helpers/python/version.py {{if bump=="" { "" } else { "--bump " + bump } }}
+# Asistente interactivo de commit (Commitizen)
+@commit:
+    bash helpers/shell/cz.sh --action commit
 
-# Generar CHANGELOG.md desde Conventional Commits (release-time)
+# Generar CHANGELOG.md (Commitizen)
 @changelog:
-    uv run python helpers/python/changelog.py
+    bash helpers/shell/cz.sh --action changelog
 
-# Preparar para release: version + changelog + commit + tag + push
-@prepare-release version:
-    uv run python helpers/python/version.py --version {{version}}
-    uv run python helpers/python/changelog.py
-    git add VERSION CHANGELOG.md
-    git commit -m "chore(release): v{{version}}"
-    git tag -a v{{version}} -m "Release v{{version}}"
-    git push origin v{{version}}
+# Leer o bumpear VERSION (Commitizen)
+@version bump="":
+    bash helpers/shell/cz.sh --action version {{if bump=="" { "" } else { "--bump " + bump } }}
+
+# Preparar release: bump version + changelog + tag + commit (Commitizen)
+@prepare-release:
+    bash helpers/shell/cz.sh --action bump
+
+# Configuración interactiva de Commitizen (cz init)
+# Para agentes de IA: en vez de esto, editar pyproject.toml con [tool.commitizen]
+# según templates/pyproject.toml.tmpl.
+@cz-init:
+    bash helpers/shell/cz.sh --action init
