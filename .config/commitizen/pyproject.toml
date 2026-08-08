@@ -6,10 +6,10 @@ version_scheme = "pep440"
 tag_format = "v$version"
 version_files = [
     "pyproject.toml:version",
-    "VERSION",
-    "Cargo.toml:version",
-    "package.json:version",
+    "../../VERSION",
+    "../../Cargo.toml:version",
+    "../../package.json:version",
 ]
 update_changelog_on_bump = true
-changelog_file = "CHANGELOG.md"
+changelog_file = "../../CHANGELOG.md"
 bump_message = "chore(release): v$new_version"

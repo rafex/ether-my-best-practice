@@ -222,13 +222,13 @@ REDIS_URL=redis://localhost:6379/0
 - [sops + age documentation](https://getsops.io/)
 - [gitleaks](https://github.com/gitleaks/gitleaks)
 - [trufflehog](https://github.com/trufflesecurity/trufflehog)
-- [templates/repository-structure/.sops.yaml.tmpl](../templates/repository-structure/.sops.yaml.tmpl)
-- [templates/helpers/shell/secrets.sh.tmpl](../templates/helpers/shell/secrets.sh.tmpl)
+- [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
+- [templates/helpers/shell/secrets.sh.tmpl](../templates/repository-structure/helpers/shell/secrets.sh.tmpl)
 - [templates/gitignore/.gitignore.secretos.tmpl](../templates/gitignore/.gitignore.secretos.tmpl)
 
 ## Plantilla
 
-- [templates/repository-structure/.sops.yaml.tmpl](../templates/repository-structure/.sops.yaml.tmpl)
+- [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
 - [templates/repository-structure/.secrets/](../templates/repository-structure/.secrets/)
-- [templates/helpers/shell/secrets.sh.tmpl](../templates/helpers/shell/secrets.sh.tmpl)
+- [templates/helpers/shell/secrets.sh.tmpl](../templates/repository-structure/helpers/shell/secrets.sh.tmpl)
 - [templates/gitignore/.gitignore.secretos.tmpl](../templates/gitignore/.gitignore.secretos.tmpl)

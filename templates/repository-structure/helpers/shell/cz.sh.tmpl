@@ -19,7 +19,8 @@ set -euo pipefail
 # Usar just commit / just changelog / just version / just cz-init, nunca cz directo.
 #
 # Configuración:
-#   pyproject.toml → [tool.commitizen] con version_files multi-lenguaje.
+#   ROOT = $(pwd) → .config/commitizen/pyproject.toml con [tool.commitizen]
+#   Resolución: $ROOT/.config/commitizen/pyproject.toml → fallback relativo → default
 #
 # Auditoría: /var/log/<proyecto>/log-cz-<ts>.log
 #             Fallback → /tmp/<proyecto>/log-cz-<ts>.log
@@ -32,6 +33,19 @@ log_level="info"
 workspace="$(pwd)"
 VENV_DIR=".githooks/.tools/.commitizen-venv"
 CZ_BIN="${VENV_DIR}/bin/cz"
+
+# Resolver config de Commitizen (regla 14: .config/commitizen/pyproject.toml)
+resolve_config() {
+	local cfg_rel=".config/commitizen/pyproject.toml"
+	local cfg_abs="${workspace}/${cfg_rel}"
+	if [[ -f "$cfg_abs" ]]; then
+		echo "$cfg_abs"
+	elif [[ -f "$cfg_rel" ]]; then
+		echo "$cfg_rel"
+	else
+		echo ""
+	fi
+}
 
 project_name="$(basename "$workspace")"
 script_name="cz"
@@ -111,26 +125,28 @@ echo "Workspace: $workspace"
 
 ensure_venv
 
+CZ_CONFIG="$(resolve_config)"
+
 case "$action" in
 	commit)
 		echo "Starting interactive commit assistant..."
-		exec "$CZ_BIN" commit "${cz_args[@]}"
+		exec "$CZ_BIN" --config "$CZ_CONFIG" commit "${cz_args[@]}"
 		;;
 	changelog)
 		echo "Generating changelog..."
-		"$CZ_BIN" changelog "${cz_args[@]}"
+		"$CZ_BIN" --config "$CZ_CONFIG" changelog "${cz_args[@]}"
 		;;
 	version)
-		"$CZ_BIN" version "${cz_args[@]}"
+		"$CZ_BIN" --config "$CZ_CONFIG" version "${cz_args[@]}"
 		;;
 	bump)
 		echo "Bumping version with Commitizen..."
-		"$CZ_BIN" bump "${cz_args[@]}"
+		"$CZ_BIN" --config "$CZ_CONFIG" bump "${cz_args[@]}"
 		;;
 	init)
 		echo "Iniciando configuración interactiva de Commitizen..."
 		echo "Si eres un agente de IA, usa las siguientes instrucciones en vez de cz init interactivo:"
-		echo "  1. Crea o edita pyproject.toml con [tool.commitizen] (ver templates/repository-structure/pyproject.toml.tmpl)."
+		echo "  1. Crea o edita .config/commitizen/pyproject.toml con [tool.commitizen]."
 		echo "  2. Ajusta version_files según los lenguajes del proyecto."
 		echo "  3. Ejecuta 'just version' para verificar la versión configurada."
 		echo ""

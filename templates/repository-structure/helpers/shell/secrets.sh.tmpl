@@ -128,7 +128,7 @@ do_edit() {
 	local enc_file=".secrets/secrets.${env_name}.enc.yaml"
 	mkdir -p .secrets
 	echo "Editando $enc_file con $editor..."
-	SOPS_AGE_KEY_FILE="$key_path" sops edit "$enc_file" --input-type yaml --output-type yaml
+	SOPS_AGE_KEY_FILE="$key_path" sops --config .config/sops/.sops.yaml edit "$enc_file" --input-type yaml --output-type yaml
 	echo "$enc_file encriptado y guardado."
 }
 
@@ -146,13 +146,13 @@ do_env() {
 	fi
 
 	echo "Generando $env_file desde $enc_file..."
-	SOPS_AGE_KEY_FILE="$key_path" sops decrypt "$enc_file" > /dev/null 2>&1 || {
+	SOPS_AGE_KEY_FILE="$key_path" sops --config .config/sops/.sops.yaml decrypt "$enc_file" > /dev/null 2>&1 || {
 		echo "Fallo al desencriptar $enc_file" >&2
 		exit 1
 	}
 
 	# Extraer los valores del yaml desencriptado y generar .env
-	SOPS_AGE_KEY_FILE="$key_path" sops decrypt --output-type yaml "$enc_file" | \
+	SOPS_AGE_KEY_FILE="$key_path" sops --config .config/sops/.sops.yaml decrypt --output-type yaml "$enc_file" | \
 		python3 -c "
 import sys, yaml
 data = yaml.safe_load(sys.stdin)

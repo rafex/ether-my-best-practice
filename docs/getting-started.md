@@ -17,7 +17,7 @@ cd ether-my-best-practice
 ### Instalar Dependencias
 
 ```bash
-pip install -r requirements.txt
+pip install -r .config/mkdocs/requirements.txt
 ```
 
 ## Usar las Reglas

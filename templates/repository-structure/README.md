@@ -13,7 +13,15 @@ proyecto/
 ├── .gitignore
 ├── VERSION                          # versión actual (bumpeada en release)
 ├── CHANGELOG.md                     # generado en release desde Conventional Commits
-├── mkdocs.yml                       # configuración del sitio de documentación
+│
+├── .config/                         # configuración de herramientas (regla 14)
+│   ├── commitizen/
+│   │   └── pyproject.toml           # [tool.commitizen] con version_files
+│   ├── mkdocs/
+│   │   ├── mkdocs.yml               # configuración del sitio (docs_dir: ../../docs)
+│   │   └── requirements.txt         # dependencias de MkDocs
+│   └── sops/
+│       └── .sops.yaml               # age recipients públicos (cifrado sops+age)
 │
 ├── .githooks/                       # git hooks (instalados con just hooks-install)
 │   ├── .tools/                      # herramientas internas (commitizen-venv)
@@ -24,8 +32,6 @@ proyecto/
 ├── .secrets/                        # secretos cifrados con sops + age
 │   ├── .gitkeep
 │   └── secrets.{dev,prod,int}.enc.yaml  # solo los *.enc.yaml se versionan
-│
-├── .sops.yaml                       # configuración de sops (age recipients)
 │
 ├── docs/                            # documentación en Markdown + MermaidJS
 │   ├── index.md

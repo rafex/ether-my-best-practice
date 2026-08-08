@@ -28,7 +28,7 @@ format:
 	@echo "Agrega la lógica en helpers/shell/format.sh"
 
 docs:
-	mkdocs build --site-dir "$(SITE_DIR)"
+	mkdocs build -f .config/mkdocs/mkdocs.yml
 
 pages-build: validate docs
 	@echo "Sitio generado en $(SITE_DIR)"

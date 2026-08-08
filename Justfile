@@ -32,7 +32,7 @@
 
 # Servir documentación localmente (repositorio de docs, LANG=docs implícito)
 @serve:
-    mkdocs serve
+    mkdocs serve -f .config/mkdocs/mkdocs.yml
 
 # Limpiar sitio generado
 @clean:
@@ -75,6 +75,6 @@
     bash helpers/shell/cz.sh --action bump
 
 # Configuración interactiva de Commitizen (cz init)
-# Para agentes de IA: editar pyproject.toml con [tool.commitizen] (ver templates/repository-structure/pyproject.toml.tmpl).
+# Para agentes de IA: editar .config/commitizen/pyproject.toml con [tool.commitizen].
 @cz-init:
     bash helpers/shell/cz.sh --action init

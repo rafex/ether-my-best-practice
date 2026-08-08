@@ -12,7 +12,7 @@ Este repositorio mantiene reglas de mejores prácticas para APIs REST, documenta
 
 ## Qué editar
 
-- Edita contenido fuente en [rules](rules), [docs](docs), [templates](templates), [helpers](helpers) y [mkdocs.yml](mkdocs.yml).
+- Edita contenido fuente en [rules](rules), [docs](docs), [templates](templates), [helpers](helpers) y [.config/mkdocs/mkdocs.yml](.config/mkdocs/mkdocs.yml).
 - No edites [site](site) manualmente. Es salida generada.
 - Trata los archivos en [templates](templates) como plantillas genéricas y cascarones para proyectos consumidores. No conviertas placeholders en decisiones específicas de un proyecto consumidor.
 
@@ -22,7 +22,7 @@ Este repositorio mantiene reglas de mejores prácticas para APIs REST, documenta
 - Toda regla distinta de [rules/00-index.md](rules/00-index.md) debe incluir frontmatter YAML (`id`, `title`, `status`, `tags`) y un `#` principal.
 - Secciones obligatorias en toda regla: `## Premisa`, `## Restricciones`, `## Ejemplos`, `## Referencias`.
 - Secciones opcionales (whitelist): `## Estructura`, `## Nombres Sugeridos`, `## Comandos`, `## Plantilla`. Las reglas con `status: Definida` requieren `## Comandos` y `## Estructura`.
-- Si agregas una regla nueva, usa [templates/rule-template.md.tmpl](templates/rule-template.md.tmpl) como esqueleto. Luego actualiza el índice en [rules/00-index.md](rules/00-index.md) y la navegación en [mkdocs.yml](mkdocs.yml).
+- Si agregas una regla nueva, usa [templates/rule-template.md.tmpl](templates/rule-template.md.tmpl) como esqueleto. Luego actualiza el índice en [rules/00-index.md](rules/00-index.md) y la navegación en [.config/mkdocs/mkdocs.yml](.config/mkdocs/mkdocs.yml).
 - Mantén el contenido y los comentarios en español salvo que un archivo existente requiera otro idioma.
 - Conserva enlaces relativos entre reglas y documentación.
 

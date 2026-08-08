@@ -19,7 +19,8 @@ Commitizen (`cz`) es la herramienta estándar para asistir la creación de commi
 
 ```
 proyecto/
-├── pyproject.toml                         # [tool.commitizen] configuración
+├── .config/commitizen/                  # configuración de Commitizen (regla 14)
+│       └── pyproject.toml                         # [tool.commitizen] configuración
 ├── CHANGELOG.md                            # generado por cz bump/changelog
 ├── VERSION                                 # gestionado por cz vía version_files
 │
@@ -155,10 +156,10 @@ $ just commit
 name = "cz_conventional_commits"
 version = "0.1.0"
 version_provider = "commitizen"
-version_files = ["pyproject.toml:version", "VERSION"]
+version_files = ["pyproject.toml:version", "../../VERSION"]
 tag_format = "v$version"
 update_changelog_on_bump = true
-changelog_file = "CHANGELOG.md"
+changelog_file = "../../CHANGELOG.md"
 bump_message = "chore(release): v$new_version"
 ```
 
@@ -190,14 +191,14 @@ uv run python helpers/python/changelog.py
 - [Regla 05: Control de Versiones](05-version-control.md) — Conventional Commits.
 - [Regla 08: Stack Tecnológico](08-stack.md) — Python 3.12+, uv.
 - [Commitizen Documentation](https://commitizen-tools.github.io/commitizen/)
-- [templates/pyproject.toml.tmpl](../templates/repository-structure/pyproject.toml.tmpl) — configuración base.
+- [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](../templates/repository-structure/.config/commitizen/pyproject.toml.tmpl) — configuración base.
 - [templates/helpers/shell/cz.sh.tmpl](../templates/repository-structure/helpers/shell/cz.sh.tmpl) — wrapper.
 - [templates/gitignore/.gitignore.raiz.tmpl](../templates/gitignore/.gitignore.raiz.tmpl) — incluye `.githooks/.tools/.commitizen-venv/`.
 - [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder del espejo.
 
 ## Plantilla
 
-- [templates/pyproject.toml.tmpl](../templates/repository-structure/pyproject.toml.tmpl)
+- [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](../templates/repository-structure/.config/commitizen/pyproject.toml.tmpl)
 - [templates/helpers/shell/cz.sh.tmpl](../templates/repository-structure/helpers/shell/cz.sh.tmpl)
 - [templates/gitignore/.gitignore.raiz.tmpl](../templates/gitignore/.gitignore.raiz.tmpl)
 - [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder

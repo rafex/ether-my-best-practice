@@ -1,0 +1,34 @@
+site_name: Mi Proyecto
+site_description: Descripción del proyecto
+site_author: Autor
+
+docs_dir: ../../docs
+site_dir: ../../site
+
+theme:
+  name: material
+  language: es
+
+nav:
+  - Inicio: index.md
+  - Guía de Inicio: getting-started.md
+  - Contribuyendo: contributing.md
+  - Reglas:
+      - Índice: ../../rules/00-index.md
+
+plugins:
+  - search:
+      lang: es
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - extra
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format

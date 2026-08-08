@@ -19,7 +19,7 @@ Todo proyecto consumidor debe seguir una estructura de repositorio predecible y 
 proyecto/
 ├── Makefile                         # orquestación de build (incluye helpers/mk/*.mk)
 ├── Justfile                         # operativas de aplicación
-├── mkdocs.yml                       # configuración de documentación
+├── mkdocs.yml                       # configuración de documentación (→ .config/mkdocs/)
 │
 ├── docs/                            # documentación en Markdown + MermaidJS
 │   └── .gitkeep
@@ -186,6 +186,7 @@ make test   LANG=javascript BUILD_TOOL=pnpm   MODULE=source/frontend/nodejs/web
 - [Regla 02: Arquitectura Hexagonal](02-architecture.md) — domain/application/infrastructure/ports.
 - [Regla 08: Stack Tecnológico](08-stack.md) — versiones, Podman, Containerfile, Alpine.
 - [Regla 12: Gitignore](12-gitignore.md) — exclusión de archivos por contexto y plantillas.
+- [Regla 14: Archivos de Configuración](14-config-files.md) — `.config/` centraliza configuraciones de herramientas.
 - [templates/repository-structure/README.md](../templates/repository-structure/README.md) — documentación de la estructura junto al template.
 - [templates/helpers/mk/](../templates/repository-structure/helpers/mk/) y [templates/helpers/shell/](../templates/repository-structure/helpers/shell/) — origen de los helpers copiados a `helpers/`.
 - [templates/gitignore/](../templates/gitignore/) — biblioteca de `.gitignore` por contexto.
