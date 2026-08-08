@@ -13,11 +13,31 @@ Bienvenido a la documentación de Ether My Best Practice.
 Ether My Best Practice es una plantilla de buenas prácticas orientada a proyectos de API REST donde las reglas deben poder ser consumidas por agentes de IA y reutilizadas como contexto operativo:
 
 - 🏗️ Arquitectura hexagonal
-- 📝 Documentación como código
+- 📝 Documentación como código (Markdown + MermaidJS + MkDocs)
 - ✅ Testing y TDD
 - 🔄 Git Flow y Conventional Commits
-- 🚀 CI/CD automatizado
+- 🚀 CI/CD automatizado con podman/Containerfile
+- 🛠️ Stack tecnológico predefinido para consistencia
 - 🤖 Integración con agentes de IA (MCP)
+
+### Arquitectura del estándar
+
+```mermaid
+graph TD
+    R[Reglas en rules/] --> AG[Agentes de IA]
+    T[Templates en templates/] --> AG
+    AG --> PJ[Proyecto Consumidor]
+    R --> DOC[MkDocs site/]
+    subgraph "Stack Recomendado"
+        J[Java Temurin 25]
+        N[Node LTS]
+        P[Python 3.12+]
+        PD[podman]
+        CF[Containerfile]
+        MK[MkDocs + MermaidJS]
+        AL[Alpine base]
+    end
+```
 
 ## Enfoque
 

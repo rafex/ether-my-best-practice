@@ -47,10 +47,10 @@ src/
 
 - Alistair Cockburn — Hexagonal Architecture
 - Domain Driven Design (DDD) — Eric Evans
-- [templates/project-structure/README.md](../templates/project-structure/README.md)
+- [templates/repository-structure/README.md](../templates/repository-structure/README.md)
 - [Regla 01: Build Tooling](01-build-tooling.md)
 - [Regla 03: Testing](03-testing.md)
 
 ## Estructura
 
-Ver [templates/project-structure/](../templates/project-structure/) para la estructura completa de un proyecto generado.
+Ver [templates/repository-structure/](../templates/repository-structure/) para la estructura completa de un proyecto generado.

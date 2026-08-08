@@ -23,6 +23,7 @@ nav:
       - Control de Versiones: ../rules/05-version-control.md
       - CI/CD: ../rules/06-ci-cd.md
       - Agentes IA y MCP: ../rules/07-agents-mcp.md
+      - Stack Tecnológico: ../rules/08-stack.md
 
 plugins:
   - search:
@@ -35,3 +36,8 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format

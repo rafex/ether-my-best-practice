@@ -211,7 +211,7 @@ just create-user --username alice --email alice@example.com
 ### Build en contenedor
 
 ```bash
-make image LANG=java BUILD_TOOL=maven  # Construye imagen de CI (Dockerfile.ci)
+make image LANG=java BUILD_TOOL=maven  # Construye imagen de CI (Containerfile.ci)
 make ci    LANG=java BUILD_TOOL=maven  # Ejecuta build+test dentro del contenedor
 ```
 
@@ -245,7 +245,7 @@ Política de ruta:
 ### Estándares de implementación
 
 - Shell helpers: `sh` o `bash`. Recomendado `bash` para parsing de flags o validaciones ricas.
-- Python helpers: Python 3.11+ con dependencias gestionadas por `uv`. Ubicación: `helpers/python/`.
+- Python helpers: Python 3.12+ con dependencias gestionadas por `uv`. Ubicación: `helpers/python/`.
 - Construcción en contenedor preferida: detectar `podman` → `docker`; fallar si ninguno disponible.
 
 ### Artefactos por lenguaje (rutas a limpiar y versionar)
@@ -258,6 +258,7 @@ Política de ruta:
 ## Referencias
 
 - [Regla 06: CI/CD](06-ci-cd.md)
+- [Regla 08: Stack Tecnológico](08-stack.md)
 - [templates/Makefile.tmpl](../templates/Makefile.tmpl)
 - [templates/Justfile.tmpl](../templates/Justfile.tmpl)
 - [templates/helpers/shell/](../templates/helpers/shell/): `build.sh`, `test.sh`, `clean.sh`, `container.sh`, `docs.sh`, `github.sh`, `lint.sh`, `format.sh`, `java.sh`, `javascript.sh`, `python.sh`, `rust.sh`

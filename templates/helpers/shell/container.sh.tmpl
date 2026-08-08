@@ -1,14 +1,41 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# ------------------------------------------------------------------
+# Helper de contenedores — build, CI, detección de runtime.
+# Reutilizable por Makefile (vía helpers/mk/container.mk) y Justfile.
+#
+# Stack recomendado (regla 08): Podman primero, Docker con warning.
+# Containerfile en lugar de Dockerfile. Alpine → Debian-slim.
+#
+# Contrato de flags (regla 01):
+#   --action runtime|image|ci         Operación
+#   --project-name                    Nombre del proyecto
+#   --container-runtime podman|docker Sobreescribe detección automática
+#   --ci-image project-ci:local       Tag de la imagen de CI
+#   --containerfile Containerfile.ci  Archivo de definición de imagen
+#   --workspace $(pwd)                Directorio del proyecto
+#   --site-dir site                   Directorio del sitio (opcional)
+#   --log-file /ruta/al/log           Obligatorio
+#   --log-level info                  (opcional)
+#
+# Para agentes de IA: este script sigue la regla 08-stack.
+# Podman es la opción preferida; si solo hay Docker, emite un warning.
+# El archivo de definición de imagen es Containerfile, no Dockerfile.
+#
+# Auditoría: /var/log/<proyecto>/log-container-<ts>.log
+#             Fallback → /tmp/<proyecto>/log-container-<ts>.log
+# ------------------------------------------------------------------
+
 action=""
 project_name=""
 container_runtime=""
 ci_image="project-ci:local"
-dockerfile="Dockerfile.ci"
+containerfile="Containerfile.ci"
 workspace="$(pwd)"
 site_dir="site"
 log_file=""
+log_level="info"
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -20,14 +47,16 @@ while [[ $# -gt 0 ]]; do
 			container_runtime="${2:-}"; shift 2 ;;
 		--ci-image)
 			ci_image="${2:-}"; shift 2 ;;
-		--dockerfile)
-			dockerfile="${2:-}"; shift 2 ;;
+		--containerfile)
+			containerfile="${2:-}"; shift 2 ;;
 		--workspace)
 			workspace="${2:-}"; shift 2 ;;
 		--site-dir)
 			site_dir="${2:-}"; shift 2 ;;
 		--log-file)
 			log_file="${2:-}"; shift 2 ;;
+		--log-level)
+			log_level="${2:-}"; shift 2 ;;
 		*)
 			echo "Unknown flag: $1" >&2
 			exit 1 ;;
@@ -69,6 +98,7 @@ resolve_runtime() {
 	if command -v podman >/dev/null 2>&1; then
 		echo "podman"
 	elif command -v docker >/dev/null 2>&1; then
+		echo "WARNING: Docker detectado. Podman es la opción recomendada según la regla 08-stack." >&2
 		echo "docker"
 	else
 		echo "No container runtime found. Install podman or docker." >&2
@@ -86,20 +116,20 @@ case "$action" in
 	runtime)
 		;;
 	image)
-		if [[ ! -f "$dockerfile" ]]; then
-			echo "Missing $dockerfile. Add CI container definition first." >&2
+		if [[ ! -f "$containerfile" ]]; then
+			echo "Missing $containerfile. Add CI container definition first." >&2
 			exit 1
 		fi
-		echo "Building CI image $ci_image with $runtime using $dockerfile..."
-		"$runtime" build -f "$dockerfile" -t "$ci_image" "$workspace"
+		echo "Building CI image $ci_image with $runtime using $containerfile..."
+		"$runtime" build -f "$containerfile" -t "$ci_image" "$workspace"
 		;;
 	ci)
-		if [[ ! -f "$dockerfile" ]]; then
-			echo "Missing $dockerfile. Add CI container definition first." >&2
+		if [[ ! -f "$containerfile" ]]; then
+			echo "Missing $containerfile. Add CI container definition first." >&2
 			exit 1
 		fi
-		echo "Building CI image $ci_image with $runtime using $dockerfile..."
-		"$runtime" build -f "$dockerfile" -t "$ci_image" "$workspace"
+		echo "Building CI image $ci_image with $runtime using $containerfile..."
+		"$runtime" build -f "$containerfile" -t "$ci_image" "$workspace"
 		echo "Running containerized CI with $runtime..."
 		"$runtime" run --rm \
 			-v "$workspace":/workspace \

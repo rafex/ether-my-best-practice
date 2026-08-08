@@ -9,7 +9,9 @@ tags: [documentation, markdown, mkdocs, adr]
 
 ## Premisa
 
-La documentación es código. Debe vivir junto al código fuente, versionarse con Git, ser fácil de mantener y generarse como sitio estático con MkDocs.
+La documentación es código. Debe vivir junto al código fuente, versionarse con Git, ser fácil de mantener y generarse como sitio estático con MkDocs. Los diagramas deben ser código versionable: **MermaidJS** embebido en Markdown, no imágenes binarias (PNG, SVG exportado).
+
+> Ver [Regla 08: Stack Tecnológico](08-stack.md) para la elección del stack de documentación.
 
 ## Restricciones
 

@@ -46,7 +46,7 @@ cp templates/Makefile.tmpl mi-proyecto/Makefile
 cp templates/Justfile.tmpl mi-proyecto/Justfile
 ```
 
-También puedes tomar [templates/project-structure/README.md](../templates/project-structure/README.md) como base de estructura para un servicio nuevo y complementar el proyecto con las reglas de [../rules/02-architecture.md](../rules/02-architecture.md), [../rules/03-testing.md](../rules/03-testing.md) y [../rules/07-agents-mcp.md](../rules/07-agents-mcp.md).
+También puedes tomar [templates/repository-structure/README.md](../templates/repository-structure/README.md) como base de estructura para un servicio nuevo y complementar el proyecto con las reglas de [../rules/02-architecture.md](../rules/02-architecture.md), [../rules/03-testing.md](../rules/03-testing.md) y [../rules/07-agents-mcp.md](../rules/07-agents-mcp.md).
 
 ## Generar Documentación
 

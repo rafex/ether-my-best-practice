@@ -35,15 +35,17 @@ Commit → Build Image → Build/Test en Contenedor → Artefactos → Release
 ### Runtime de contenedor (detección automática)
 
 ```
-podman (preferido) → docker → fallar con mensaje de instalación
+podman (preferido) → docker (con warning) → fallar con mensaje de instalación
 ```
+
+El helper `container.sh` emite un warning cuando detecta Docker: *"Docker detectado. Podman es la opción recomendada según la regla 08-stack."*
 
 ### Estructura del repo (artefactos CI)
 
 ```
 proyecto/
 ├── Makefile
-├── Dockerfile.ci         # Imagen de CI con toolchain
+├── Containerfile.ci      # Imagen de CI con toolchain
 ├── .github/workflows/
 │   └── ci.yml           # Wrapper: invoca make ci
 ├── src/
@@ -133,6 +135,7 @@ make ci
 ## Referencias
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make image`, `make ci`, `make build`, `make test`
+- [Regla 08: Stack Tecnológico](08-stack.md) — Containerfile, podman, imágenes base
 - [.github/workflows/static.yml](../.github/workflows/static.yml) — ejemplo de wrapper para GitHub Pages
 - [templates/Makefile.tmpl](../templates/Makefile.tmpl) — targets `runtime`, `image`, `ci`
 - [templates/helpers/mk/container.mk.tmpl](../templates/helpers/mk/container.mk.tmpl)

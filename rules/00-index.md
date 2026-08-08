@@ -15,6 +15,7 @@ Este repositorio contiene un conjunto de premisas y estándares para el desarrol
 | 5 | **[05-version-control.md](05-version-control.md)** | Control de versiones (Git flow, Conventional Commits) |
 | 6 | **[06-ci-cd.md](06-ci-cd.md)** | Integración y despliegue continuo (Pipelines, GitHub Pages) |
 | 7 | **[07-agents-mcp.md](07-agents-mcp.md)** | Reglas para agentes de IA y Model Context Protocol |
+| 8 | **[08-stack.md](08-stack.md)** | Stack tecnológico recomendado (versiones, runtimes, contenedores) |
 
 > **Estado:** cada regla declara su estado (`Definida` | `Borrador`) en el frontmatter YAML del archivo. Las reglas en **Borrador** contienen premisa y restricciones pero aún no alcanzan la profundidad completa (Comandos, Estructura detallada, etc.).
 
