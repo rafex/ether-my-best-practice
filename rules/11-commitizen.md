@@ -190,12 +190,12 @@ uv run python helpers/python/changelog.py
 - [Regla 05: Control de Versiones](05-version-control.md) — Conventional Commits.
 - [Regla 08: Stack Tecnológico](08-stack.md) — Python 3.12+, uv.
 - [Commitizen Documentation](https://commitizen-tools.github.io/commitizen/)
-- [templates/pyproject.toml.tmpl](../templates/pyproject.toml.tmpl) — configuración base.
-- [templates/helpers/shell/cz.sh.tmpl](../templates/helpers/shell/cz.sh.tmpl) — wrapper.
-- [templates/.gitignore.tmpl](../templates/.gitignore.tmpl) — incluye `.githooks/.tools/.commitizen-venv/`.
+- [templates/pyproject.toml.tmpl](../templates/repository-structure/pyproject.toml.tmpl) — configuración base.
+- [templates/helpers/shell/cz.sh.tmpl](../templates/repository-structure/helpers/shell/cz.sh.tmpl) — wrapper.
+- [templates/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — incluye `.githooks/.tools/.commitizen-venv/`.
 
 ## Plantilla
 
-- [templates/pyproject.toml.tmpl](../templates/pyproject.toml.tmpl)
-- [templates/helpers/shell/cz.sh.tmpl](../templates/helpers/shell/cz.sh.tmpl)
-- [templates/.gitignore.tmpl](../templates/.gitignore.tmpl)
+- [templates/pyproject.toml.tmpl](../templates/repository-structure/pyproject.toml.tmpl)
+- [templates/helpers/shell/cz.sh.tmpl](../templates/repository-structure/helpers/shell/cz.sh.tmpl)
+- [templates/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl)

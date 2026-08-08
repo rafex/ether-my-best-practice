@@ -1,11 +1,14 @@
-# Containerfile.ci — Imagen base de CI con toolchain multi-lenguaje.
+# Containerfile.ci — Imagen de CI con toolchain completo multi-lenguaje.
+#
+# Propósito: Ejecutar la cadena completa de build + test + lint en contenedor.
+# Incluye todas las herramientas de construcción para todos los lenguajes.
 #
 # Stack recomendado (regla 08):
-#   - Base: Alpine (preferido). Si no es viable, usar debian:bookworm-slim.
-#   - Nombre de archivo: Containerfile, nunca Dockerfile.
+#   - Base: Alpine (preferido). Debian-slim como fallback.
 #   - Runtime: Podman primero, Docker con warning.
+#   - Nombre de archivo: Containerfile.ci, nunca Dockerfile.
 #
-# Construir con: podman build -f Containerfile.ci -t project-ci:local .
+# Construir con: podman build -f containers/ci/Containerfile -t proyecto-ci:local .
 #
 # Los agentes de IA deben descomentar el toolchain del lenguaje que corresponda
 # al proyecto consumidor. No incluir todo el toolchain si no se necesita.
@@ -15,9 +18,9 @@
 # ------------------------------------------------------------------
 FROM alpine:3.21@sha256:a8560b36e8b821935b80f241b3d2bbad9fd9d5e6e9e9b9e9b9e9b9e9b9e9b9e9
 
-RUN apk add --no-cache bash curl git ca-certificates
+RUN apk add --no-cache bash curl git ca-certificates tzdata
 
-# --- Java (Temurin) ---
+# --- Java (Temurin 25 LTS) ---
 # RUN apk add --no-cache openjdk25-jdk
 # ENV JAVA_HOME=/usr/lib/jvm/java-25-openjdk
 
@@ -28,26 +31,17 @@ RUN apk add --no-cache bash curl git ca-certificates
 # RUN apk add --no-cache python3 py3-pip
 # RUN python3 -m pip install uv
 
+# --- Herramientas de calidad ---
+# RUN apk add --no-cache shellcheck
+
 # ------------------------------------------------------------------
 # Opción 2: Debian-slim (fallback si Alpine no es viable)
 # ------------------------------------------------------------------
 # FROM debian:bookworm-slim@sha256:...
 
 # RUN apt-get update && apt-get install -y --no-install-recommends \
-#     bash curl git ca-certificates \
+#     bash curl git ca-certificates tzdata \
 #     && rm -rf /var/lib/apt/lists/*
-
-# --- Java (Temurin) ---
-# RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ... \
-#     && echo 'deb https://packages.adoptium.net/artifactory/deb bookworm main' > /etc/apt/sources.list.d/adoptium.list \
-#     && apt-get update && apt-get install -y temurin-25-jdk
-
-# --- Node.js (LTS) ---
-# RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-#     && apt-get install -y nodejs
-
-# --- Python 3.12+ ---
-# RUN apt-get install -y python3 python3-pip
 
 WORKDIR /workspace
 ENTRYPOINT ["/bin/bash", "-lc"]

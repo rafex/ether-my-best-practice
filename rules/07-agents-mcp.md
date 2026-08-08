@@ -66,11 +66,11 @@ Cada regla puede exponerse como recurso MCP para que agentes como Claude o Copil
 ## Referencias
 
 - [Model Context Protocol](https://modelcontextprotocol.io/)
-- [templates/mcp-config.json.tmpl](../templates/mcp-config.json.tmpl)
+- [templates/mcp-config.json.tmpl](../templates/repository-structure/mcp/mcp-config.json.tmpl)
 - [templates/rule-template.md.tmpl](../templates/rule-template.md.tmpl)
 - [Regla 04: Documentación](04-documentation.md)
 
 ## Plantilla
 
-- [templates/mcp-config.json.tmpl](../templates/mcp-config.json.tmpl)
+- [templates/mcp-config.json.tmpl](../templates/repository-structure/mcp/mcp-config.json.tmpl)
 - [templates/rule-template.md.tmpl](../templates/rule-template.md.tmpl)

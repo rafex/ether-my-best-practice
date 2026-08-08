@@ -151,15 +151,15 @@ Container runtime: docker
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers por lenguaje, `container.mk`, `container.sh`
 - [Regla 04: Documentación](04-documentation.md) — Markdown + MermaidJS + MkDocs
 - [Regla 06: CI/CD](06-ci-cd.md) — pipeline local en contenedor, `make image`, `make ci`
-- [templates/Containerfile.tmpl](../templates/Containerfile.tmpl)
-- [templates/helpers/mk/container.mk.tmpl](../templates/helpers/mk/container.mk.tmpl)
-- [templates/helpers/shell/container.sh.tmpl](../templates/helpers/shell/container.sh.tmpl)
+- [templates/Containerfile.tmpl](../templates/repository-structure/containers/Containerfile.tmpl)
+- [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
+- [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)
 - [Adoptium Temurin](https://adoptium.net/)
 - [Podman](https://podman.io/)
 - [MermaidJS](https://mermaid.js.org/)
 
 ## Plantilla
 
-- [templates/Containerfile.tmpl](../templates/Containerfile.tmpl)
-- [templates/helpers/mk/container.mk.tmpl](../templates/helpers/mk/container.mk.tmpl)
-- [templates/helpers/shell/container.sh.tmpl](../templates/helpers/shell/container.sh.tmpl)
+- [templates/Containerfile.tmpl](../templates/repository-structure/containers/Containerfile.tmpl)
+- [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
+- [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)

@@ -59,4 +59,4 @@ Publicar en GitHub Pages a través de CI/CD: workflow genera `site/` y despliega
 - [mkdocs.yml](../mkdocs.yml)
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make docs`, `make serve`
 - [Regla 06: CI/CD](06-ci-cd.md) — publicación en Pages
-- [templates/helpers/shell/docs.sh.tmpl](../templates/helpers/shell/docs.sh.tmpl)
+- [templates/helpers/shell/docs.sh.tmpl](../templates/repository-structure/helpers/shell/docs.sh.tmpl)

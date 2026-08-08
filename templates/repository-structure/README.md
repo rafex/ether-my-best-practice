@@ -35,7 +35,11 @@ proyecto/
 │   └── just/                        # operativas de aplicación (app.just, auth.just, ...)
 │
 ├── containers/                      # definiciones de imágenes de contenedor
-│   └── Containerfile                # imagen CI base Alpine / Debian-slim
+│   ├── Containerfile                # base: runtime mínimo (bash, curl, git)
+│   ├── backend/Containerfile        # backend: JDK Temurin / Python / Rust runtime
+│   ├── frontend/Containerfile       # frontend: Node.js LTS build + serve
+│   ├── ci/Containerfile.ci          # CI: toolchain completo (build + test + lint)
+│   └── cd/Containerfile             # CD: runtime ligero + herramientas de deploy
 │
 ├── mcp/                             # configuración Model Context Protocol (opcional)
 │   └── mcp-config.json

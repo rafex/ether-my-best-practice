@@ -59,6 +59,6 @@
     bash helpers/shell/cz.sh --action bump
 
 # Configuración interactiva de Commitizen (cz init)
-# Para agentes de IA: editar pyproject.toml con [tool.commitizen] (ver templates/pyproject.toml.tmpl).
+# Para agentes de IA: editar pyproject.toml con [tool.commitizen] (ver templates/repository-structure/pyproject.toml.tmpl).
 @cz-init:
     bash helpers/shell/cz.sh --action init

@@ -137,11 +137,11 @@ make ci
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make image`, `make ci`, `make build`, `make test`
 - [Regla 08: Stack Tecnológico](08-stack.md) — Containerfile, podman, imágenes base
 - [.github/workflows/static.yml](../.github/workflows/static.yml) — ejemplo de wrapper para GitHub Pages
-- [templates/Makefile.tmpl](../templates/Makefile.tmpl) — targets `runtime`, `image`, `ci`
-- [templates/helpers/mk/container.mk.tmpl](../templates/helpers/mk/container.mk.tmpl)
-- [templates/helpers/shell/container.sh.tmpl](../templates/helpers/shell/container.sh.tmpl)
+- [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl) — targets `runtime`, `image`, `ci`
+- [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
+- [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)
 
 ## Plantilla
 
-- [templates/helpers/mk/container.mk.tmpl](../templates/helpers/mk/container.mk.tmpl)
-- [templates/helpers/shell/container.sh.tmpl](../templates/helpers/shell/container.sh.tmpl)
+- [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
+- [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)

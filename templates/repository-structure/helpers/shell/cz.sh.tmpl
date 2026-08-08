@@ -130,7 +130,7 @@ case "$action" in
 	init)
 		echo "Iniciando configuración interactiva de Commitizen..."
 		echo "Si eres un agente de IA, usa las siguientes instrucciones en vez de cz init interactivo:"
-		echo "  1. Crea o edita pyproject.toml con [tool.commitizen] (ver templates/pyproject.toml.tmpl)."
+		echo "  1. Crea o edita pyproject.toml con [tool.commitizen] (ver templates/repository-structure/pyproject.toml.tmpl)."
 		echo "  2. Ajusta version_files según los lenguajes del proyecto."
 		echo "  3. Ejecuta 'just version' para verificar la versión configurada."
 		echo ""

@@ -259,20 +259,20 @@ Política de ruta:
 
 - [Regla 06: CI/CD](06-ci-cd.md)
 - [Regla 08: Stack Tecnológico](08-stack.md)
-- [templates/Makefile.tmpl](../templates/Makefile.tmpl)
-- [templates/Justfile.tmpl](../templates/Justfile.tmpl)
-- [templates/helpers/shell/](../templates/helpers/shell/): `build.sh`, `test.sh`, `clean.sh`, `container.sh`, `docs.sh`, `github.sh`, `lint.sh`, `format.sh`, `java.sh`, `javascript.sh`, `python.sh`, `rust.sh`
-- [templates/helpers/mk/](../templates/helpers/mk/): `build.mk`, `container.mk`, `docs.mk`, `github.mk`, `lint.mk`, `format.mk`
-- [templates/helpers/just/app.just.tmpl](../templates/helpers/just/app.just.tmpl)
+- [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl)
+- [templates/Justfile.tmpl](../templates/repository-structure/Justfile.tmpl)
+- [templates/helpers/shell/](../templates/repository-structure/helpers/shell/): `build.sh`, `test.sh`, `clean.sh`, `container.sh`, `docs.sh`, `github.sh`, `lint.sh`, `format.sh`, `java.sh`, `javascript.sh`, `python.sh`, `rust.sh`
+- [templates/helpers/mk/](../templates/repository-structure/helpers/mk/): `build.mk`, `container.mk`, `docs.mk`, `github.mk`, `lint.mk`, `format.mk`
+- [templates/helpers/just/app.just.tmpl](../templates/repository-structure/helpers/just/app.just.tmpl)
 
 ## Plantilla
 
-- [templates/Makefile.tmpl](../templates/Makefile.tmpl)
-- [templates/Justfile.tmpl](../templates/Justfile.tmpl)
-- [templates/helpers/mk/build.mk.tmpl](../templates/helpers/mk/build.mk.tmpl)
-- [templates/helpers/mk/container.mk.tmpl](../templates/helpers/mk/container.mk.tmpl)
-- [templates/helpers/mk/docs.mk.tmpl](../templates/helpers/mk/docs.mk.tmpl)
-- [templates/helpers/mk/github.mk.tmpl](../templates/helpers/mk/github.mk.tmpl)
-- [templates/helpers/mk/lint.mk.tmpl](../templates/helpers/mk/lint.mk.tmpl)
-- [templates/helpers/mk/format.mk.tmpl](../templates/helpers/mk/format.mk.tmpl)
-- [templates/helpers/just/app.just.tmpl](../templates/helpers/just/app.just.tmpl)
+- [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl)
+- [templates/Justfile.tmpl](../templates/repository-structure/Justfile.tmpl)
+- [templates/helpers/mk/build.mk.tmpl](../templates/repository-structure/helpers/mk/build.mk.tmpl)
+- [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
+- [templates/helpers/mk/docs.mk.tmpl](../templates/repository-structure/helpers/mk/docs.mk.tmpl)
+- [templates/helpers/mk/github.mk.tmpl](../templates/repository-structure/helpers/mk/github.mk.tmpl)
+- [templates/helpers/mk/lint.mk.tmpl](../templates/repository-structure/helpers/mk/lint.mk.tmpl)
+- [templates/helpers/mk/format.mk.tmpl](../templates/repository-structure/helpers/mk/format.mk.tmpl)
+- [templates/helpers/just/app.just.tmpl](../templates/repository-structure/helpers/just/app.just.tmpl)

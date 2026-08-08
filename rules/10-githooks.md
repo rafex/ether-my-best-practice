@@ -184,15 +184,15 @@ CHANGELOG.md generated (version 1.2.0, changes since v1.1.0)
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — `.githooks/` en el árbol del proyecto.
 - [Regla 11: Commitizen](11-commitizen.md) — asistente de commit + release (co-propietaria del objetivo).
 - [templates/repository-structure/.githooks/](../templates/repository-structure/.githooks/) — dispatchers pre-commit, pre-push, commit-msg.
-- [templates/helpers/shell/hooks.sh.tmpl](../templates/helpers/shell/hooks.sh.tmpl)
-- [templates/helpers/shell/commit-msg.sh.tmpl](../templates/helpers/shell/commit-msg.sh.tmpl)
-- [templates/helpers/python/changelog.py.tmpl](../templates/helpers/python/changelog.py.tmpl)
-- [templates/helpers/python/version.py.tmpl](../templates/helpers/python/version.py.tmpl)
+- [templates/helpers/shell/hooks.sh.tmpl](../templates/repository-structure/helpers/shell/hooks.sh.tmpl)
+- [templates/helpers/shell/commit-msg.sh.tmpl](../templates/repository-structure/helpers/shell/commit-msg.sh.tmpl)
+- [templates/helpers/python/changelog.py.tmpl](../templates/repository-structure/helpers/python/changelog.py.tmpl)
+- [templates/helpers/python/version.py.tmpl](../templates/repository-structure/helpers/python/version.py.tmpl)
 
 ## Plantilla
 
 - [templates/repository-structure/.githooks/](../templates/repository-structure/.githooks/)
-- [templates/helpers/shell/hooks.sh.tmpl](../templates/helpers/shell/hooks.sh.tmpl)
-- [templates/helpers/shell/commit-msg.sh.tmpl](../templates/helpers/shell/commit-msg.sh.tmpl)
-- [templates/helpers/python/changelog.py.tmpl](../templates/helpers/python/changelog.py.tmpl)
-- [templates/helpers/python/version.py.tmpl](../templates/helpers/python/version.py.tmpl)
+- [templates/helpers/shell/hooks.sh.tmpl](../templates/repository-structure/helpers/shell/hooks.sh.tmpl)
+- [templates/helpers/shell/commit-msg.sh.tmpl](../templates/repository-structure/helpers/shell/commit-msg.sh.tmpl)
+- [templates/helpers/python/changelog.py.tmpl](../templates/repository-structure/helpers/python/changelog.py.tmpl)
+- [templates/helpers/python/version.py.tmpl](../templates/repository-structure/helpers/python/version.py.tmpl)

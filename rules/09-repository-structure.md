@@ -186,12 +186,12 @@ make test   LANG=javascript BUILD_TOOL=pnpm   MODULE=source/frontend/nodejs/web
 - [Regla 02: Arquitectura Hexagonal](02-architecture.md) — domain/application/infrastructure/ports.
 - [Regla 08: Stack Tecnológico](08-stack.md) — versiones, Podman, Containerfile, Alpine.
 - [templates/repository-structure/README.md](../templates/repository-structure/README.md) — documentación de la estructura junto al template.
-- [templates/helpers/mk/](../templates/helpers/mk/) y [templates/helpers/shell/](../templates/helpers/shell/) — origen de los helpers copiados a `helpers/`.
+- [templates/helpers/mk/](../templates/repository-structure/helpers/mk/) y [templates/helpers/shell/](../templates/repository-structure/helpers/shell/) — origen de los helpers copiados a `helpers/`.
 
 ## Plantilla
 
 - [templates/repository-structure/](../templates/repository-structure/) — estructura completa con placeholders para copiar.
-- [templates/helpers/mk/](../templates/helpers/mk/) — módulos Makefile.
-- [templates/helpers/shell/](../templates/helpers/shell/) — scripts shell por lenguaje.
-- [templates/helpers/just/](../templates/helpers/just/) — operativas de aplicación.
-- [templates/Containerfile.tmpl](../templates/Containerfile.tmpl) — definición de imagen CI.
+- [templates/helpers/mk/](../templates/repository-structure/helpers/mk/) — módulos Makefile.
+- [templates/helpers/shell/](../templates/repository-structure/helpers/shell/) — scripts shell por lenguaje.
+- [templates/helpers/just/](../templates/repository-structure/helpers/just/) — operativas de aplicación.
+- [templates/Containerfile.tmpl](../templates/repository-structure/containers/Containerfile.tmpl) — definición de imagen CI.
