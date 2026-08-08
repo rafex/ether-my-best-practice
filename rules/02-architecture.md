@@ -50,6 +50,7 @@ src/
 - [templates/repository-structure/README.md](../templates/repository-structure/README.md)
 - [Regla 01: Build Tooling](01-build-tooling.md)
 - [Regla 03: Testing](03-testing.md)
+- [Regla 09: Estructura de Repositorio](09-repository-structure.md)
 
 ## Estructura
 

@@ -1,0 +1,17 @@
+LANG ?= java
+BUILD_TOOL ?= maven
+MODULE ?= .
+LINT_HELPER ?= helpers/shell/lint.sh
+LINT_HELPER_PY ?= helpers/python/lint.py
+
+.PHONY: lint
+
+lint:
+	@if [ -f "$(LINT_HELPER)" ]; then \
+		bash "$(LINT_HELPER)" --tool "$(BUILD_TOOL)" --module "$(MODULE)"; \
+	elif [ -f "$(LINT_HELPER_PY)" ]; then \
+		uv run python "$(LINT_HELPER_PY)" --lang "$(LANG)" --module "$(MODULE)"; \
+	else \
+		echo "No lint helper found. Expected helpers/shell/lint.sh or helpers/python/lint.py"; \
+		exit 1; \
+	fi

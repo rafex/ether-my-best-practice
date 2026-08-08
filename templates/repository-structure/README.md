@@ -1,90 +1,138 @@
-# Estructura de Proyecto Hexagonal
+# Estructura de Repositorio (Monorepo Multi-Lenguaje)
 
-Esta es una estructura de referencia para un proyecto que sigue arquitectura hexagonal.
+Esta es la estructura de referencia para un proyecto generado con Ether Best Practices. Sigue arquitectura hexagonal y organiza el código fuente por **rol** (`backend`, `frontend`, `shared`) y **lenguaje** dentro de cada rol.
+
+Los helpers (`helpers/`) constituyen la capa única de ejecución compartida: scripts de build, test, serve, lint, format, contenedores y operativas de aplicación.
+
+## Árbol completo
 
 ```
-project/
-├── README.md
-├── Makefile (o Justfile)
+proyecto/
+├── Makefile                         # orquestación: build, test, ci
+├── Justfile                         # operativas: serve, login, create-user, ...
 ├── .gitignore
+├── mkdocs.yml                       # configuración del sitio de documentación
 │
-├── src/
-│   ├── main/
-│   │   ├── java/              # (o python/, rust/, kotlin/, etc.)
-│   │   │   └── com/example/
-│   │   │       ├── domain/            # Lógica de negocio pura
-│   │   │       ├── application/       # Casos de uso
-│   │   │       ├── infrastructure/    # Adaptadores
-│   │   │       └── ports/            # Interfaces
-│   │   └── resources/
-│   │       └── application.yml
-│   │
-│   └── test/
-│       ├── java/
-│       │   └── com/example/
-│       │       ├── domain/
-│       │       ├── application/
-│       │       └── infrastructure/
-│       └── resources/
-│
-├── docs/                      # Documentación en Markdown
+├── docs/                            # documentación en Markdown + MermaidJS
 │   ├── index.md
 │   ├── architecture.md
 │   ├── api.md
 │   └── contributing.md
 │
-├── site/                      # (generado) Sitio web estático
+├── site/                            # (generado por mkdocs build) no se versiona
 │
-└── mkdocs.yml                 # Configuración de documentación
+├── helpers/                         # capa única de ejecución
+│   ├── mk/                          # módulos Makefile (build.mk, container.mk, docs.mk, ...)
+│   ├── shell/                       # scripts shell (build.sh, test.sh, java.sh, container.sh, ...)
+│   ├── python/                      # helpers python (opcional: lint.py, format.py, ...)
+│   └── just/                        # operativas de aplicación (app.just, auth.just, ...)
+│
+├── containers/                      # definiciones de imágenes de contenedor
+│   └── Containerfile                # imagen CI base Alpine / Debian-slim
+│
+├── mcp/                             # configuración Model Context Protocol (opcional)
+│   └── mcp-config.json
+│
+└── source/                          # código fuente por rol + lenguaje
+    ├── backend/                     # aplicaciones y servicios backend
+    │   ├── java/                    # Java con estructura Maven/Gradle
+    │   │   └── <proyecto>/          # p.ej. "patos"
+    │   │       ├── pom.xml          # Maven (o build.gradle si Gradle)
+    │   │       └── src/
+    │   │           ├── main/java/com/example/
+    │   │           │   ├── domain/
+    │   │           │   ├── application/
+    │   │           │   ├── infrastructure/
+    │   │           │   └── ports/
+    │   │           ├── main/resources/
+    │   │           └── test/java/com/example/
+    │   │
+    │   ├── python/                  # (si el backend es Python)
+    │   │   └── <proyecto>/
+    │   │       ├── pyproject.toml
+    │   │       └── src/
+    │   │
+    │   └── rust/                    # (si el backend es Rust)
+    │       └── <proyecto>/
+    │           ├── Cargo.toml
+    │           └── src/
+    │
+    ├── frontend/                    # aplicaciones web y clientes interactivos
+    │   └── nodejs/                  # (o javascript/) Node.js / npm / pnpm
+    │       └── <proyecto>/          # p.ej. "web"
+    │           ├── package.json
+    │           └── src/
+    │               ├── components/
+    │               └── pages/
+    │
+    └── shared/                      # código compartido entre roles
+        └── libs/                    # (o domain/, contracts/, types/)
+            └── <proyecto>/          # p.ej. "domain", "types"
+                └── src/
+
 ```
 
-## Estructura de Código
+## Principios
 
-### domain/
-Contiene la lógica de negocio **pura**, sin dependencias de framework.
+1. **Rol determina ubicación:** `backend/` contiene APIs y servicios; `frontend/` contiene interfaz de usuario; `shared/` contiene código usado por ambos.
+2. **Lenguaje dentro del rol:** `source/backend/java/` vs `source/backend/python/`. Un mismo proyecto puede tener backend Java y frontend NodeJS.
+3. **Nombre de proyecto en kebab-case:** `patos`, `web`, `domain`.
+4. **Helpers en raíz:** la capa `helpers/` es compartida por todos los roles; nunca se duplica dentro de cada lenguaje.
+5. **Hexagonal en cada backend:** bajo `source/backend/<lang>/<proyecto>/src/` se aplica la arquitectura de puertos y adaptadores (dominio, aplicación, infraestructura, puertos).
 
-```
-domain/
-├── entities/          # Objetos de dominio
-├── value_objects/     # Valores immutables
-├── services/          # Servicios de dominio
-└── repositories/      # Interfaces de persistencia (Puertos)
-```
-
-### application/
-Casos de uso que orquestan dominio.
+## Ejemplo: proyecto "patos" (backend Java + frontend NodeJS + libs compartidas)
 
 ```
-application/
-├── use_cases/
-│   ├── CreateUserUseCase
-│   └── DeleteUserUseCase
-└── dto/               # Data Transfer Objects
+source/
+├── backend/
+│   └── java/
+│       └── patos/
+│           ├── pom.xml
+│           └── src/
+│               ├── main/java/com/patos/
+│               │   ├── domain/                # entidades, servicios de dominio
+│               │   ├── application/            # casos de uso, DTOs
+│               │   ├── infrastructure/         # persistencia, web controllers
+│               │   └── ports/                  # interfaces públicas
+│               └── test/java/com/patos/
+│
+├── frontend/
+│   └── nodejs/
+│       └── web/
+│           ├── package.json
+│           └── src/
+│               ├── components/
+│               └── pages/
+│
+└── shared/
+    └── libs/
+        └── domain/
+            └── src/
+                └── (DTOs, tipos, contratos compartidos)
 ```
 
-### infrastructure/
-Implementaciones concretas de adaptadores.
+## Capas por rol y lenguaje
 
-```
-infrastructure/
-├── persistence/       # Implementación de repositories
-├── web/              # Controllers/Handlers HTTP
-├── external/         # Integraciones externas
-└── config/           # Configuración de frameworks
-```
+### Backend (Java / Python / Rust)
 
-### ports/
-Interfaces públicas que definen los puertos.
+- `domain/` — lógica de negocio pura, entidades, value objects, servicios.
+- `application/` — casos de uso que orquestan dominio.
+- `infrastructure/` — implementaciones concretas (persistencia, HTTP, integraciones externas).
+- `ports/` — interfaces públicas (puertos).
 
-```
-ports/
-├── UserRepository.java        # Puerto - qué no cómo
-└── NotificationService.java
-```
+### Frontend (Node.js)
 
-## Beneficios
+- `components/` — componentes reutilizables.
+- `pages/` — páginas/rutas.
+- `src/` también puede tener `hooks/`, `services/`, `types/` según el framework.
 
-✓ Cambiar base de datos sin tocar lógica de negocio  
-✓ Tests sin dependencias externas  
-✓ Fácil agregar nuevos adaptadores  
-✓ Código mantenible y escalable
+### Shared (libs)
+
+- Código que ambos roles necesitan (DTOs, tipos TypeScript/Java records, contratos, validaciones).
+
+## Referencias
+
+- [Regla 01: Build Tooling](../rules/01-build-tooling.md) — Makefile, Justfile, helpers.
+- [Regla 02: Arquitectura Hexagonal](../rules/02-architecture.md) — domain/application/infrastructure/ports.
+- [Regla 08: Stack Tecnológico](../rules/08-stack.md) — versiones, Podman, Containerfile.
+- [Regla 09: Estructura de Repositorio](../rules/09-repository-structure.md) — esta estructura como estándar.

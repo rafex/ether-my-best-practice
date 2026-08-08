@@ -24,6 +24,7 @@ nav:
       - CI/CD: ../rules/06-ci-cd.md
       - Agentes IA y MCP: ../rules/07-agents-mcp.md
       - Stack Tecnológico: ../rules/08-stack.md
+      - Estructura de Repositorio: ../rules/09-repository-structure.md
 
 plugins:
   - search:
