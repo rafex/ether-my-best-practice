@@ -1,48 +1,60 @@
+---
+id: documentation
+title: Documentación como Código
+status: Borrador
+tags: [documentation, markdown, mkdocs, adr]
+---
+
 # Regla 04: Documentación
 
 ## Premisa
 
-La documentación es código. Debe vivir junto al código fuente, versionarse con Git y ser fácil de mantener.
+La documentación es código. Debe vivir junto al código fuente, versionarse con Git, ser fácil de mantener y generarse como sitio estático con MkDocs.
 
-## Formato
+## Restricciones
 
-**Markdown** es el estándar para toda documentación:
-- Archivos `.md` en el repositorio
-- Directorios `docs/` en proyectos
-- Fácil de leer en GitHub y otros plataformas
+- **No mantener documentación fuera del repositorio** (wikis externas, Google Docs, Confluence no versionado).
+- **No duplicar información** entre README, docs/ y docstrings. Cada tipo de documento tiene su propósito.
+- El directorio `site/` **no se versiona** — se genera en CI y se publica como artefacto.
+- Los enlaces entre documentos deben ser relativos y funcionales (el validador los comprueba).
 
-## Estructura de Documentación
+## Ejemplos
+
+### Estructura de documentación
 
 ```
 docs/
-├── index.md           # Portada
-├── getting-started.md # Inicio rápido
-├── architecture/      # Documentación técnica
-├── api/              # Referencia de API
-└── tutorials/        # Guías paso a paso
+├── index.md              # Portada
+├── getting-started.md    # Inicio rápido
+├── contributing.md       # Cómo contribuir
+├── architecture/         # Documentación técnica
+├── api/                  # Referencia de API
+└── tutorials/            # Guías paso a paso
 ```
 
-## Generación de Sitio Web
-
-Usar **MkDocs** para generar sitios estáticos:
+### Generar y servir
 
 ```bash
-pip install mkdocs mkdocs-material
-mkdocs build    # Genera en site/
-mkdocs serve    # Visualizar localmente
+mkdocs build --site-dir site/
+mkdocs serve
 ```
 
-## Publicación
+O con los targets del Makefile:
 
-Publicar en **GitHub Pages** a través de CI/CD:
-- Generar `site/` en cada release
-- Pushear a rama `gh-pages`
-- Configurar en Settings de GitHub
+```bash
+make docs             # mkdocs build
+make serve            # mkdocs serve (operativa Justfile en proyectos consumidores)
+```
 
-## Tipos de Documentación
+### Publicación
 
-1. **README.md** - Visión general del proyecto
-2. **CONTRIBUTING.md** - Cómo contribuir
-3. **Docstrings** - En el código fuente
-4. **Decision Records (ADR)** - Decisiones arquitectónicas
-5. **API Docs** - Referencia de endpoints/funciones
+Publicar en GitHub Pages a través de CI/CD: workflow genera `site/` y despliega como artefacto.
+
+## Referencias
+
+- [MkDocs](https://www.mkdocs.org/)
+- [MkDocs Material](https://squidfunk.github.io/mkdocs-material/)
+- [mkdocs.yml](../mkdocs.yml)
+- [Regla 01: Build Tooling](01-build-tooling.md) — `make docs`, `make serve`
+- [Regla 06: CI/CD](06-ci-cd.md) — publicación en Pages
+- [templates/helpers/shell/docs.sh.tmpl](../templates/helpers/shell/docs.sh.tmpl)

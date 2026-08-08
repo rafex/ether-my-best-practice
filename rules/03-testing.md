@@ -1,49 +1,59 @@
+---
+id: testing
+title: Estrategias de Testing
+status: Borrador
+tags: [testing, tdd, unit-tests, integration, e2e, coverage]
+---
+
 # Regla 03: Testing
 
 ## Premisa
 
-Todo código debe ser testeado siguiendo TDD (Test Driven Development) y la pirámide de tests.
+Todo código debe ser testeado siguiendo TDD (Test Driven Development) y la pirámide de tests. El testing es parte del build, no una fase separada.
 
-## Pirámide de Tests
+## Restricciones
+
+- **No deployar código sin tests.** El pipeline de CI debe fallar si los tests no pasan.
+- Los tests unitarios **no deben depender de red, base de datos ni sistema de archivos**.
+- No escribir tests que solo validen implementación interna (white-box extremo); preferir tests de comportamiento.
+- La cobertura no es un fin en sí mismo: no forzar 100% si implica tests sin valor. Mínimo >80% en código crítico.
+
+## Ejemplos
+
+### TDD: Red → Green → Refactor
+
+```bash
+# 1. Red: escribir test que falla
+# 2. Green: escribir código mínimo para pasar
+# 3. Refactor: mejorar el código sin romper tests
+```
+
+### Pirámide de tests
 
 ```
         /\
-       /  \  E2E Tests (10%)
+       /  \  E2E Tests (~10%) — Playwright, Cypress, Selenium
       /____\
      /      \
-    /        \ Integration Tests (30%)
+    /        \ Integration Tests (~30%) — TestContainers, pytest fixtures
    /          \
   /__________  \
- /            \  Unit Tests (60%)
-/              \
+ /            \  Unit Tests (~60%) — JUnit, pytest, RSpec
 /______________\
 ```
 
-## Estrategia
+### Ejecución
 
-### Unit Tests (60%)
-- Prueban funciones/métodos individuales
-- Sin dependencias externas
-- Rápidos de ejecutar
-- Herramientas: JUnit, pytest, RSpec
+```bash
+make test LANG=java BUILD_TOOL=maven
+make test LANG=python BUILD_TOOL=uv
+make test LANG=javascript BUILD_TOOL=pnpm
+make test LANG=rust BUILD_TOOL=cargo
+```
 
-### Integration Tests (30%)
-- Prueban interacción entre componentes
-- Pueden usar bases de datos en memoria
-- Herramientas: TestContainers, pytest fixtures
+## Referencias
 
-### E2E Tests (10%)
-- Prueban flujos completos
-- Contra ambiente real o similar
-- Lentos pero críticos
-- Herramientas: Selenium, Playwright, Cypress
-
-## TDD - Test Driven Development
-
-1. **Red**: Escribir test que falla
-2. **Green**: Escribir código mínimo para pasar
-3. **Refactor**: Mejorar el código
-
-## Cobertura
-
-Objetivo: **> 80% de cobertura** en código crítico
+- Kent Beck — Test Driven Development
+- Martin Fowler — TestPyramid
+- [Regla 01: Build Tooling](01-build-tooling.md) — `make test`
+- [Regla 06: CI/CD](06-ci-cd.md) — tests en el pipeline

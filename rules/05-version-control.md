@@ -1,64 +1,61 @@
+---
+id: version-control
+title: Control de Versiones
+status: Borrador
+tags: [git, version-control, conventional-commits, branching, semver]
+---
+
 # Regla 05: Control de Versiones
 
 ## Premisa
 
-Git es el estándar. Mensajes de commit claros y convencionales facilitan el mantenimiento.
+Git es el estándar. Mensajes de commit claros y convencionales, branching predecible y versionado semántico facilitan el mantenimiento, la automatización de releases y la lectura por agentes de IA.
 
-## Git Flow
+## Restricciones
 
-```
-main (production)
-  ↑
-  ├─ release/v1.2.0 (preparar release)
-  │
-develop (integración)
-  ↑
-  ├─ feature/new-feature (desarrollo)
-  ├─ bugfix/issue-123 (correcciones)
-  └─ hotfix/critical-fix (a partir de main)
-```
+- **No hacer push a `main` directamente.** Todo cambio entra vía Pull Request con code review.
+- **No usar mensajes de commit genéricos** (`fix`, `update`, `wip`). Siempre Conventional Commits.
+- **No mantener branches muertas.** Eliminar la rama después del merge.
+- **No crear tags sin seguir Semantic Versioning** (`vMAJOR.MINOR.PATCH`).
 
-## Convención de Commits
+## Ejemplos
 
-Usar **Conventional Commits**:
-
-```
-type(scope): description
-
-[optional body]
-
-[optional footer]
-```
-
-### Tipos
-
-- `feat`: Nueva funcionalidad
-- `fix`: Corrección de bug
-- `docs`: Cambios en documentación
-- `style`: Formateo (sin cambiar lógica)
-- `refactor`: Reorganización de código
-- `test`: Agregar o actualizar tests
-- `chore`: Tareas de mantenimiento
-
-### Ejemplos
+### Conventional Commits
 
 ```
 feat(auth): add JWT token validation
 fix(api): handle null pointer in user service
 docs: update installation guide
+refactor(core): extract validation to domain service
+test(auth): add integration tests for login flow
+chore: update dependencies
 ```
 
-## Branching
-
-- Nombres en minúsculas con guiones: `feature/user-authentication`
-- Borrar branches una vez merged
-- Requiere code review antes de merge
-
-## Etiquetas (Tags)
+### Git Flow simplificado
 
 ```
-git tag -a v1.2.0 -m "Release 1.2.0"
+main (producción)
+  ↑
+  ├─ release/v1.2.0
+  │
+develop (integración)
+  ↑
+  ├─ feature/nueva-funcionalidad
+  ├─ bugfix/issue-123
+  └─ hotfix/critico          (desde main)
+```
+
+### Semantic Versioning
+
+```bash
+git tag -a v1.2.0 -m "Release v1.2.0"
 git push origin v1.2.0
 ```
 
-Formato: `v{MAJOR}.{MINOR}.{PATCH}` (Semantic Versioning)
+Formato: `v{MAJOR}.{MINOR}.{PATCH}`
+
+## Referencias
+
+- [Conventional Commits](https://www.conventionalcommits.org/)
+- [Semantic Versioning](https://semver.org/)
+- [Regla 06: CI/CD](06-ci-cd.md) — releases automatizados

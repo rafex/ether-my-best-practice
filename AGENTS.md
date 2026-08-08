@@ -19,8 +19,10 @@ Este repositorio mantiene reglas de mejores prácticas para APIs REST, documenta
 ## Convenciones del repositorio
 
 - Las reglas viven en [rules](rules) con formato `NN-topic.md`.
-- Toda regla distinta de [rules/00-index.md](rules/00-index.md) debe conservar un `#` principal y una sección `## Premisa`.
-- Si agregas una regla nueva, actualiza el índice en [rules/00-index.md](rules/00-index.md) y la navegación en [mkdocs.yml](mkdocs.yml).
+- Toda regla distinta de [rules/00-index.md](rules/00-index.md) debe incluir frontmatter YAML (`id`, `title`, `status`, `tags`) y un `#` principal.
+- Secciones obligatorias en toda regla: `## Premisa`, `## Restricciones`, `## Ejemplos`, `## Referencias`.
+- Secciones opcionales (whitelist): `## Estructura`, `## Nombres Sugeridos`, `## Comandos`, `## Plantilla`. Las reglas con `status: Definida` requieren `## Comandos` y `## Estructura`.
+- Si agregas una regla nueva, usa [templates/rule-template.md.tmpl](templates/rule-template.md.tmpl) como esqueleto. Luego actualiza el índice en [rules/00-index.md](rules/00-index.md) y la navegación en [mkdocs.yml](mkdocs.yml).
 - Mantén el contenido y los comentarios en español salvo que un archivo existente requiera otro idioma.
 - Conserva enlaces relativos entre reglas y documentación.
 
@@ -33,7 +35,7 @@ Este repositorio mantiene reglas de mejores prácticas para APIs REST, documenta
 ## Patrones de cambio
 
 - Al mejorar una regla existente, prioriza claridad, ejemplos correctos y referencias cruzadas útiles.
-- Al crear una regla nueva, sigue la numeración existente y evita renumerar archivos ya publicados.
+- Al crear una regla nueva, sigue la numeración existente, usa [templates/rule-template.md.tmpl](templates/rule-template.md.tmpl) y evita renumerar archivos ya publicados.
 - Si cambias plantillas de proyecto, mantén coherencia con la estructura hexagonal descrita en [templates/project-structure/README.md](templates/project-structure/README.md) y en [rules/02-architecture.md](rules/02-architecture.md).
 - Si modificas guía para agentes o MCP, mantén alineación con [rules/07-agents-mcp.md](rules/07-agents-mcp.md).
 - Si el cambio afecta cómo un agente genera una API REST, ajusta tanto la regla aplicable como el template relacionado para que intención y cascarón no diverjan.

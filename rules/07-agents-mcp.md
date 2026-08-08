@@ -1,179 +1,76 @@
+---
+id: agents-mcp
+title: Agentes de IA y Model Context Protocol
+status: Borrador
+tags: [agents, ai, mcp, copilot, templates]
+---
+
 # Regla 07: Agentes de IA y Model Context Protocol (MCP)
 
 ## Premisa
 
-Las reglas deben ser accesibles a agentes de IA (como Claude, GitHub Copilot) a través de Model Context Protocol para mejorar la asistencia en desarrollo.
+Las reglas y plantillas de este repositorio deben ser accesibles a agentes de IA (Claude, GitHub Copilot, opencode) a través de lectura directa de archivos o mediante Model Context Protocol (MCP), para que el agente pueda generar proyectos consistentes con el estándar.
 
-## Model Context Protocol (MCP)
+## Restricciones
 
-MCP es un protocolo estándar que permite que agentes de IA accedan a recursos (archivos, bases de datos, APIs) de forma estructurada.
+- Las plantillas en [templates/](../templates/) **son cascarones reutilizables, no proyectos finales.** Un agente debe copiarlas y adaptarlas en el proyecto consumidor, nunca modificar este repositorio como si fuera el servicio destino.
+- **No reescribir reglas ni plantillas en el prompt del agente.** El agente debe leer los archivos fuente de `rules/` y `templates/`, no recibir resúmenes que puedan desactualizarse.
+- Un agente no debe aplicar reglas de este repo a menos que el proyecto declare explícitamente que las sigue.
 
-### Servidor MCP
+## Ejemplos
 
-Un servidor MCP expone "recursos" (recursos) que un agente puede consultar.
+### Flujo de trabajo de un agente
+
+1. Leer `rules/00-index.md` para descubrir las reglas disponibles.
+2. Consultar las reglas aplicables (ej. `rules/02-architecture.md` para estructura, `rules/07-agents-mcp.md` para contexto).
+3. Copiar los templates de `templates/` como punto de partida.
+4. Adaptar el cascarón en el proyecto consumidor sin modificar este repositorio.
+
+### Prompt mínimo para un agente
+
+```
+Eres un asistente de codificación trabajando en un proyecto que sigue Ether Best Practices.
+
+Reglas de contexto:
+- Build: rules/01-build-tooling.md
+- Arquitectura: rules/02-architecture.md
+- Testing: rules/03-testing.md
+
+Al generar código:
+- Arquitectura hexagonal (puertos y adaptadores)
+- Tests con TDD
+- Conventional Commits
+```
+
+### MCP (Model Context Protocol)
+
+Cada regla puede exponerse como recurso MCP para que agentes como Claude o Copilot la consulten:
 
 ```json
 {
   "mcp_servers": {
     "ether-rules": {
       "command": "node",
-      "args": ["mcp-server.js"]
+      "args": ["mcp-server.js"],
+      "env": { "RULES_DIR": "./rules" }
     }
   }
-}
 ```
 
-### Recursos Disponibles
+### Opciones de integración
 
-Cada regla es un recurso que el agente puede solicitar:
+1. **Lectura directa:** el agente clona el repo y lee archivos `.md`.
+2. **Servidor MCP:** expone `ether://rules/{id}` como recursos.
+3. **Embeddings + RAG:** vectorizar reglas para búsqueda semántica (opcional, avanzado).
 
-```
-ether://rules/01-build-tooling
-ether://rules/02-architecture
-ether://rules/03-testing
-...
-```
+## Referencias
 
-## Configuración en Agentes
+- [Model Context Protocol](https://modelcontextprotocol.io/)
+- [templates/mcp-config.json.tmpl](../templates/mcp-config.json.tmpl)
+- [templates/rule-template.md.tmpl](../templates/rule-template.md.tmpl)
+- [Regla 04: Documentación](04-documentation.md)
 
-### GitHub Copilot
+## Plantilla
 
-Agregar a `.instructions.md`:
-
-```markdown
-## Reglas de Proyecto
-
-Consultar las siguientes reglas:
-- ether://rules/01-build-tooling
-- ether://rules/02-architecture
-```
-
-### Claude / Otros Agentes
-
-Proporcionar URLs o rutas:
-
-```
-Context: Siempre sigue las reglas en:
-- https://github.com/rafex/ether-my-best-practice/tree/main/rules
-```
-
-## Estructura para MCP
-
-La carpeta `rules/` debe contener:
-
-- Archivos Markdown con contenido claro
-- Nombres descriptivos: `NN-topic.md`
-- Índice centralizado: `00-index.md`
-- JSON de metadatos (opcional): `rule.json`
-
-```json
-{
-  "id": "build-tooling",
-  "title": "Herramientas de Construcción",
-  "description": "Estándares para Makefiles, Justfiles, etc.",
-  "tags": ["build", "tooling", "automation"],
-  "file": "01-build-tooling.md"
-}
-```
-
-## Best Practices para Reglas
-
-1. **Claridad**: Escribir de forma directa y estructurada
-2. **Ejemplos**: Incluir código/configuración real
-3. **Formato**: Markdown con títulos jerárquicos
-4. **Versionado**: Cada cambio en Git con mensaje descriptivo
-5. **Indexado**: Mantener `00-index.md` actualizado
-
-## Cómo Integrar con Agentes
-
-### Opción 1: Compartir repositorio
-
-```bash
-# Clonar las reglas
-git clone https://github.com/rafex/ether-my-best-practice.git rules/
-```
-
-Luego el agente puede leerlas como archivos.
-
-### Opción 2: Servidor MCP
-
-Implementar servidor que sirva reglas:
-
-```javascript
-// mcp-server.js
-const { Server } = require("@modelcontextprotocol/sdk/server/stdio");
-
-const server = new Server();
-
-server.addResourceHandler("ether://rules/*", async (uri) => {
-  const file = uri.replace("ether://rules/", "");
-  const content = readFile(`./rules/${file}.md`);
-  return { contents: [{ type: "text", text: content }] };
-});
-```
-
-### Opción 3: Embeddings + RAG
-
-Vectorizar las reglas y usar Retrieval-Augmented Generation:
-
-```python
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Pinecone
-
-embeddings = OpenAIEmbeddings()
-vectorstore = Pinecone.from_documents(
-    rules, embeddings, index_name="ether-rules"
-)
-```
-
-## Integración con Proyectos
-
-Cada proyecto debe referenciar estas reglas:
-
-```markdown
-# Mi Proyecto XYZ
-
-Este proyecto sigue las reglas de [Ether My Best Practice](../rules/00-index.md).
-
-Reglas aplicables:
-- [02-architecture.md](../rules/02-architecture.md)
-- [03-testing.md](../rules/03-testing.md)
-- [05-version-control.md](../rules/05-version-control.md)
-```
-
-## Uso de Templates por Agentes
-
-Además de consultar reglas, los agentes pueden usar [templates](../templates/) como cascarones iniciales para crear proyectos alineados con este estándar.
-
-### Objetivo de los templates
-
-- Dar una estructura base consistente a una API REST.
-- Reducir decisiones repetitivas al crear un proyecto nuevo.
-- Asegurar que el código generado por agentes siga las reglas del repositorio desde el inicio.
-
-### Cómo debe usarlos un agente
-
-1. Leer primero el índice en [00-index.md](00-index.md).
-2. Consultar las reglas aplicables al tipo de cambio.
-3. Copiar el template más cercano al objetivo.
-4. Adaptar el contenido en el proyecto consumidor sin modificar este repositorio como si fuera el servicio final.
-
-### Restricción importante
-
-Los templates son esqueletos reutilizables. No deben llenarse aquí con detalles concretos de un servicio real salvo que el objetivo del cambio sea mejorar la plantilla misma.
-
-## Ejemplo de Prompt a Agente
-
-```
-You are an AI coding assistant helping with a project that follows Ether Best Practices.
-
-Context Rules:
-1. Build: See rules/01-build-tooling.md
-2. Architecture: See rules/02-architecture.md
-3. Testing: See rules/03-testing.md
-
-When making suggestions:
-- Always follow the hexagonal architecture pattern
-- Ensure tests are added (TDD)
-- Use conventional commits
-```
+- [templates/mcp-config.json.tmpl](../templates/mcp-config.json.tmpl)
+- [templates/rule-template.md.tmpl](../templates/rule-template.md.tmpl)

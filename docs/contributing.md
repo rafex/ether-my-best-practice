@@ -16,6 +16,33 @@
 
 ## Estilo de Contribución
 
+### Estructura de una regla
+
+Toda regla (`rules/NN-topic.md`) usa frontmatter YAML y un conjunto fijo de secciones:
+
+```yaml
+---
+id: nn-topic
+title: Título descriptivo
+status: Borrador          # Definida | Borrador
+tags: [tag1, tag2]
+---
+```
+
+**Secciones obligatorias** (el validador falla si faltan):
+- `## Premisa` — por qué existe esta regla.
+- `## Restricciones` — qué **NO** hacer (prohibiciones explícitas).
+- `## Ejemplos` — al menos un bloque de código correcto.
+- `## Referencias` — enlaces a templates, otras reglas, fuentes externas.
+
+**Secciones opcionales** (requeridas cuando `status: Definida`):
+- `## Estructura` — tree de directorios/archivos.
+- `## Comandos` — comandos canónicos que un agente debe usar.
+- `## Nombres Sugeridos` — convenciones de naming.
+- `## Plantilla` — enlace a los templates asociados.
+
+Usa [templates/rule-template.md.tmpl](../templates/rule-template.md.tmpl) como punto de partida. Ejecuta `bash helpers/shell/validate-rules.sh` para validar la estructura antes de commitear.
+
 ### Nuevas Reglas
 
 Si agregas una nueva regla:

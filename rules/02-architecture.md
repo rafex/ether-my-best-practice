@@ -1,10 +1,25 @@
+---
+id: architecture
+title: Arquitectura Hexagonal
+status: Borrador
+tags: [architecture, hexagonal, ports, adapters, ddd]
+---
+
 # Regla 02: Arquitectura
 
 ## Premisa
 
-Los proyectos deben seguir arquitectura hexagonal (puertos y adaptadores) para maximizar testabilidad y mantenibilidad.
+Los proyectos deben seguir arquitectura hexagonal (puertos y adaptadores) para maximizar testabilidad y mantenibilidad. La lógica de negocio es independiente de frameworks.
 
-## Estructura Hexagonal
+## Restricciones
+
+- El dominio (lógica de negocio) **no debe depender de frameworks ni bibliotecas externas**.
+- Las dependencias solo pueden apuntar desde infraestructura hacia puertos y dominio, nunca al revés.
+- No mezclar lógica de negocio con controladores HTTP, repositories ni serialización/deserialización.
+
+## Ejemplos
+
+### Estructura hexagonal típica
 
 ```
 src/
@@ -21,13 +36,21 @@ src/
 └── test/
 ```
 
-## Beneficios
+### Capas por responsabilidad
 
-- **Testabilidad**: La lógica de negocio es independiente de frameworks
-- **Mantenibilidad**: Cambios en tecnología no afectan el core
-- **Escalabilidad**: Fácil agregar nuevos adaptadores
+- `domain/` — entidades, value objects, servicios de dominio, interfaces de repositorio.
+- `application/` — casos de uso, DTOs.
+- `infrastructure/` — implementaciones concretas: persistencia, web, integraciones externas, configuración.
+- `ports/` — interfaces públicas (puertos) que definen qué, no cómo.
 
 ## Referencias
 
-- Alistair Cockburn - Hexagonal Architecture
-- DDD - Domain Driven Design
+- Alistair Cockburn — Hexagonal Architecture
+- Domain Driven Design (DDD) — Eric Evans
+- [templates/project-structure/README.md](../templates/project-structure/README.md)
+- [Regla 01: Build Tooling](01-build-tooling.md)
+- [Regla 03: Testing](03-testing.md)
+
+## Estructura
+
+Ver [templates/project-structure/](../templates/project-structure/) para la estructura completa de un proyecto generado.
