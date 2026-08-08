@@ -75,15 +75,41 @@ just_dir := env_var_or_default("JUST_DIR", "helpers/just")
     rm -rf dist/
     rm -rf site/
 
-# Generar documentación
+# Generar documentación con MkDocs (compartido vía docs.sh)
 @docs:
-    echo "Building documentation..."
-    mkdocs build
+    bash helpers/shell/docs.sh --goal build
 
-# Servir documentación localmente
+# Servir la aplicación en modo desarrollo (operativa de Justfile).
+# Ejemplos multilenguaje que un agente puede poner aquí:
+#   just serve LANG=javascript           -> npm run dev / npm start
+#   just serve LANG=python               -> uv run uvicorn / flask run
+#   just serve LANG=java                 -> mvn exec:java / gradle bootRun
+#   just serve LANG=rust                 -> cargo run
+#   just serve LANG=docs                 -> mkdocs serve
+#
+# Flujo recomendado: construir primero y luego servir.
+# Los scripts por lenguaje en helpers/shell/{lang}.sh atienden --goal serve.
 @serve:
-    echo "Serving documentation on http://localhost:8000"
-    mkdocs serve
+    @echo "Serving app (lang={{lang}}, tool={{build_tool}})..."; \
+    helper="helpers/shell/{{lang}}.sh"; \
+    if [[ "{{lang}}" == "docs" ]]; then \
+        make docs; \
+        echo "Starting mkdocs serve..."; \
+        bash helpers/shell/docs.sh --goal serve; \
+    elif [ -f "$$helper" ]; then \
+        echo "Building first..."; \
+        LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} make build; \
+        echo "Starting {{lang}} server..."; \
+        bash "$$helper" --tool {{build_tool}} --goal serve --port 3000; \
+    else \
+        echo "No helper found for lang={{lang}}. Expected $$helper"; \
+        echo "Agrega helpers/shell/{{lang}}.sh con soporte para --goal serve"; \
+        exit 1; \
+    fi
+
+# Disparar workflow de GitHub Pages (compartido con Makefile vía github.sh)
+@pages:
+    bash helpers/shell/github.sh --action workflow-run --workflow static.yml --ref main
 
 # Validar estilo de código
 @lint:

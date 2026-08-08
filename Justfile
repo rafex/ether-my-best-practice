@@ -26,13 +26,13 @@
 @pages-build:
     make pages-build
 
-# Disparar workflow de GitHub Pages
+# Disparar workflow de GitHub Pages (compartido con Makefile vía helpers/shell/github.sh)
 @pages:
-    make pages
+    bash helpers/shell/github.sh --action workflow-run --workflow static.yml --ref main
 
-# Servir documentación localmente
+# Servir documentación localmente (repositorio de docs, LANG=docs implícito)
 @serve:
-    make serve
+    mkdocs serve
 
 # Limpiar sitio generado
 @clean:

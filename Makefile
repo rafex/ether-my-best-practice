@@ -1,4 +1,4 @@
-.PHONY: help validate lint format docs pages-build pages serve clean
+.PHONY: help validate lint format docs pages-build pages clean
 
 SITE_DIR ?= site
 PAGES_WORKFLOW ?= static.yml
@@ -12,8 +12,9 @@ help:
 	@echo "  make docs          - Generar el sitio MkDocs localmente"
 	@echo "  make pages-build   - Generar el sitio en $(SITE_DIR)"
 	@echo "  make pages         - Disparar el workflow de GitHub Pages"
-	@echo "  make serve         - Servir la documentación localmente"
 	@echo "  make clean         - Eliminar el sitio generado ($(SITE_DIR))"
+	@echo ""
+	@echo "Operativas de levantar (serve) pertenecen a Justfile: just serve"
 
 validate:
 	bash helpers/shell/validate-rules.sh
@@ -33,16 +34,7 @@ pages-build: validate docs
 	@echo "Sitio generado en $(SITE_DIR)"
 
 pages:
-	@if command -v gh >/dev/null 2>&1; then \
-		gh workflow run "$(PAGES_WORKFLOW)" --ref "$(PAGES_REF)"; \
-		echo "Workflow $(PAGES_WORKFLOW) disparado en $(PAGES_REF)"; \
-	else \
-		echo "GitHub CLI (gh) no está disponible. Usa 'make pages-build' o instala gh para disparar el workflow static.yml."; \
-		exit 1; \
-	fi
-
-serve:
-	mkdocs serve
+	bash helpers/shell/github.sh --action workflow-run --workflow "$(PAGES_WORKFLOW)" --ref "$(PAGES_REF)"
 
 clean:
 	rm -rf "$(SITE_DIR)"

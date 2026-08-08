@@ -41,7 +41,6 @@ La intención no es solo documentar estándares, sino permitir que un agente ent
 ```bash
 make validate      # Validar estructura y enlaces de reglas y plantillas
 make docs          # Generar el sitio MkDocs
-make serve         # Servir documentación localmente
 make pages-build   # Validar reglas + generar sitio
 make pages         # Disparar workflow de GitHub Pages
 ```
@@ -51,7 +50,7 @@ O con Just:
 ```bash
 just validate
 just docs
-just serve
+just serve         # Servir documentación localmente
 ```
 
 El workflow que publica el sitio es [.github/workflows/static.yml](.github/workflows/static.yml). Ejecuta `make validate` + `make docs` como wrapper. El directorio [site](site) no se sube al repositorio: se genera en el workflow y se publica como artefacto de Pages.

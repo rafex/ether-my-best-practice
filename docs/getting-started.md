@@ -54,8 +54,8 @@ También puedes tomar [templates/project-structure/README.md](../templates/proje
 # Construir sitio estático
 make docs
 
-# Visualizar localmente
-make serve
+# Visualizar localmente (operativa de Justfile)
+just serve
 ```
 
 Luego abre `http://localhost:8000`

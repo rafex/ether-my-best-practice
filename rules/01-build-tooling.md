@@ -245,6 +245,74 @@ just create-user --username alice --email alice@example.com
 - Para proyectos Python, exponer igual un objetivo `make` y delegar en helpers
 - Si se usa Python helper, ejecutar con Python 3.11+ y dependencias gestionadas por `uv`
 
+## Helpers como Capa Única de Ejecución
+
+Los scripts en `helpers/shell/` son la **fuente única de lógica ejecutable**. Makefile y Justfile son fachadas finas que orquestan y delegan en los mismos helpers. Esto maximiza la reutilización.
+
+Principio:
+
+```
+Justfile ──┐
+            ├──> helpers/shell/{lenguaje}.sh  (capa compartida)
+Makefile ──┘
+```
+
+- Makefile y Justfile **no deben contener lógica inline** (bucles, condicionales complejos, API calls). Delegan en helpers.
+- Un mismo helper puede ser invocado desde `make` y desde `just` según la operativa.
+
+### Helpers por Lenguaje
+
+Cada lenguaje tiene **un único script** que atiende build, test y serve según el flag `--goal`:
+
+```
+helpers/shell/java.sh        --tool maven|gradle  --goal build|test|serve
+helpers/shell/javascript.sh  --tool npm|pnpm|yarn --goal build|test|dev|serve
+helpers/shell/python.sh      --tool uv|poetry|pip  --goal build|test|dev|serve
+helpers/shell/rust.sh        --tool cargo         --goal build|test|run|serve
+helpers/shell/docs.sh        --goal build|serve
+```
+
+### Ejemplo: serve (operativa de Justfile, lógica compartida)
+
+```
+just serve LANG=java BUILD_TOOL=maven
+  → Justfile detecta LANG=java
+  → bash helpers/shell/java.sh --tool maven --goal serve --port 8080
+  → java.sh resuelve: mvn exec:java
+```
+
+Para agentes de IA: los comentarios en los templates documentan qué comandos corresponden a cada lenguaje y tool.
+
+### Helpers de Infraestructura Compartida
+
+Scripts que no dependen del lenguaje y son reutilizables en cualquier proyecto:
+
+```
+helpers/shell/github.sh      --action workflow-run --workflow static.yml --ref main
+helpers/shell/container.sh   --action image|ci|runtime
+```
+
+Ejemplo: `make pages` y `just pages` comparten `github.sh`:
+
+```
+make pages  →  github.sh --action workflow-run --workflow static.yml --ref main
+just pages  →  github.sh --action workflow-run --workflow static.yml --ref main
+```
+
+### Contrato de Flags Consolidado
+
+Todo helper debe respetar al menos dos grupos de flags:
+
+| Flag | Obligatorio | Descripción |
+|------|-------------|-------------|
+| `--action` o `--goal` | Sí | Operación a ejecutar |
+| `--log-file` | Sí | Ruta del log de auditoría |
+| `--log-level` | No | Nivel de log (info por defecto) |
+| `--tool` | No (según helper) | Herramienta de construcción |
+| `--command` | No | Comando directo (sobreescribe goal) |
+
+Los helpers **nunca deben ejecutarse sin auditoría**. Ver [Auditoría y Logging](#auditoría-y-logging-obligatorio) arriba.
+
 ## Plantilla
 
-Ver [templates/Makefile.tmpl](../templates/Makefile.tmpl) y [templates/Justfile.tmpl](../templates/Justfile.tmpl).
+Ver [templates/Makefile.tmpl](../templates/Makefile.tmpl), [templates/Justfile.tmpl](../templates/Justfile.tmpl) y los helpers en [templates/helpers/shell/](../templates/helpers/shell/).
