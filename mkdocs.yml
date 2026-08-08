@@ -27,6 +27,7 @@ nav:
       - Estructura de Repositorio: ../rules/09-repository-structure.md
       - Git Hooks: ../rules/10-githooks.md
       - Commitizen: ../rules/11-commitizen.md
+      - Gitignore: ../rules/12-gitignore.md
 
 plugins:
   - search:

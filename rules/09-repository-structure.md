@@ -185,6 +185,7 @@ make test   LANG=javascript BUILD_TOOL=pnpm   MODULE=source/frontend/nodejs/web
 - [Regla 01: Build Tooling](01-build-tooling.md) — Makefile, Justfile, capa de helpers.
 - [Regla 02: Arquitectura Hexagonal](02-architecture.md) — domain/application/infrastructure/ports.
 - [Regla 08: Stack Tecnológico](08-stack.md) — versiones, Podman, Containerfile, Alpine.
+- [Regla 12: Gitignore](12-gitignore.md) — exclusión de archivos por contexto y plantillas.
 - [templates/repository-structure/README.md](../templates/repository-structure/README.md) — documentación de la estructura junto al template.
 - [templates/helpers/mk/](../templates/repository-structure/helpers/mk/) y [templates/helpers/shell/](../templates/repository-structure/helpers/shell/) — origen de los helpers copiados a `helpers/`.
 - [templates/gitignore/](../templates/gitignore/) — biblioteca de `.gitignore` por contexto.
