@@ -1,6 +1,7 @@
 site_name: Ether My Best Practice
 site_description: Mejores prácticas y estándares para desarrollo de software
-site_author: Rafael Exner
+site_author: Raúl González
+site_email: rafex@rafex.dev
 
 docs_dir: ../../docs
 site_dir: ../../site
@@ -33,6 +34,7 @@ nav:
       - Gitignore: rules/12-gitignore.md
       - Gestión de Secretos: rules/13-secrets.md
       - Archivos de Configuración: rules/14-config-files.md
+      - Reutilización de Scripts: rules/15-script-reuse.md
 
 plugins:
   - search:

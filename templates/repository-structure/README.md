@@ -46,7 +46,9 @@ proyecto/
 ├── helpers/                         # capa única de ejecución
 │   ├── mk/                          # módulos Makefile (build.mk, container.mk, docs.mk, ...)
 │   ├── shell/                       # scripts shell (build.sh, test.sh, java.sh, container.sh, ...)
-│   ├── python/                      # helpers python (opcional: lint.py, format.py, ...)
+│   │   └── lib/                     # librerías comunes (commons.sh, logs.sh, messages.sh, ...)
+│   ├── python/                      # helpers python (opcional)
+│   │   └── lib/                     # librerías comunes (logs.py, messages.py, exceptions.py, ...)
 │   └── just/                        # operativas de aplicación (app.just, auth.just, ...)
 │
 ├── containers/                      # definiciones de imágenes de contenedor

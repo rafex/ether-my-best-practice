@@ -265,6 +265,9 @@ Política de ruta:
 - [templates/helpers/mk/](../templates/repository-structure/helpers/mk/): `build.mk`, `container.mk`, `docs.mk`, `github.mk`, `lint.mk`, `format.mk`
 - [templates/helpers/just/app.just.tmpl](../templates/repository-structure/helpers/just/app.just.tmpl)
 
+- [Regla 15: Reutilización de Scripts](15-script-reuse.md) — librerías comunes en lib/.
+
+
 ## Plantilla
 
 - [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl)

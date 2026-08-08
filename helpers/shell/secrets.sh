@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logs.sh"
+source "$SCRIPT_DIR/lib/messages.sh"
 
 # ------------------------------------------------------------------
 # Helper de Secretos con sops + age — edición, desencriptado, verificación.
@@ -38,17 +41,6 @@ project_name="$(basename "$workspace")"
 script_name="secrets"
 ts="$(date -u +%Y%m%dT%H%M%SZ)"
 
-init_log() {
-	if [[ -z "$log_file" ]]; then
-		if mkdir -p "/var/log/$project_name" 2>/dev/null && [[ -w "/var/log/$project_name" ]]; then
-			log_file="/var/log/$project_name/log-$script_name-$ts.log"
-		else
-			mkdir -p "/tmp/$project_name"
-			log_file="/tmp/$project_name/log-$script_name-$ts.log"
-		fi
-	fi
-	mkdir -p "$(dirname "$log_file")"
-}
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in

@@ -22,6 +22,7 @@ Este repositorio contiene un conjunto de premisas y estándares para el desarrol
 | 12 | **[12-gitignore.md](12-gitignore.md)** | Gitignore — exclusión de archivos por contexto |
 | 13 | **[13-secrets.md](13-secrets.md)** | Gestión de secretos con sops+age, gitleaks y trufflehog |
 | 14 | **[14-config-files.md](14-config-files.md)** | Archivos de configuración (.config) — centralización por herramienta |
+| 15 | **[15-script-reuse.md](15-script-reuse.md)** | Reutilización de Scripts — librerías comunes shell y python |
 
 > **Estado:** cada regla declara su estado (`Definida` | `Borrador`) en el frontmatter YAML del archivo. Las reglas en **Borrador** contienen premisa y restricciones pero aún no alcanzan la profundidad completa (Comandos, Estructura detallada, etc.).
 

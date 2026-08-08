@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logs.sh"
+source "$SCRIPT_DIR/lib/messages.sh"
 
 # ------------------------------------------------------------------
 # Helper de enlaces de reglas → documentación (hard links).
@@ -21,24 +24,10 @@ set -euo pipefail
 # ------------------------------------------------------------------
 
 goal=""
-log_file=""
 workspace="$(pwd)"
 
-project_name="$(basename "$workspace")"
-script_name="rules-link"
-ts="$(date -u +%Y%m%dT%H%M%SZ)"
-
-init_log() {
-	if [[ -z "$log_file" ]]; then
-		if mkdir -p "/var/log/$project_name" 2>/dev/null && [[ -w "/var/log/$project_name" ]]; then
-			log_file="/var/log/$project_name/log-$script_name-$ts.log"
-		else
-			mkdir -p "/tmp/$project_name"
-			log_file="/tmp/$project_name/log-$script_name-$ts.log"
-		fi
-	fi
-	mkdir -p "$(dirname "$log_file")"
-}
+WORKSPACE="$workspace"
+init_log "rules-link"
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -54,13 +43,6 @@ if [[ -z "$goal" ]]; then
 	echo "Missing required flag --goal" >&2
 	exit 1
 fi
-
-init_log
-exec > >(tee -a "$log_file") 2>&1
-
-echo "Audit log: $log_file"
-echo "Goal: $goal"
-echo "Workspace: $workspace"
 
 RULES_DIR="$workspace/rules"
 DOCS_RULES_DIR="$workspace/docs/rules"

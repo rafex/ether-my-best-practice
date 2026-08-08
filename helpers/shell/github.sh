@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logs.sh"
+source "$SCRIPT_DIR/lib/messages.sh"
+init_log "github"
+
 
 # Helper de GitHub para operación de este repositorio.
 # Atiende: disparar workflows, publicar el sitio.
