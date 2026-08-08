@@ -46,7 +46,7 @@ cp templates/repository-structure/Makefile.tmpl mi-proyecto/Makefile
 cp templates/repository-structure/Justfile.tmpl mi-proyecto/Justfile
 ```
 
-También puedes tomar [templates/repository-structure/README.md](../templates/repository-structure/README.md) como base de estructura para un servicio nuevo y complementar el proyecto con las reglas de [../rules/02-architecture.md](../rules/02-architecture.md), [../rules/03-testing.md](../rules/03-testing.md) y [../rules/07-agents-mcp.md](../rules/07-agents-mcp.md).
+También puedes tomar [templates/repository-structure/README.md](../templates/repository-structure/README.md) como base de estructura para un servicio nuevo y complementar el proyecto con las reglas de [../rules/02-architecture.md](rules/02-architecture.md), [../rules/03-testing.md](rules/03-testing.md) y [../rules/07-agents-mcp.md](rules/07-agents-mcp.md).
 
 ## Generar Documentación
 
@@ -91,17 +91,17 @@ Si el proyecto va a trabajar con agentes de IA, expón también estas reglas por
 
 La forma mínima de integrar este repositorio con un agente es:
 
-1. Hacer disponible la carpeta [../rules/](../rules/) como contexto.
+1. Hacer disponible la carpeta [../rules/](rules/) como contexto.
 2. Indicar qué reglas son obligatorias para el proyecto consumidor.
 3. Permitir que el agente use [../templates/](../templates/) como punto de partida para generar el esqueleto de la API REST.
 
-El detalle de este enfoque está en [../rules/07-agents-mcp.md](../rules/07-agents-mcp.md).
+El detalle de este enfoque está en [../rules/07-agents-mcp.md](rules/07-agents-mcp.md).
 
 ## Próximos Pasos
 
-1. Explora las [Reglas](../rules/00-index.md)
+1. Explora las [Reglas](rules/00-index.md)
 2. Copia las plantillas a tu proyecto
-3. Configura CI/CD según [Regla 06](../rules/06-ci-cd.md)
+3. Configura CI/CD según [Regla 06](rules/06-ci-cd.md)
 4. Publica documentación en GitHub Pages
 
 > **Nota:** el `Makefile` y `Justfile` en la raíz de este repositorio son para operar el repositorio mismo (validar reglas, publicar sitio). Las plantillas de build/CI que los agentes deben copiar a proyectos consumidores están en [templates/](../templates/).

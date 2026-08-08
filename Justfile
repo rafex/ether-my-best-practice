@@ -30,9 +30,17 @@
 @pages:
     bash helpers/shell/github.sh --action workflow-run --workflow static.yml --ref main
 
-# Servir documentación localmente (repositorio de docs, LANG=docs implícito)
+# Servir documentación localmente con static server (build previo incluido)
 @serve:
+    bash helpers/shell/serve.sh --action serve
+
+# Servir con live-reload de MkDocs (dev server)
+@serve-dev:
     mkdocs serve -f .config/mkdocs/mkdocs.yml
+
+# Crear/refrescar hard links rules/ → docs/rules/ (necesario para MkDocs)
+@link-rules:
+    bash helpers/shell/rules-link.sh --goal link
 
 # Limpiar sitio generado
 @clean:

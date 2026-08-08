@@ -1,0 +1,9 @@
+{
+  "name": "serve-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Servidor estático del sitio generado por MkDocs",
+  "scripts": {
+    "start": "npx serve"
+  }
+}

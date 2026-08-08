@@ -18,21 +18,21 @@ nav:
   - Guía de Inicio: getting-started.md
   - Contribuyendo: contributing.md
   - Reglas:
-      - Índice: ../rules/00-index.md
-      - Herramientas de Construcción: ../rules/01-build-tooling.md
-      - Arquitectura: ../rules/02-architecture.md
-      - Testing: ../rules/03-testing.md
-      - Documentación: ../rules/04-documentation.md
-      - Control de Versiones: ../rules/05-version-control.md
-      - CI/CD: ../rules/06-ci-cd.md
-      - Agentes IA y MCP: ../rules/07-agents-mcp.md
-      - Stack Tecnológico: ../rules/08-stack.md
-      - Estructura de Repositorio: ../rules/09-repository-structure.md
-      - Git Hooks: ../rules/10-githooks.md
-      - Commitizen: ../rules/11-commitizen.md
-      - Gitignore: ../rules/12-gitignore.md
-      - Gestión de Secretos: ../rules/13-secrets.md
-      - Archivos de Configuración: ../rules/14-config-files.md
+      - Índice: rules/00-index.md
+      - Herramientas de Construcción: rules/01-build-tooling.md
+      - Arquitectura: rules/02-architecture.md
+      - Testing: rules/03-testing.md
+      - Documentación: rules/04-documentation.md
+      - Control de Versiones: rules/05-version-control.md
+      - CI/CD: rules/06-ci-cd.md
+      - Agentes IA y MCP: rules/07-agents-mcp.md
+      - Stack Tecnológico: rules/08-stack.md
+      - Estructura de Repositorio: rules/09-repository-structure.md
+      - Git Hooks: rules/10-githooks.md
+      - Commitizen: rules/11-commitizen.md
+      - Gitignore: rules/12-gitignore.md
+      - Gestión de Secretos: rules/13-secrets.md
+      - Archivos de Configuración: rules/14-config-files.md
 
 plugins:
   - search:

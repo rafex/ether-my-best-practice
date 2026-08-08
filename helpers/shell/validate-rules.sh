@@ -208,6 +208,29 @@ for file in "$RULES_DIR"/*.md docs/*.md; do
 done
 
 echo ""
+
+# Verificar sincronía rules/ ↔ docs/rules/ (hard links para MkDocs)
+echo "Validando sincronía rules/ ↔ docs/rules/..."
+DOCS_RULES_DIR="./docs/rules"
+if [ -d "$DOCS_RULES_DIR" ]; then
+	for f in "$RULES_DIR"/*.md; do
+		base="$(basename "$f")"
+		linked="$DOCS_RULES_DIR/$base"
+		if [ ! -f "$linked" ]; then
+			echo "  ERROR docs/rules/$base: missing (run 'just link-rules')"
+			((ERRORS++))
+		elif ! diff -q "$f" "$linked" >/dev/null 2>&1; then
+			echo "  ERROR docs/rules/$base: content differs from rules/$base (run 'just link-rules')"
+			((ERRORS++))
+		fi
+	done
+	echo "  Sincronía verificada."
+else
+	echo "  WARNING docs/rules/ directory missing. Run 'just link-rules' first."
+	((WARNINGS++))
+fi
+
+echo ""
 echo "----------------------------------------"
 echo "Errores: $ERRORS  |  Warnings: $WARNINGS"
 echo "----------------------------------------"

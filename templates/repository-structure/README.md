@@ -19,7 +19,9 @@ proyecto/
 │   │   └── pyproject.toml           # [tool.commitizen] con version_files
 │   ├── mkdocs/
 │   │   ├── mkdocs.yml               # configuración del sitio (docs_dir: ../../docs)
-│   │   └── requirements.txt         # dependencias de MkDocs
+│   │   ├── requirements.txt         # dependencias de MkDocs
+│   │   └── serve/
+│   │       └── package.json         # npx serve site (regla 14)
 │   └── sops/
 │       └── .sops.yaml               # age recipients públicos (cifrado sops+age)
 │

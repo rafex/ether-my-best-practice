@@ -6,7 +6,7 @@ Bienvenido a la documentación de Ether My Best Practice.
 
 - [Guía de Inicio Rápido](getting-started.md)
 - [Contribuyendo](contributing.md)
-- [Índice de Reglas](../rules/00-index.md)
+- [Índice de Reglas](rules/00-index.md)
 
 ## Resumen
 
@@ -43,7 +43,7 @@ graph TD
 
 Este repositorio combina dos piezas:
 
-- Reglas versionadas en [../rules/00-index.md](../rules/00-index.md) para decirle a humanos y agentes cómo trabajar.
+- Reglas versionadas en [../rules/00-index.md](rules/00-index.md) para decirle a humanos y agentes cómo trabajar.
 - Plantillas en [../templates/](../templates/) para que un agente pueda generar el cascarón inicial de una API REST coherente con esas reglas.
 
 La combinación permite que un MCP o un agente local no solo lea normas, sino que también tenga una base estructural para crear archivos y carpetas siguiendo el estándar.
@@ -51,5 +51,5 @@ La combinación permite que un MCP o un agente local no solo lea normas, sino qu
 ## Para Empezar
 
 1. Lee [Getting Started](getting-started.md)
-2. Consulta las [Reglas](../rules/00-index.md)
+2. Consulta las [Reglas](rules/00-index.md)
 3. Usa las [Plantillas](../templates/)
