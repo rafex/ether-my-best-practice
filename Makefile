@@ -1,31 +1,35 @@
-.PHONY: help docs pages-build pages serve clean
+.PHONY: help validate lint format docs pages-build pages serve clean
 
 SITE_DIR ?= site
 PAGES_WORKFLOW ?= static.yml
 PAGES_REF ?= main
-MK_FILES ?= $(wildcard helpers/mk/*.mk)
-
-# Carga modular de helpers por dominio, contenedor o lenguaje.
--include $(MK_FILES)
 
 help:
-	@echo "Tareas disponibles:"
-	@echo "  make build    - Ejecutar build del proyecto"
-	@echo "  make test     - Ejecutar tests del proyecto"
-	@echo "  make clean    - Limpiar artefactos del proyecto"
-	@echo "  make runtime  - Detectar podman/docker"
-	@echo "  make image    - Construir imagen de CI"
-	@echo "  make ci       - Ejecutar build+test en contenedor"
-	@echo "  make docs     - Generar el sitio MkDocs localmente"
-	@echo "  make pages-build - Generar el sitio en $(SITE_DIR)"
-	@echo "  make pages       - Disparar el workflow de GitHub Pages"
-	@echo "  make serve       - Servir la documentación localmente"
-	@echo "  make clean       - Limpiar artefactos"
+	@echo "Tareas disponibles (operación de este repositorio):"
+	@echo "  make validate      - Validar estructura y enlaces de las reglas"
+	@echo "  make lint          - Validar estilo de las reglas y documentación"
+	@echo "  make format        - Formatear reglas y documentación"
+	@echo "  make docs          - Generar el sitio MkDocs localmente"
+	@echo "  make pages-build   - Generar el sitio en $(SITE_DIR)"
+	@echo "  make pages         - Disparar el workflow de GitHub Pages"
+	@echo "  make serve         - Servir la documentación localmente"
+	@echo "  make clean         - Eliminar el sitio generado ($(SITE_DIR))"
+
+validate:
+	bash helpers/shell/validate-rules.sh
+
+lint:
+	@echo "Lint pendiente de implementar."
+	@echo "Agrega la lógica en helpers/shell/lint.sh"
+
+format:
+	@echo "Format pendiente de implementar."
+	@echo "Agrega la lógica en helpers/shell/format.sh"
 
 docs:
 	mkdocs build --site-dir "$(SITE_DIR)"
 
-pages-build: docs
+pages-build: validate docs
 	@echo "Sitio generado en $(SITE_DIR)"
 
 pages:

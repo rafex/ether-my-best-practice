@@ -52,28 +52,26 @@ También puedes tomar [templates/project-structure/README.md](../templates/proje
 
 ```bash
 # Construir sitio estático
-mkdocs build
+make docs
 
 # Visualizar localmente
-mkdocs serve
+make serve
 ```
 
 Luego abre `http://localhost:8000`
 
-Si copias las plantillas de [templates](templates) a otro proyecto, allí sí puedes exponer estos comandos mediante `make docs` o `just docs`.
+Si copias las plantillas de [templates](../templates) a otro proyecto, allí sí puedes exponer estos comandos mediante `make docs` o `just docs`.
 
 ## Publicar en GitHub Pages
 
-En este repositorio puedes usar:
+El workflow de CI está en [.github/workflows/static.yml](../.github/workflows/static.yml):
 
 ```bash
-make pages-build
-make pages
+make pages-build   # Validar reglas + generar sitio
+make pages         # Disparar el workflow de GitHub Pages
 ```
 
-`make pages` dispara el workflow de GitHub Pages definido en [.github/workflows/static.yml](../.github/workflows/static.yml).
-
-El workflow real es [.github/workflows/static.yml](../.github/workflows/static.yml) y genera [site](../site/) en el runner; no necesitas subir `site/` al repositorio.
+El workflow invoca `make validate` + `make docs` como wrapper de los targets existentes. El directorio [site](../site/) no se sube al repositorio: se genera en el runner y se publica como artefacto de Pages.
 
 ## Integrar en tu Proyecto
 
@@ -105,3 +103,5 @@ El detalle de este enfoque está en [../rules/07-agents-mcp.md](../rules/07-agen
 2. Copia las plantillas a tu proyecto
 3. Configura CI/CD según [Regla 06](../rules/06-ci-cd.md)
 4. Publica documentación en GitHub Pages
+
+> **Nota:** el `Makefile` y `Justfile` en la raíz de este repositorio son para operar el repositorio mismo (validar reglas, publicar sitio). Las plantillas de build/CI que los agentes deben copiar a proyectos consumidores están en [templates/](../templates/).

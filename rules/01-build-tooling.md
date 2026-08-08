@@ -4,6 +4,8 @@
 
 Todo proyecto debe tener un sistema de construcción declarativo y reproducible, independientemente del lenguaje.
 
+> **Nota:** esta regla describe el `Makefile` y `Justfile` de **proyectos consumidores** — los que un agente genera copiando las plantillas de [templates/](../templates/). El `Makefile` y `Justfile` en la raíz de este repositorio (`ether-my-best-practice`) son puramente operativos: publicar el sitio, validar reglas, lint y format. No siguen esta regla porque su propósito es distinto (operar el repositorio de definiciones, no compilar una API REST).
+
 La regla principal es responsabilidad única en la capa de build: el `Makefile` orquesta objetivos y variables, y la lógica específica vive en helpers reutilizables.
 
 ## Regla Base

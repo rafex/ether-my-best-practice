@@ -6,6 +6,8 @@ Toda integración y despliegue debe ser automatizado, repetible y declarativo.
 
 La base de CI debe ser auto-suficiente dentro del repositorio: primero pipeline local en contenedor, luego integración externa (GitHub Actions, GitLab CI, Jenkins) como envoltura opcional.
 
+> **Nota:** esta regla describe el pipeline de CI/CD de **proyectos consumidores** generados desde [templates/](../templates/). El workflow real de este repositorio ([.github/workflows/static.yml](../.github/workflows/static.yml)) es un ejemplo de CI para publicar el sitio de documentación con MkDocs y GitHub Pages, y debe usarse como wrapper de los targets del `Makefile` operativo.
+
 ## Pipeline Base (Auto-suficiente)
 
 ```
