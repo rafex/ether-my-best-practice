@@ -1,0 +1,46 @@
+"""
+config.py — Rutas y utilidades para el servidor MCP ether-rules.
+Reutiliza el patrón de commons.py (regla 15).
+"""
+
+import os
+import sys
+
+ROOT = os.environ.get("MCP_ROOT", os.getcwd())
+RULES_DIR = os.environ.get("RULES_DIR", os.path.join(ROOT, "rules"))
+TEMPLATES_DIR = os.environ.get("TEMPLATES_DIR", os.path.join(ROOT, "templates"))
+GITIGNORE_DIR = os.path.join(TEMPLATES_DIR, "gitignore")
+HELPERS_DIR = os.environ.get("HELPERS_DIR", os.path.join(ROOT, "helpers"))
+REPO_STRUCTURE_DIR = os.path.join(TEMPLATES_DIR, "repository-structure")
+DOCS_DIR = os.environ.get("DOCS_DIR", os.path.join(ROOT, "docs"))
+
+
+def resolve(relative: str) -> str:
+    """Resuelve ruta relativa a ROOT."""
+    return os.path.join(ROOT, relative)
+
+
+def list_rules_files() -> list[str]:
+    """Lista todos los archivos de reglas (NN-topic.md)."""
+    files = sorted(
+        f
+        for f in os.listdir(RULES_DIR)
+        if f.endswith(".md") and f[0].isdigit()
+    )
+    return files
+
+
+def parse_frontmatter(filepath: str) -> dict:
+    """Extrae frontmatter YAML de un archivo .md con --- delimiters."""
+    if not os.path.isfile(filepath):
+        return {}
+    with open(filepath) as f:
+        content = f.read()
+    if not content.startswith("---"):
+        return {}
+    parts = content.split("---", 2)
+    if len(parts) < 3:
+        return {}
+    import yaml  # type: ignore
+
+    return yaml.safe_load(parts[1]) or {}
