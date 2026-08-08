@@ -1,4 +1,4 @@
-.PHONY: help build test clean docs lint format runtime image ci pages-build
+.PHONY: help build test clean runtime image ci
 
 # Punto de entrada universal.
 # La lógica específica por lenguaje se delega a helpers.
@@ -41,39 +41,20 @@ help:
 	@echo "  make ci LANG=java BUILD_TOOL=gradle"
 	@echo "  make pages"
 
-docs:
-	@echo "Building documentation..."
-	mkdocs build --site-dir "$(SITE_DIR)"
-
-pages-build: docs
-	@echo "Sitio generado en $(SITE_DIR)"
-
-pages:
-	@if [ -f "helpers/shell/github.sh" ]; then \
-		bash helpers/shell/github.sh --action workflow-run --workflow "$(PAGES_WORKFLOW)" --ref "$(PAGES_REF)"; \
-	else \
-		echo "GitHub CLI (gh) no está disponible. Usa 'make pages-build' o instala gh para disparar el workflow static.yml."; \
-		exit 1; \
-	fi
-
-# serve y otras operativas de levantar la aplicación pertenecen a Justfile.
-# Ver templates/Justfile.tmpl: allí se despacha por LANG al helper de lenguaje
-# correspondiente (helpers/shell/java.sh --goal serve, javascript.sh --goal serve, etc.).
-# También puede llamar a make build antes de servir:
-#   just serve  ->  make build (si es necesario)  ->  helpers/shell/{lang}.sh --goal serve
-
-lint:
-	@echo "Linting code..."
-	@if [ -f "helpers/python/lint.py" ]; then \
-		uv run python helpers/python/lint.py --lang "$(LANG)" --module "$(MODULE)"; \
-	else \
-		echo "Add helpers/python/lint.py (Python 3.11+ with uv) to implement lint logic"; \
-	fi
-
-format:
-	@echo "Formatting code..."
-	@if [ -f "helpers/python/format.py" ]; then \
-		uv run python helpers/python/format.py --lang "$(LANG)" --module "$(MODULE)"; \
-	else \
-		echo "Add helpers/python/format.py (Python 3.11+ with uv) to implement format logic"; \
-	fi
+# Regla de máxima reutilización: el Makefile nunca ejecuta comandos directos
+# (mkdocs build, uv run, npm run, etc.). Todo target se define en helpers/mk/*.mk
+# y delega en helpers/shell/*.sh o helpers/python/*.py.
+#
+# Estructura de delegación:
+#   make build  → helpers/mk/build.mk      → helpers/shell/build.sh
+#   make test   → helpers/mk/build.mk      → helpers/shell/test.sh
+#   make clean  → helpers/mk/build.mk      → helpers/shell/clean.sh
+#   make runtime→ helpers/mk/container.mk  → helpers/shell/container.sh
+#   make image  → helpers/mk/container.mk  → helpers/shell/container.sh
+#   make ci     → helpers/mk/container.mk  → helpers/shell/container.sh
+#   make docs   → helpers/mk/docs.mk       → helpers/shell/docs.sh
+#   make pages  → helpers/mk/github.mk     → helpers/shell/github.sh
+#   make lint   → helpers/mk/lint.mk       → helpers/shell/lint.sh
+#   make format → helpers/mk/format.mk     → helpers/shell/format.sh
+#
+# Variables de orquestación que los .mk comparten:

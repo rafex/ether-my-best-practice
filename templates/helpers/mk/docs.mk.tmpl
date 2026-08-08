@@ -1,0 +1,15 @@
+SITE_DIR ?= site
+DOCS_HELPER ?= helpers/shell/docs.sh
+
+.PHONY: docs pages-build
+
+docs:
+	@if [ -f "$(DOCS_HELPER)" ]; then \
+		bash "$(DOCS_HELPER)" --goal build --site-dir "$(SITE_DIR)"; \
+	else \
+		echo "No docs helper found. Expected helpers/shell/docs.sh"; \
+		exit 1; \
+	fi
+
+pages-build: docs
+	@echo "Sitio generado en $(SITE_DIR)"

@@ -13,6 +13,7 @@ La regla principal es responsabilidad única en la capa de build: el `Makefile` 
 - `Makefile` es la puerta de entrada universal para construir, testear y limpiar.
 - El `Makefile` no implementa lógica compleja por lenguaje.
 - La lógica de compilación/ejecución vive en archivos de helpers (`.mk`, `sh`/`bash`, `python`).
+- El `Makefile` **nunca ejecuta comandos directos** de build, docs, lint ni format (prohibido `mkdocs build`, `uv run`, `npm run`, `mvn`, etc. en el cuerpo del Makefile). Todo target debe delegar en `helpers/mk/*.mk`, y este a su vez en `helpers/shell/*.sh` o `helpers/python/*.py`. Flujo: `Makefile → .mk → script`.
 - Los scripts de helpers siempre reciben parámetros por flags.
 - La construcción debe ejecutarse en contenedores cuando sea posible para no ensuciar el host local.
 - `Justfile` es task manager de operativas de aplicación (acciones de negocio/operación), no de compilación.
