@@ -16,9 +16,16 @@ proyecto/
 ├── mkdocs.yml                       # configuración del sitio de documentación
 │
 ├── .githooks/                       # git hooks (instalados con just hooks-install)
-│   ├── pre-commit                   # → make lint (gate de lint antes de commit)
-│   ├── pre-push                     # → make test (gate de test antes de push)
+│   ├── .tools/                      # herramientas internas (commitizen-venv)
+│   ├── pre-commit                   # → lint + gitleaks (gates antes de commit)
+│   ├── pre-push                     # → test + trufflehog (gates antes de push)
 │   └── commit-msg                   # → validar Conventional Commits
+│
+├── .secrets/                        # secretos cifrados con sops + age
+│   ├── .gitkeep
+│   └── secrets.{dev,prod,int}.enc.yaml  # solo los *.enc.yaml se versionan
+│
+├── .sops.yaml                       # configuración de sops (age recipients)
 │
 ├── docs/                            # documentación en Markdown + MermaidJS
 │   ├── index.md
@@ -92,6 +99,7 @@ proyecto/
 5. **Hexagonal en cada backend:** bajo `source/backend/<lang>/<proyecto>/src/` se aplica la arquitectura de puertos y adaptadores (dominio, aplicación, infraestructura, puertos).
 6. **Git hooks como gates:** `.githooks/` contiene gates puros (sin efectos laterales): lint antes de commit, test antes de push, validación de Conventional Commits. Instalar con `just hooks-install`.
 7. **CHANGELOG y VERSION solo en release:** `VERSION` y `CHANGELOG.md` se actualizan exclusivamente con `just prepare-release <versión>`, nunca en hooks.
+8. **Secretos cifrados con sops+age:** `.secrets/*.enc.yaml` son los únicos archivos de secretos versionables. La clave privada age vive en `~/.age/<proyecto>-key.txt` y nunca se sube. `just edit-secrets <env>` edita y encripta; `just env <env>` desencripta a `.env.<env>`. Gitleaks (pre-commit) + trufflehog (pre-push) bloquean secretos en plano.
 
 ## Ejemplo: proyecto "patos" (backend Java + frontend NodeJS + libs compartidas)
 

@@ -183,6 +183,7 @@ CHANGELOG.md generated (version 1.2.0, changes since v1.1.0)
 - [Regla 06: CI/CD](06-ci-cd.md) — pipeline local como complemento a los hooks.
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — `.githooks/` en el árbol del proyecto.
 - [Regla 11: Commitizen](11-commitizen.md) — asistente de commit + release (co-propietaria del objetivo).
+- [Regla 13: Gestión de Secretos](13-secrets.md) — gitleaks (pre-commit) + trufflehog (pre-push).
 - [templates/repository-structure/.githooks/](../templates/repository-structure/.githooks/) — dispatchers pre-commit, pre-push, commit-msg.
 - [templates/helpers/shell/hooks.sh.tmpl](../templates/repository-structure/helpers/shell/hooks.sh.tmpl)
 - [templates/helpers/shell/commit-msg.sh.tmpl](../templates/repository-structure/helpers/shell/commit-msg.sh.tmpl)

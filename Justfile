@@ -38,6 +38,22 @@
 @clean:
     make clean
 
+# Gestión de secretos (regla 13): generar clave age
+@keygen:
+    bash helpers/shell/secrets.sh --action keygen
+
+# Editar secretos cifrados con sops+age (abre vi, encripta al guardar)
+@edit-secrets env:
+    bash helpers/shell/secrets.sh --action edit --env {{env}}
+
+# Generar .env.<env> desde secretos cifrados
+@env env:
+    bash helpers/shell/secrets.sh --action env --env {{env}}
+
+# Verificar que no hay secretos en plano staged
+@secrets-verify:
+    bash helpers/shell/secrets.sh --action verify
+
 # Instalar git hooks + bootstrap Commitizen en venv interno
 @hooks-install:
     bash helpers/shell/hooks.sh --action install

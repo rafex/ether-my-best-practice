@@ -1,0 +1,203 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ------------------------------------------------------------------
+# Helper de Secretos con sops + age — edición, desencriptado, verificación.
+# Reutilizable por Makefile y Justfile.
+#
+# Stack: sops + age. Clave privada en ~/.age/<proyecto>-key.txt (NUNCA versionada).
+# Clave pública en .sops.yaml (age recipients, versionable).
+# Secretos cifrados en .secrets/secrets.<env>.enc.yaml.
+#
+# Requisitos previos:
+#   - sops instalado (brew install sops, apt install sops, o descarga binaria)
+#   - age instalado  (brew install age,  apt install age,  o descarga binaria)
+#   - Clave age generada: age-keygen -o ~/.age/<proyecto>-key.txt
+#     La clave pública se añade a .sops.yaml como recipient.
+#
+# Contrato de flags (regla 01):
+#   --action edit|env|verify|keygen      Operación
+#   --env dev|prod|int                   Entorno (para edit/env)
+#   --editor vi                          Editor ($EDITOR con fallback vi)
+#   --log-file /ruta/al/log              Obligatorio
+#   --log-level info                     (opcional)
+#
+# Auditoría: /var/log/<proyecto>/log-secrets-<ts>.log
+#             Fallback → /tmp/<proyecto>/log-secrets-<ts>.log
+# ------------------------------------------------------------------
+
+action=""
+env_name=""
+editor="${EDITOR:-vi}"
+log_file=""
+log_level="info"
+workspace="$(pwd)"
+AGE_KEY_DIR="${HOME}/.age"
+
+project_name="$(basename "$workspace")"
+script_name="secrets"
+ts="$(date -u +%Y%m%dT%H%M%SZ)"
+
+init_log() {
+	if [[ -z "$log_file" ]]; then
+		if mkdir -p "/var/log/$project_name" 2>/dev/null && [[ -w "/var/log/$project_name" ]]; then
+			log_file="/var/log/$project_name/log-$script_name-$ts.log"
+		else
+			mkdir -p "/tmp/$project_name"
+			log_file="/tmp/$project_name/log-$script_name-$ts.log"
+		fi
+	fi
+	mkdir -p "$(dirname "$log_file")"
+}
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--action)  action="${2:-}"; shift 2 ;;
+		--env)     env_name="${2:-}"; shift 2 ;;
+		--editor)  editor="${2:-}"; shift 2 ;;
+		--log-file)  log_file="${2:-}"; shift 2 ;;
+		--log-level) log_level="${2:-}"; shift 2 ;;
+		*)
+			echo "Unknown flag: $1" >&2
+			exit 1 ;;
+	esac
+done
+
+if [[ -z "$action" ]]; then
+	echo "Missing required flag --action" >&2
+	exit 1
+fi
+
+init_log
+exec > >(tee -a "$log_file") 2>&1
+
+echo "Audit log: $log_file"
+echo "Action: $action"
+echo "Env: $env_name"
+echo "Workspace: $workspace"
+
+# Verificar que sops está instalado
+require_sops() {
+	if ! command -v sops >/dev/null 2>&1; then
+		echo "sops no está instalado. Instálalo con: brew install sops (macOS) o apt install sops (Linux)" >&2
+		exit 1
+	fi
+}
+
+# Verificar que age está instalado
+require_age() {
+	if ! command -v age-keygen >/dev/null 2>&1; then
+		echo "age no está instalado. Instálalo con: brew install age (macOS) o apt install age (Linux)" >&2
+		exit 1
+	fi
+}
+
+# Obtener la clave privada age del host
+get_age_key() {
+	local key_path="${AGE_KEY_DIR}/${project_name}-key.txt"
+	if [[ -f "$key_path" ]]; then
+		echo "$key_path"
+	else
+		echo "No se encontró clave age en $key_path" >&2
+		echo "Genera una con: age-keygen -o $key_path" >&2
+		exit 1
+	fi
+}
+
+# Generar clave age
+do_keygen() {
+	require_age
+	mkdir -p "$AGE_KEY_DIR"
+	local key_path="${AGE_KEY_DIR}/${project_name}-key.txt"
+	if [[ -f "$key_path" ]]; then
+		echo "La clave age ya existe en $key_path. No se sobreescribirá."
+		exit 1
+	fi
+	age-keygen -o "$key_path"
+	echo "Clave age generada en $key_path"
+	echo "Añade la clave pública a .sops.yaml en creation_rules → age:"
+	age-keygen -y "$key_path"
+}
+
+# Editar secretos (abre editor, encripta al guardar)
+do_edit() {
+	require_sops
+	require_age
+	local key_path="$(get_age_key)"
+	export SOPS_AGE_KEY_FILE="$key_path"
+	local enc_file=".secrets/secrets.${env_name}.enc.yaml"
+	mkdir -p .secrets
+	echo "Editando $enc_file con $editor..."
+	SOPS_AGE_KEY_FILE="$key_path" sops edit "$enc_file" --input-type yaml --output-type yaml
+	echo "$enc_file encriptado y guardado."
+}
+
+# Generar .env.<env> desde secretos cifrados
+do_env() {
+	require_sops
+	require_age
+	local key_path="$(get_age_key)"
+	local enc_file=".secrets/secrets.${env_name}.enc.yaml"
+	local env_file=".env.${env_name}"
+
+	if [[ ! -f "$enc_file" ]]; then
+		echo "No existe $enc_file. Créalo con: just edit-secrets $env_name" >&2
+		exit 1
+	fi
+
+	echo "Generando $env_file desde $enc_file..."
+	SOPS_AGE_KEY_FILE="$key_path" sops decrypt "$enc_file" > /dev/null 2>&1 || {
+		echo "Fallo al desencriptar $enc_file" >&2
+		exit 1
+	}
+
+	# Extraer los valores del yaml desencriptado y generar .env
+	SOPS_AGE_KEY_FILE="$key_path" sops decrypt --output-type yaml "$enc_file" | \
+		python3 -c "
+import sys, yaml
+data = yaml.safe_load(sys.stdin)
+if data:
+    for k, v in data.items():
+        print(f'{k}={v}')
+" > "$env_file"
+
+	echo "$env_file generado con $(wc -l < "$env_file" | tr -d ' ') variables."
+}
+
+# Verificar que no hay secretos en plano staged
+do_verify() {
+	if command -v gitleaks >/dev/null 2>&1; then
+		echo "Verificando secretos con gitleaks (staged)..."
+		gitleaks git --staged
+		echo "gitleaks: sin secretos detectados."
+	else
+		echo "gitleaks no instalado. Verificación manual:"
+		echo "  Asegúrate de que no haya .env.*, *.key, *.pem, *.p12 ni secretos en plano staged."
+	fi
+}
+
+case "$action" in
+	keygen)
+		do_keygen
+		;;
+	edit)
+		if [[ -z "$env_name" ]]; then
+			echo "Missing required flag --env" >&2
+			exit 1
+		fi
+		do_edit
+		;;
+	env)
+		if [[ -z "$env_name" ]]; then
+			echo "Missing required flag --env" >&2
+			exit 1
+		fi
+		do_env
+		;;
+	verify)
+		do_verify
+		;;
+	*)
+		echo "Unknown action: $action. Expected edit|env|verify|keygen" >&2
+		exit 1 ;;
+esac

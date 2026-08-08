@@ -28,6 +28,7 @@ nav:
       - Git Hooks: ../rules/10-githooks.md
       - Commitizen: ../rules/11-commitizen.md
       - Gitignore: ../rules/12-gitignore.md
+      - Gestión de Secretos: ../rules/13-secrets.md
 
 plugins:
   - search:

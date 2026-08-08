@@ -15,13 +15,18 @@ set -euo pipefail
 #   PRE_COMMIT_TARGET=validate  make validate en vez de make lint
 #   PRE_PUSH_TARGET=docs        make docs en vez de make test
 #
+# Gates de secretos (regla 13):
+#   pre-commit: gitleaks git --staged (fast, solo archivos staged)
+#   pre-push:   trufflehog git file://. (historial completo)
+#
 # Para agentes de IA: este script es la capa única de ejecución de
 # git hooks. Los dispatchers en .githooks/ solo lo invocan con
-# --action. La lógica de lint/test/commit-msg vive aquí.
+# --action. La lógica de lint/test/commit-msg/secretos vive aquí.
 #
 # Instalación:
 #   bash helpers/shell/hooks.sh --action install
 #   → git config core.hooksPath .githooks
+#   → bootstrap de Commitizen + gitleaks + trufflehog
 #
 # Auditoría: /var/log/<proyecto>/log-hooks-<ts>.log
 #             Fallback → /tmp/<proyecto>/log-hooks-<ts>.log
@@ -89,18 +94,54 @@ case "$action" in
 		else
 			echo "No cz.sh helper found. Commitizen no se instalará."
 		fi
+		echo ""
+		echo "Herramientas recomendadas para gates de seguridad (regla 13):"
+		if command -v gitleaks >/dev/null 2>&1; then
+			echo "  gitleaks: detectado."
+		else
+			echo "  gitleaks: NO detectado. Instalar con: brew install gitleaks"
+		fi
+		if command -v trufflehog >/dev/null 2>&1; then
+			echo "  trufflehog: detectado."
+		else
+			echo "  trufflehog: NO detectado. Instalar con: brew install trufflehog"
+		fi
 		;;
 	pre-commit)
 		local_target="${target:-${PRE_COMMIT_TARGET:-lint}}"
 		echo "Running pre-commit: make ${local_target}"
 		make "${local_target}"
 		echo "pre-commit passed: make ${local_target}"
+		echo ""
+		if command -v gitleaks >/dev/null 2>&1; then
+			echo "Running secret scan: gitleaks git --staged..."
+			gitleaks git --staged
+			echo "gitleaks: sin secretos detectados."
+		else
+			echo "WARNING: gitleaks no instalado. No se verificaron secretos en staged."
+			echo "Instalar con: brew install gitleaks"
+			if [ -f "helpers/shell/secrets.sh" ]; then
+				bash helpers/shell/secrets.sh --action verify
+			fi
+		fi
 		;;
 	pre-push)
 		local_target="${target:-${PRE_PUSH_TARGET:-test}}"
 		echo "Running pre-push: make ${local_target}"
 		make "${local_target}"
 		echo "pre-push passed: make ${local_target}"
+		echo ""
+		if command -v trufflehog >/dev/null 2>&1; then
+			echo "Running secret scan: trufflehog git file://. ..."
+			trufflehog git file://. --no-verification --fail 2>&1 || {
+				echo "trufflehog detectó posibles secretos en el historial." >&2
+				exit 1
+			}
+			echo "trufflehog: sin secretos detectados."
+		else
+			echo "WARNING: trufflehog no instalado. No se verificó el historial de secretos."
+			echo "Instalar con: brew install trufflehog"
+		fi
 		;;
 	commit-msg)
 		if [[ -z "$message_file" ]]; then

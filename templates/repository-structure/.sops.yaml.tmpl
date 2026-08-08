@@ -1,0 +1,12 @@
+# .sops.yaml — Configuración de cifrado con sops + age.
+# Template de referencia: templates/repository-structure/.sops.yaml.tmpl
+# Para el agente de IA:
+#   1. Genera una clave age: age-keygen -o ~/.age/<nombre-proyecto>-key.txt
+#   2. Obtén la clave pública: age-keygen -y ~/.age/<nombre-proyecto>-key.txt
+#   3. Añade la clave pública en creation_rules → age:
+#   4. El archivo .secrets/secrets.<env>.enc.yaml se crea con just edit-secrets <env>
+
+creation_rules:
+  - age:
+      # Reemplazar por la clave pública del proyecto
+      - age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

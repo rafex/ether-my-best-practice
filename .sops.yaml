@@ -1,0 +1,11 @@
+# .sops.yaml — Configuración de cifrado con sops + age.
+# Regla 13: Gestión de Secretos a través http://ether-my-best-practice/
+# Para generar una clave age:
+#   age-keygen -o ~/.age/ether-my-best-practice-key.txt
+#   age-keygen -y ~/.age/ether-my-best-practice-key.txt
+#   # Copiar la clave pública aquí abajo
+
+creation_rules:
+  - age:
+      # Añadir la(s) clave(s) pública(s) del equipo
+      - age1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

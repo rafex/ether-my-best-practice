@@ -140,6 +140,7 @@ cp templates/gitignore/.gitignore.python.tmpl source/backend/python/api/.gitigno
 - [Regla 05: Control de Versiones](05-version-control.md) — todo artefacto y secreto debe excluirse del versionado.
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — estructura `source/<rol>/<lenguaje>/<proyecto>/`.
 - [Regla 11: Commitizen](11-commitizen.md) — `.githooks/.tools/.commitizen-venv/` debe ignorarse.
+- [Regla 13: Gestión de Secretos](13-secrets.md) — `.secrets/*.enc.yaml` permitidos, `.env.*` ignorados.
 - [templates/gitignore/](../templates/gitignore/) — biblioteca de templates de `.gitignore` por contexto.
 - [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder del espejo.
 

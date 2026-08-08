@@ -89,18 +89,54 @@ case "$action" in
 		else
 			echo "No cz.sh helper found. Commitizen no se instalará."
 		fi
+		echo ""
+		echo "Herramientas recomendadas para gates de seguridad (regla 13):"
+		if command -v gitleaks >/dev/null 2>&1; then
+			echo "  gitleaks: detectado."
+		else
+			echo "  gitleaks: NO detectado. Instalar con: brew install gitleaks"
+		fi
+		if command -v trufflehog >/dev/null 2>&1; then
+			echo "  trufflehog: detectado."
+		else
+			echo "  trufflehog: NO detectado. Instalar con: brew install trufflehog"
+		fi
 		;;
 	pre-commit)
 		local_target="${target:-${PRE_COMMIT_TARGET:-lint}}"
 		echo "Running pre-commit: make ${local_target}"
 		make "${local_target}"
 		echo "pre-commit passed: make ${local_target}"
+		echo ""
+		if command -v gitleaks >/dev/null 2>&1; then
+			echo "Running secret scan: gitleaks git --staged..."
+			gitleaks git --staged
+			echo "gitleaks: sin secretos detectados."
+		else
+			echo "WARNING: gitleaks no instalado. No se verificaron secretos en staged."
+			echo "Instalar con: brew install gitleaks"
+			if [ -f "helpers/shell/secrets.sh" ]; then
+				bash helpers/shell/secrets.sh --action verify
+			fi
+		fi
 		;;
 	pre-push)
 		local_target="${target:-${PRE_PUSH_TARGET:-test}}"
 		echo "Running pre-push: make ${local_target}"
 		make "${local_target}"
 		echo "pre-push passed: make ${local_target}"
+		echo ""
+		if command -v trufflehog >/dev/null 2>&1; then
+			echo "Running secret scan: trufflehog git file://. ..."
+			trufflehog git file://. --no-verification --fail 2>&1 || {
+				echo "trufflehog detectó posibles secretos en el historial." >&2
+				exit 1
+			}
+			echo "trufflehog: sin secretos detectados."
+		else
+			echo "WARNING: trufflehog no instalado. No se verificó el historial de secretos."
+			echo "Instalar con: brew install trufflehog"
+		fi
 		;;
 	commit-msg)
 		if [[ -z "$message_file" ]]; then
