@@ -50,13 +50,13 @@ log_info "Goal: $goal"
 log_info "MkDocs file: ${mkdocs_file:-default}"
 log_info "Site dir: $site_dir"
 
-resolve_cmd() {
+	resolve_cmd() {
 	local file_flag=""
 	if [[ -n "$mkdocs_file" ]]; then
 		file_flag="-f $mkdocs_file"
 	fi
 	case "$goal" in
-		build) echo "mkdocs build $file_flag --site-dir \"$site_dir\"" ;;
+		build) echo "mkdocs build $file_flag --site-dir \"$workspace/$site_dir\"" ;;
 		serve) echo "mkdocs serve $file_flag" ;;
 		*)     echo "" ;;
 	esac
