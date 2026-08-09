@@ -1,144 +1,46 @@
+# Justfile — Task manager de operativas (no proxy pass de make).
+# Las tareas de construcción/artefactos están en el Makefile.
+# Justfile orquesta acciones compuestas, captura parámetros y organiza por dominio.
+# Justfile → Makefile está permitido cuando se necesiten artefactos.
+
 set dotenv-load
 
 lang := env_var_or_default("LANG", "java")
 build_tool := env_var_or_default("BUILD_TOOL", "maven")
 module := env_var_or_default("MODULE", ".")
-profile := env_var_or_default("PROFILE", "dev")
-skip_tests := env_var_or_default("SKIP_TESTS", "false")
-app_justfile := env_var_or_default("APP_JUSTFILE", "helpers/just/app.just")
-just_dir := env_var_or_default("JUST_DIR", "helpers/just")
 
-# Mostrar tareas disponibles
+# Default: listar tareas disponibles
 @default:
     just --list
 
-# Cargar tareas operativas de aplicación desde helpers/just/app.just
-# Si no existe, se imprime guía sin fallar el flujo base.
-@ops:
-    if [ -f "{{app_justfile}}" ]; then \
-        just --justfile "{{app_justfile}}" --list; \
-    else \
-        echo "No existe {{app_justfile}}"; \
-        echo "Agrega helpers/just/app.just para tareas como create-user/login/db-create"; \
-    fi
+# Importar dominios operativos (pueden agregarse más)
+import 'helpers/just/app.just'
+import 'helpers/just/users.just'
+import 'helpers/just/auth.just'
+import 'helpers/just/hooks.just'
 
-# Listar módulos just disponibles (N archivos por dominio/funcionalidad)
-@ops-modules:
-    if [ -d "{{just_dir}}" ]; then \
-        ls "{{just_dir}}"/*.just 2>/dev/null || echo "No hay módulos .just en {{just_dir}}"; \
-    else \
-        echo "No existe {{just_dir}}"; \
-    fi
+# --- Tareas que orquestan (composición de pasos, NO proxy pass) ---
 
-# Ejecutar receta en un módulo just específico
-@ops-run module recipe *args:
-    module_file="{{just_dir}}/{{module}}.just"; \
-    if [ -f "$$module_file" ]; then \
-        just --justfile "$$module_file" "{{recipe}}" {{args}}; \
-    else \
-        echo "No existe $$module_file"; \
-        exit 1; \
-    fi
+# Preview del sitio: compilar + levantar servidor local
+@preview-site:
+    make docs
+    bash helpers/shell/serve.sh --action serve
 
-# Ejemplo operativo: crear usuario
-@create-user username email:
-    if [ -f "{{app_justfile}}" ]; then \
-        just --justfile "{{app_justfile}}" create-user "{{username}}" "{{email}}"; \
-    else \
-        echo "No existe {{app_justfile}}"; \
-        exit 1; \
-    fi
+# Crear usuario (ejemplo de dominio — la lógica real en users.sh)
+@new-user username email:
+    make serve
+    bash helpers/shell/users.sh --new {{username}} {{email}}
 
-# Ejemplo operativo: login
+# Login de usuario (ejemplo de dominio)
 @login username password:
-    if [ -f "{{app_justfile}}" ]; then \
-        just --justfile "{{app_justfile}}" login "{{username}}" "{{password}}"; \
-    else \
-        echo "No existe {{app_justfile}}"; \
-        exit 1; \
-    fi
+    bash helpers/shell/auth.sh --login {{username}} {{password}}
 
-# Construir el proyecto
-@build:
-    echo "Building project (lang={{lang}}, tool={{build_tool}}, module={{module}}, profile={{profile}})..."
-    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} SKIP_TESTS={{skip_tests}} make build
+# Desplegar: build + test + release
+@deploy:
+    make ci
+    make release
 
-# Ejecutar tests
-@test:
-    echo "Running tests (lang={{lang}}, tool={{build_tool}}, module={{module}}, profile={{profile}})..."
-    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} make test
-
-# Limpiar artefactos
-@clean:
-    echo "Cleaning build artifacts..."
-    rm -rf build/
-    rm -rf dist/
-    rm -rf site/
-
-# Generar documentación con MkDocs (compartido vía docs.sh)
-@docs:
-    bash helpers/shell/docs.sh --goal build
-
-# Servir la aplicación en modo desarrollo (operativa de Justfile).
-# Ejemplos multilenguaje que un agente puede poner aquí:
-#   just serve LANG=javascript           -> npm run dev / npm start
-#   just serve LANG=python               -> uv run uvicorn / flask run
-#   just serve LANG=java                 -> mvn exec:java / gradle bootRun
-#   just serve LANG=rust                 -> cargo run
-#   just serve LANG=docs                 -> mkdocs serve
-#
-# Flujo recomendado: construir primero y luego servir.
-# Los scripts por lenguaje en helpers/shell/{lang}.sh atienden --goal serve.
-@serve:
-    @echo "Serving app (lang={{lang}}, tool={{build_tool}})..."; \
-    helper="helpers/shell/{{lang}}.sh"; \
-    if [[ "{{lang}}" == "docs" ]]; then \
-        make docs; \
-        echo "Starting mkdocs serve..."; \
-        bash helpers/shell/docs.sh --goal serve; \
-    elif [ -f "$$helper" ]; then \
-        echo "Building first..."; \
-        LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} make build; \
-        echo "Starting {{lang}} server..."; \
-        bash "$$helper" --tool {{build_tool}} --goal serve --port 3000; \
-    else \
-        echo "No helper found for lang={{lang}}. Expected $$helper"; \
-        echo "Agrega helpers/shell/{{lang}}.sh con soporte para --goal serve"; \
-        exit 1; \
-    fi
-
-# Disparar workflow de GitHub Pages (compartido con Makefile vía github.sh)
-@pages:
-    bash helpers/shell/github.sh --action workflow-run --workflow static.yml --ref main
-
-# Validar estilo de código
-@lint:
-    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} make lint
-
-# Formatear código
-@format:
-    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} make format
-
-# Detectar runtime de contenedor
-@runtime:
-    make runtime
-
-# Construir imagen de CI
-@image:
-    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} SKIP_TESTS={{skip_tests}} make image
-
-# Ejecutar CI local en contenedor
-@ci:
-    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} SKIP_TESTS={{skip_tests}} make ci
-
-# Asegurar artefactos antes de operativas que lo requieran
-@ensure-artifact:
-    LANG={{lang}} BUILD_TOOL={{build_tool}} MODULE={{module}} PROFILE={{profile}} SKIP_TESTS={{skip_tests}} make ci
-
-# Ejecutar todas las validaciones
-@validate: lint test
-
-# Preparar para release
+# Preparar release: bump + changelog + tag + push
 @prepare-release version:
     git tag -a v{{ version }} -m "Release v{{ version }}"
     git push origin v{{ version }}

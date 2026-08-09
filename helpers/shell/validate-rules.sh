@@ -14,7 +14,7 @@ WARNINGS=0
 # Lista blanca de secciones permitidas para reglas (excluye 00-index)
 # ------------------------------------------------------------------
 MANDATORY_SECTIONS=("Premisa" "Restricciones" "Ejemplos" "Referencias")
-OPTIONAL_SECTIONS=("Estructura" "Nombres Sugeridos" "Comandos" "Plantilla")
+OPTIONAL_SECTIONS=("Estructura" "Nombres Sugeridos" "Comandos" "Plantilla" "Default Help" "Justfile como Task Manager (no proxy pass)" "Hooks y Makefile/Justfile" "Scripts Atómicos vs Scripts de Dominio")
 # Índice no requiere frontmatter ni estas secciones
 INDEX_FILE="00-index.md"
 

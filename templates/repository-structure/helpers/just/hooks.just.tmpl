@@ -1,0 +1,6 @@
+# helpers/just/hooks.just — Operativas de git hooks.
+# commit-msg es operativa de mantenimiento → Justfile.
+
+# Validar convención de commits (operativa de mantenimiento, no construcción)
+@commit-msg:
+    bash helpers/shell/commit-msg.sh "$@"

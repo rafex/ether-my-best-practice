@@ -1,0 +1,14 @@
+# helpers/just/auth.just — Dominio de autenticación.
+# Ejemplo de módulo Just para operativas de un dominio funcional.
+
+# Iniciar sesión
+@login username password:
+    bash helpers/shell/auth.sh --login {{username}} {{password}}
+
+# Cerrar sesión
+@logout:
+    bash helpers/shell/auth.sh --logout
+
+# Refrescar token
+@refresh-token:
+    bash helpers/shell/auth.sh --refresh-token

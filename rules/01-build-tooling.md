@@ -9,7 +9,7 @@ tags: [build, tooling, makefile, justfile, helpers, shell, python]
 
 ## Premisa
 
-Todo proyecto debe tener un sistema de construcción declarativo y reproducible, independientemente del lenguaje. La responsabilidad es única en la capa de build: el `Makefile` orquesta objetivos y variables; la lógica específica vive en helpers reutilizables.
+Todo proyecto debe tener un sistema de construcción declarativo y reproducible, independientemente del lenguaje. La responsabilidad se separa en tres capas: **Makefile** (construcción, artefactos, derivados de compilación), **Justfile** (task manager — orquesta acciones que pueden envolver `make` + operativa del binario, y tareas de día a día), y **helpers** (scripts que contienen la lógica real). Makefile y Justfile tienen lógica casi 0: solo proveen variables y orquestan llamadas. El script es el que realmente ejecuta.
 
 > **Nota:** esta regla describe el `Makefile` y `Justfile` de **proyectos consumidores** — los que un agente genera copiando las plantillas de [templates/](../templates/). El `Makefile` y `Justfile` en la raíz de este repositorio (`ether-my-best-practice`) son puramente operativos: publicar el sitio, validar reglas, lint y format.
 
@@ -221,6 +221,74 @@ Política de ruta:
 1. `/var/log/<nombre-proyecto>/log-<script>-<timestamp>.log`
 2. Fallback: `/tmp/<nombre-proyecto>/log-<script>-<timestamp>.log`
 
+## Default Help
+
+Tanto Makefile como Justfile deben tener por defecto la ayuda/listado de comandos disponibles. Si se invoca sin target/receta, debe mostrar las opciones. Esto evita que un error sin argumentos ejecute algo no deseado.
+
+```make
+# Makefile — default = help
+.DEFAULT_GOAL := help
+help:
+	@echo "make build - Build del proyecto"
+	@echo "make test  - Ejecutar tests"
+	...
+```
+
+```justfile
+# Justfile — default = list
+@default:
+    just --list
+```
+
+## Justfile como Task Manager (no proxy pass)
+
+Justfile es el **orquestador de tareas operativas**: no construye, sino que **compone** acciones. No debe tener recetas que solo deleguen en `make` sin agregar valor de composición o captura de parámetros.
+
+### Ejemplos correctos (task manager)
+
+```bash
+# Composición de varias llamadas
+just preview-site    # → make docs + make docs-preview
+
+# Captura de parámetros + paso a script atómico
+just new-user alice alice@example.com
+# → make serve (si necesita artefactos)
+# → bash helpers/shell/users.sh --new alice alice@example.com
+```
+
+### Ejemplos incorrectos (proxy pass — antipatrón)
+
+```bash
+# Estas recetas NO aportan valor: solo delegan sin composición ni parámetros.
+@validate: make validate     # antipatrón
+@lint:    make lint          # antipatrón
+@docs:    make docs          # antipatrón
+```
+
+Si una operativa solo necesita delegar en make, el usuario puede ejecutar `make` directamente. Justfile existe para **orquestar acciones compuestas**, no para ser un alias de make.
+
+### Módulos por dominio
+
+Los archivos `.just` se organizan por dominio funcional:
+
+```
+helpers/just/
+├── users.just       # @new-user, @delete-user, @activate
+├── auth.just        # @login, @logout, @refresh-token
+├── billing.just     # @create-invoice, @apply-discount
+└── hooks.just       # @commit-msg (operativas de hooks)
+```
+
+El `Justfile` raíz importa los dominios o expone recetas que componen múltiples pasos.
+
+## Hooks y Makefile/Justfile
+
+Los hooks de git llaman a **Makefile o Justfile** según la naturaleza del gate:
+- Gates de **calidad/construcción** (`pre-commit`: lint, validate, secrets; `pre-push`: test, ci) → **Makefile** (vía `.mk` que delega en scripts).
+- Gates de **mantenimiento** (`commit-msg`: validación de formato) → **Justfile** (vía receta que delega en script).
+
+Los dispatchers `.githooks/*` llaman a `make <target>` o `just <receta>`, nunca a scripts directamente. Ver regla 10 para el detalle completo.
+
 ## Restricciones
 
 ### Prohibiciones absolutas
@@ -229,6 +297,8 @@ Política de ruta:
 - **`Makefile → Justfile` está prohibido.** La capa de build/artefactos pertenece a Makefile; la capa de tareas operativas pertenece a Justfile.
 - **`Justfile → Makefile` está permitido** (cuando una operativa necesite artefactos generados por el build).
 - **`Justfile → helpers/just → shell/python/binarios` está permitido.**
+- **Justfile no debe ser un proxy pass de Makefile.** Recetas que solo delegan en `make` sin composición ni parámetros (`@validate: make validate`) son un antipatrón. Justfile existe para orquestar: componer varios pasos o capturar parámetros del usuario y pasarlos a scripts.
+- **Makefile y Justfile tienen lógica casi 0.** Solo proveen variables y orquestan llamadas. La lógica real vive en helpers (`shell` o `python`).
 - **Nunca usar parámetros posicionales ambiguos** en helpers. Siempre flags explícitos (`--flag valor`).
 - **Nunca ejecutar un helper sin auditoría.** Flujo obligatorio de logs: `/var/log/<proyecto>` → fallback `/tmp/<proyecto>`.
 

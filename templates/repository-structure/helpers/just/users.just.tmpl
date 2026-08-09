@@ -1,0 +1,19 @@
+# helpers/just/users.just — Dominio de usuarios.
+# Ejemplo de módulo Just para operativas de un dominio funcional.
+# Cada receta orquesta scripts atómicos (nunca duplica lógica).
+
+# Crear un nuevo usuario
+@new-user username email:
+    bash helpers/shell/users.sh --new {{username}} {{email}}
+
+# Eliminar un usuario
+@delete-user username:
+    bash helpers/shell/users.sh --delete {{username}}
+
+# Activar un usuario
+@activate username:
+    bash helpers/shell/users.sh --activate {{username}}
+
+# Listar usuarios
+@list-users:
+    bash helpers/shell/users.sh --list

@@ -9,7 +9,10 @@ tags: [git, hooks, pre-commit, pre-push, commit-msg, release, conventional-commi
 
 ## Premisa
 
-Todo proyecto debe tener gates locales de calidad mediante git hooks que reutilicen la capa única de ejecución de `helpers/`. Los hooks son **gates puros** (sin efectos laterales): lint antes de commit y test antes de push. El `CHANGELOG.md` y el archivo `VERSION` se generan exclusivamente en release (`just prepare-release`), nunca en hooks.
+Todo proyecto debe tener gates locales de calidad mediante git hooks. Los hooks son **gates puros** (sin efectos laterales). **Cada hook tiene su propio script** (`pre-commit.sh`, `pre-push.sh`, `commit-msg.sh`) para máxima reutilización. Los dispatchers `.githooks/*` llaman a **Makefile o Justfile** según la naturaleza del gate, nunca a scripts directamente:
+- `pre-commit` y `pre-push` → **gates de calidad/construcción → Makefile** (vía `.mk` que delega en el script).
+- `commit-msg` → **operativa de mantenimiento → Justfile** (vía receta que delega en el script).
+`hooks.sh` queda solo para `install` (bootstrap + `core.hooksPath`).
 
 > **Co-propiedad con [Regla 11: Commitizen](11-commitizen.md):** esta regla define los gates (pre-commit, pre-push, commit-msg); la regla 11 define la herramienta que los respalda — Commitizen como asistente de commit convencional, generador de changelog y gestor de versiones. Ambas son **co-propietarias** del objetivo: commit + release gestionado.
 
@@ -20,32 +23,36 @@ Todo proyecto debe tener gates locales de calidad mediante git hooks que reutili
 ```
 proyecto/
 ├── .githooks/                       # git hooks (fuente única, no se copian)
-│   ├── pre-commit                   # → hooks.sh --action pre-commit (lint)
-│   ├── pre-push                     # → hooks.sh --action pre-push (test)
-│   └── commit-msg                   # → hooks.sh --action commit-msg
+│   ├── pre-commit                   # → make pre-commit
+│   ├── pre-push                     # → make pre-push
+│   └── commit-msg                   # → just commit-msg
 │
 ├── helpers/
+│   ├── mk/
+│   │   ├── pre-commit.mk            # gate de calidad: lint + validate + secrets
+│   │   └── pre-push.mk              # gate de test: test + ci
 │   ├── shell/
-│   │   ├── hooks.sh                 # lógica central de hooks
-│   │   └── commit-msg.sh            # validador de Conventional Commits
-│   └── python/
-│       ├── changelog.py             # generador de CHANGELOG.md (release-time)
-│       └── version.py               # lector/bumper de VERSION (release-time)
+│   │   ├── hooks.sh                 # solo install (bootstrap + core.hooksPath)
+│   │   ├── pre-commit.sh            # orquesta: lint + validate + secrets-verify
+│   │   ├── pre-push.sh              # orquesta: test + trufflehog
+│   │   └── commit-msg.sh            # valida Conventional Commits
+│   └── just/
+│       └── hooks.just               # recipe @commit-msg → commit-msg.sh
 │
 ├── VERSION                          # versión actual (bumpeada en prepare-release)
 ├── CHANGELOG.md                     # generado en prepare-release
-└── Justfile                         # recipes: hooks-install, prepare-release, version, changelog
+└── Justfile                         # importa hooks.just
 ```
 
 ### Flujo de delegación
 
 ```
-git commit  → .githooks/pre-commit  → helpers/shell/hooks.sh --action pre-commit  → make lint
-git push    → .githooks/pre-push    → helpers/shell/hooks.sh --action pre-push    → make test
-git commit  → .githooks/commit-msg  → helpers/shell/hooks.sh --action commit-msg  → commit-msg.sh
+git commit  → .githooks/pre-commit  → make pre-commit  → pre-commit.mk  → pre-commit.sh  → orquesta scripts atómicos (lint + validate + secrets)
+git push    → .githooks/pre-push    → make pre-push    → pre-push.mk    → pre-push.sh    → orquesta scripts atómicos (test + secrets)
+git commit  → .githooks/commit-msg  → just commit-msg  → hooks.just     → commit-msg.sh  → valida Conventional Commits
 ```
 
-Los dispatchers en `.githooks/` son scripts de 2 líneas que solo invocan `hooks.sh`. La lógica de lint/test/commit-msg vive en los helpers compartidos, reutilizando la cadena `Makefile → .mk → script`.
+Los dispatchers en `.githooks/` son scripts de 1 línea que **solo** invocan `make <target>` o `just <receta>`, **nunca** scripts directamente. La lógica de cada gate vive en su propio script (`pre-commit.sh`, `pre-push.sh`, `commit-msg.sh`), reutilizando scripts atómicos (`lint.sh`, `validate-rules.sh`, `secrets.sh verify`, `test.sh`).
 
 ### Instalación
 
@@ -61,8 +68,9 @@ No se copian ni symlinkean hooks a `.git/hooks/`. La configuración `core.hooksP
 
 - Carpeta: `.githooks/` (oculta, en raíz del repositorio).
 - Hooks: `pre-commit`, `pre-push`, `commit-msg` — nombres estándar de git.
-- Helpers: `hooks.sh` (despachador), `commit-msg.sh` (validación), `changelog.py`, `version.py`.
-- Variables de entorno para sobrescribir gates: `PRE_COMMIT_TARGET` (default: `lint`), `PRE_PUSH_TARGET` (default: `test`).
+- Helpers: `hooks.sh` (solo install), `pre-commit.sh`, `pre-push.sh`, `commit-msg.sh` — **un script por hook** (máxima reutilización).
+- Módulos make: `pre-commit.mk` (gates de calidad), `pre-push.mk` (gates de test/ci).
+- Módulos just: `hooks.just` (recipe `commit-msg`).
 - Recipes Justfile: `hooks-install`, `prepare-release`, `version`, `changelog`.
 
 ## Comandos
@@ -104,9 +112,9 @@ just prepare-release 1.2.0
 ### Gates manuales (idéntico a lo que ejecutan los hooks)
 
 ```bash
-bash helpers/shell/hooks.sh --action pre-commit     # make lint
-bash helpers/shell/hooks.sh --action pre-push       # make test
-bash helpers/shell/hooks.sh --action commit-msg .git/COMMIT_EDITMSG
+make pre-commit      # → pre-commit.mk → pre-commit.sh → lint + validate + secrets
+make pre-push        # → pre-push.mk → pre-push.sh → test + secrets
+just commit-msg      # → hooks.just → commit-msg.sh
 ```
 
 ## Ejemplos
@@ -115,33 +123,35 @@ bash helpers/shell/hooks.sh --action commit-msg .git/COMMIT_EDITMSG
 
 ```bash
 #!/usr/bin/env bash
-exec bash helpers/shell/hooks.sh --action pre-commit
+make pre-commit
 ```
 
-### Dispatcher con override de target (para repo docs)
+### Dispatcher pre-push
 
 ```bash
 #!/usr/bin/env bash
-PRE_COMMIT_TARGET=validate exec bash helpers/shell/hooks.sh --action pre-commit
+make pre-push
 ```
 
-### hooks.sh (dispatch central)
+### Dispatcher commit-msg
 
 ```bash
-case "$action" in
-  pre-commit)
-    local_target="${PRE_COMMIT_TARGET:-lint}"
-    make "${local_target}"
-    ;;
-  pre-push)
-    local_target="${PRE_PUSH_TARGET:-test}"
-    make "${local_target}"
-    ;;
-  commit-msg)
-    bash helpers/shell/commit-msg.sh "$msg_file"
-    ;;
-esac
+#!/usr/bin/env bash
+just commit-msg "$1"
 ```
+
+### pre-commit.sh (orquesta scripts atómicos)
+
+```bash
+#!/usr/bin/env bash
+# Orquesta los gates de calidad del pre-commit.
+# Llamado por make pre-commit → pre-commit.mk.
+bash helpers/shell/lint.sh || exit 1
+bash helpers/shell/validate-rules.sh || exit 1
+if command -v gitleaks >/dev/null 2>&1; then gitleaks git --staged; fi
+```
+
+### hooks.sh (solo install)
 
 ### commit-msg validación
 
@@ -171,7 +181,7 @@ CHANGELOG.md generated (version 1.2.0, changes since v1.1.0)
 - **CHANGELOG.md y VERSION se generan exclusivamente en release-time** con `just prepare-release`, llamando a `helpers/python/changelog.py` y `version.py`.
 - **Los hooks son gates puros:** lint/test/validation, sin efectos laterales. Si un hook escribe archivos, está mal diseñado.
 - **No copiar hooks a `.git/hooks/`** ni usar symlinks. Usar `git config core.hooksPath .githooks` (fuente única de verdad).
-- **Los dispatchers en `.githooks/` no contienen lógica.** Solo invocan `hooks.sh`. La lógica vive en helpers.
+- **Los dispatchers en `.githooks/` llaman a `make <target>` o `just <receta>`, nunca a scripts directamente.** La lógica vive en un script por hook (`pre-commit.sh`, `pre-push.sh`, `commit-msg.sh`) que orquesta scripts atómicos.
 - **commit-msg valida Conventional Commits alineado con [Regla 05](05-version-control.md).** Merge commits y initial commit se ignoran.
 - **Los hooks nunca deben tener dependencias externas** que no estén disponibles en el entorno de desarrollo (solo bash, git, y los helpers del proyecto).
 - **Los hooks no deben romper el flujo de desarrollo.** Si un gate falla, debe mostrar un mensaje claro de qué corregir y cómo.

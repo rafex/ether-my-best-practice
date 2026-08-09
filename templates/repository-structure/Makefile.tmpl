@@ -1,7 +1,8 @@
 .PHONY: help build test clean runtime image ci
 
-# Punto de entrada universal.
+# Punto de entrada universal — Solo construcción/artefactos.
 # La lógica específica por lenguaje se delega a helpers.
+# Justfile es el task manager; aquí solo build, test, clean, ci.
 
 LANG ?= java
 BUILD_TOOL ?= maven
@@ -12,49 +13,30 @@ MK_FILES ?= $(wildcard helpers/mk/*.mk)
 SITE_DIR ?= site
 PAGES_WORKFLOW ?= static.yml
 PAGES_REF ?= main
-BUILD_CMD ?=
-TEST_CMD ?=
-CLEAN_PATHS ?= build dist site
 
 # Carga modular: permite N archivos .mk por lenguaje, dominio o capability.
 -include $(MK_FILES)
 
+.DEFAULT_GOAL := help
+
 help:
-	@echo "Tareas disponibles:"
+	@echo "Makefile — Construcción (build/artefactos)"
 	@echo "  make build    - Ejecutar build del proyecto"
 	@echo "  make test     - Ejecutar tests del proyecto"
 	@echo "  make clean    - Limpiar artefactos del proyecto"
-	@echo "  make runtime  - Detectar podman/docker"
+	@echo "  make docs     - Generar documentación"
+	@echo "  make pages    - Publicar sitio en GitHub Pages"
 	@echo "  make image    - Construir imagen de CI"
 	@echo "  make ci       - Ejecutar build+test en contenedor"
-	@echo "  make pages-build - Generar el sitio MkDocs en $(SITE_DIR)"
-	@echo "  make clean    - Limpiar artefactos"
-	@echo "  make docs     - Generar documentación"
-	@echo "  make lint     - Validar estilo de código"
+	@echo "  make lint     - Validar sintaxis de código"
 	@echo "  make format   - Formatear código"
 	@echo ""
-	@echo "Ejemplos multi-lenguaje:"
-	@echo "  make build LANG=java BUILD_TOOL=maven"
-	@echo "  make test LANG=python BUILD_TOOL=uv"
-	@echo "  make build LANG=javascript BUILD_TOOL=pnpm"
-	@echo "  make test LANG=rust BUILD_TOOL=cargo"
-	@echo "  make ci LANG=java BUILD_TOOL=gradle"
-	@echo "  make pages"
+	@echo "  make pre-commit   - Gate de calidad (lint + validate + secrets)"
+	@echo "  make pre-push     - Gate de test (test + secrets)"
+	@echo ""
+	@echo "Modular: los targets viven en helpers/mk/*.mk."
+	@echo "Operativas → just <receta> (task manager)."
 
-# Regla de máxima reutilización: el Makefile nunca ejecuta comandos directos
-# (mkdocs build, uv run, npm run, etc.). Todo target se define en helpers/mk/*.mk
-# y delega en helpers/shell/*.sh o helpers/python/*.py.
-#
-# Estructura de delegación:
-#   make build  → helpers/mk/build.mk      → helpers/shell/build.sh
-#   make test   → helpers/mk/build.mk      → helpers/shell/test.sh
-#   make clean  → helpers/mk/build.mk      → helpers/shell/clean.sh
-#   make runtime→ helpers/mk/container.mk  → helpers/shell/container.sh
-#   make image  → helpers/mk/container.mk  → helpers/shell/container.sh
-#   make ci     → helpers/mk/container.mk  → helpers/shell/container.sh
-#   make docs   → helpers/mk/docs.mk       → helpers/shell/docs.sh
-#   make pages  → helpers/mk/github.mk     → helpers/shell/github.sh
-#   make lint   → helpers/mk/lint.mk       → helpers/shell/lint.sh
-#   make format → helpers/mk/format.mk     → helpers/shell/format.sh
-#
-# Variables de orquestación que los .mk comparten:
+# Regla de máxima reutilización: el Makefile nunca ejecuta comandos directos.
+# Todo target se define en helpers/mk/*.mk y delega en helpers/shell/*.sh.
+# Justfile orquesta tareas operativas (composición de varios pasos, captura de parámetros).

@@ -151,6 +151,24 @@ success("Proceso completado")
 
 Agregar una nueva función a `commons.sh` o `logs.py` impacta **automáticamente** a todos los helpers que las sourcean/importan. Ejemplo: añadir `log_json <data>` a `logs.sh` → disponible en todos los helpers shell sin modificar ninguno.
 
+## Scripts Atómicos vs Scripts de Dominio
+
+Los scripts se organizan en dos niveles:
+
+**Scripts atómicos** — una responsabilidad, una función, reutilizables:
+- `helpers/shell/lint.sh` — valida sintaxis de un lenguaje.
+- `helpers/shell/validate-rules.sh` — valida estructura de reglas.
+- `helpers/shell/secrets.sh verify` — verifica secretos.
+- `helpers/shell/docs.sh` — build/serve de documentación.
+- `lib/logs.sh`, `lib/messages.sh` — librerías comunes.
+
+**Scripts de dominio** — orquestan scripts atómicos para una operación compuesta:
+- `helpers/shell/pre-commit.sh` — orquesta `lint.sh` + `validate-rules.sh` + `secrets.sh verify`.
+- `helpers/shell/users.sh` — orquesta `validate.sh` + `db.sh` + `lib/`.
+- `helpers/shell/pre-push.sh` — orquesta test scripts + `trufflehog`.
+
+Un script de dominio **nunca duplica** lógica de un atómico. Si necesita validar sintaxis, llama a `lint.sh`; nunca reimplementa el parseo de sintaxis. Si necesita logging, usa `lib/`; nunca redefine `init_log`.
+
 ## Restricciones
 
 - **Nunca duplicar lógica de lib en un helper ejecutable.** Si un bloque de código se repite en 2+ helpers, extraerlo a `lib/`.
