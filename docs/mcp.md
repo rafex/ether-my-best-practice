@@ -4,7 +4,7 @@ El servidor MCP `ether-rules` está disponible como paquete Python instalable. E
 
 ## Descarga
 
-El paquete se distribuye como wheel en los [Releases de GitHub](https://github.com/rafex/ether-my-best-practice/releases/latest).
+El paquete se distribuye como wheel en los [Releases de GitHub](https://github.com/rafex/ether-my-best-practice/releases/latest). Consulta la **[guía de instalación por sistema operativo](mcp-install.md)** para instrucciones completas (Linux, macOS, Windows) y la configuración automática en Claude Code, Codex y opencode.
 
 - **Última versión:** [Releases/latest](https://github.com/rafex/ether-my-best-practice/releases/latest)
 

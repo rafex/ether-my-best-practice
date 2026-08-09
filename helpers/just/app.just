@@ -9,3 +9,7 @@
 # Empaquetar el MCP (construcción → make)
 @app-package:
     make package
+
+# Instalar el MCP y configurarlo en los clientes (Claude, Codex, opencode)
+@app-install:
+    bash helpers/shell/mcp-install.sh --action install

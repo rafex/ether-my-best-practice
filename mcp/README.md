@@ -10,20 +10,17 @@ Servidor **Model Context Protocol** que expone las [reglas](https://my-best-prac
 
 ## Instalación
 
-### Desde el wheel descargable (recomendado)
+### Instalación automática (recomendado)
 
 ```bash
-# Descargar el wheel desde https://github.com/rafex/ether-my-best-practice/releases/latest
-uv tool install ./ether_mcp_my_best_practices-1.0.0-py3-none-any.whl
+curl -sL https://raw.githubusercontent.com/rafex/ether-my-best-practice/main/helpers/shell/mcp-install.sh | bash
 ```
 
-El comando `ether-mcp` quedará disponible en el PATH.
+El instalador descarga el wheel, verifica checksum, instala y configura Claude Code, Codex y opencode.
 
-### Con uvx (ejecución directa sin instalar)
+### Instalación manual por SO
 
-```bash
-uvx ether-mcp-my-best-practices
-```
+Consulta la **[guía de instalación por sistema operativo](https://my-best-practice.rafex.io/mcp-install/)** para Linux, macOS y Windows con pasos detallados.
 
 ## Configuración en el cliente
 
