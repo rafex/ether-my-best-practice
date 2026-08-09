@@ -6,11 +6,12 @@ source "$SCRIPT_DIR/lib/messages.sh"
 init_log "release"
 
 # ------------------------------------------------------------------
-# release.sh — CD pipeline: package, release, deploy.
-# Orquestado por Makefile, usado por el workflow release.yml.
+# release.sh — CD pipeline: package, release.
+# Orquestado por Makefile: make package / make release.
+# No incluye deploy — la orquestación la hace el Makefile.
 #
 # Contrato (regla 01):
-#   --action package|release|deploy|version
+#   --action package|release
 #
 # Auditoría: helpers/shell/lib/logs.sh (regla 15)
 # ------------------------------------------------------------------
@@ -73,21 +74,7 @@ case "$action" in
 		success "  https://github.com/rafex/ether-my-best-practice/releases/tag/$tag"
 		;;
 
-	deploy)
-		step 1 3 "Ejecutando validate..."
-		bash "$workspace/helpers/shell/validate-rules.sh" || die "validate falló"
-
-		step 2 3 "Empaquetando..."
-		bash "$workspace/helpers/shell/release.sh" --action package || die "package falló"
-
-		step 3 3 "Publicando release..."
-		bash "$workspace/helpers/shell/release.sh" --action release || die "release falló"
-
-		success "Deploy completo. Enlace del portal:"
-		success "  https://github.com/rafex/ether-my-best-practice/releases/latest"
-		;;
-
 	*)
-		die "Unknown action: $action. Expected package|release|deploy." >&2
+		die "Unknown action: $action. Expected package|release." >&2
 		;;
 esac

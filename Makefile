@@ -56,5 +56,6 @@ package:
 release:
 	bash helpers/shell/release.sh --action release
 
-deploy:
-	bash helpers/shell/release.sh --action deploy
+deploy: validate package release
+	@echo "Deploy completo."
+	@echo "  Portal: https://github.com/rafex/ether-my-best-practice/releases/latest"
