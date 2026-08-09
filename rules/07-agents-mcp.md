@@ -18,7 +18,7 @@ Las reglas y plantillas de este repositorio deben ser accesibles a agentes de IA
 ### Servidor MCP
 
 ```
-helpers/mcp/
+mcp/
 ├── source/
 │   ├── server.py          # MCPServer: @mcp.resource, @mcp.tool, @mcp.prompt
 │   ├── config.py          # rutas (RULES_DIR, TEMPLATES_DIR)
@@ -69,7 +69,7 @@ helpers/mcp/
   "mcpServers": {
     "ether-rules": {
       "command": "uv",
-      "args": ["run", "--directory", "helpers/mcp", "python", "source/server.py"],
+      "args": ["run", "--directory", "mcp", "python", "source/server.py"],
       "env": { "RULES_DIR": "rules", "TEMPLATES_DIR": "templates" }
     }
   }
@@ -81,7 +81,7 @@ helpers/mcp/
 ### Ejecutar el servidor MCP
 
 ```bash
-uv run --directory helpers/mcp python source/server.py
+uv run --directory mcp python source/server.py
 ```
 
 ### Instalar el MCP en un cliente (Claude, opencode)
@@ -98,7 +98,7 @@ cp templates/repository-structure/mcp/mcp-config.json.tmpl mcp-config.json
 
 ```python
 # Smoke test — desde el intérprete Python con uv
-uv run --directory helpers/mcp python -c "
+uv run --directory mcp python -c "
 from source.server import mcp
 print('Server:', mcp.name)
 "
@@ -124,7 +124,7 @@ El agente invoca el prompt `scaffold_project(slug="patos", stack="java+maven")` 
 - **El servidor MCP no requiere clonar el repositorio.** El cliente ejecuta `uv run` apuntando a la ruta del server; el server lee `rules/` y `templates/` del sistema de archivos local.
 - **Las plantillas son cascarones reutilizables, no proyectos finales.** El agente copia y adapta, nunca modifica el repositorio de reglas.
 - **No reescribir reglas en prompts de usuario.** El agente usa las tools `get_rule`/`search_rules`, no resúmenes desactualizados.
-- **El venv del MCP (`helpers/mcp/.venv/`) no se versiona.** Está en `.gitignore`; `uv run` gestiona las dependencias automáticamente.
+- **El venv del MCP (`mcp/.venv/`) no se versiona.** Está en `.gitignore`; `uv run` gestiona las dependencias automáticamente.
 - **El servidor importa `lib/logs.py`, `lib/messages.py`, `lib/colors.py`, `lib/exceptions.py`** (regla 15) — la capa de libs es compartida entre helpers y MCP.
 - **Los resources aceptan parámetros en la URI** (ej. `rules://{id}`) usando el formato de template de MCP.
 - **`scaffold_project` genera en un destino dado por el agente**, no en el repositorio de reglas.

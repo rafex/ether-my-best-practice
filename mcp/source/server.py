@@ -4,7 +4,7 @@ MCP Server ether-rules — expone reglas, templates y herramientas
 del estándar Ether Best Practices como Resources, Tools y Prompts
 para agentes de IA (Claude, opencode, Copilot).
 
-Ejecutar: uv run python helpers/mcp/source/server.py
+Ejecutar: uv run python mcp/source/server.py
 Config:   mcp-config.json → "ether-rules" server.
 """
 
