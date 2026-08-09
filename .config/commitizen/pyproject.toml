@@ -6,11 +6,11 @@ version_scheme = "pep440"
 tag_format = "v$version"
 version_files = [
     "pyproject.toml:version",
-    "../../VERSION",
-    "../../mcp/pyproject.toml:version",
-    "../../mcp/ether_mcp_my_best_practices/__init__.py:__version__",
-    "../../Cargo.toml:version",
-    "../../package.json:version",
+    "VERSION",
+    "mcp/pyproject.toml:version",
+    "mcp/ether_mcp_my_best_practices/__init__.py:__version__",
+    "Cargo.toml:version",
+    "package.json:version",
 ]
 update_changelog_on_bump = true
 changelog_file = "../../CHANGELOG.md"
