@@ -27,6 +27,9 @@ from config import (
     DOCS_DIR,
     list_rules_files,
     parse_frontmatter,
+    list_all_templates,
+    find_rule_by_id,
+    templates_index,
 )
 
 log = get_logger("mcp-ether-rules")
@@ -48,28 +51,24 @@ def resource_rules_index() -> str:
 
 @mcp.resource("rules://{rule_id}")
 def resource_rule(rule_id: str) -> str:
-    """Regla individual por ID (ej. 01-build-tooling, 11-commitizen)."""
-    for fname in list_rules_files():
-        if rule_id in fname:
-            with open(os.path.join(RULES_DIR, fname)) as f:
-                return f.read()
+    """Regla individual por ID (ej. build-tooling, 11-commitizen). Match exacto por frontmatter id, fallback a filename."""
+    fname = find_rule_by_id(rule_id)
+    if fname:
+        with open(os.path.join(RULES_DIR, fname)) as f:
+            return f.read()
     return f"No se encontró la regla '{rule_id}'."
 
 
 @mcp.resource("templates://index")
 def resource_templates_index() -> str:
-    """Índice de templates del repositorio."""
-    path = os.path.join(REPO_STRUCTURE_DIR, "README.md")
-    if os.path.isfile(path):
-        with open(path) as f:
-            return f.read()
-    return "Estructura de templates no encontrada."
+    """Índice global de templates (repository-structure, gitignore, rule-template)."""
+    return templates_index()
 
 
 @mcp.resource("templates://{path:path}")
 def resource_template(path: str) -> str:
-    """Template específico por ruta relativa (ej. Makefile.tmpl, helpers/shell/lint.sh.tmpl)."""
-    full = os.path.join(REPO_STRUCTURE_DIR, path)
+    """Template por ruta relativa global (ej. repository-structure/Makefile.tmpl, gitignore/.gitignore.java.tmpl, rule-template.md.tmpl)."""
+    full = os.path.join(TEMPLATES_DIR, path)
     if os.path.isfile(full):
         with open(full) as f:
             return f.read()
@@ -133,11 +132,11 @@ def list_rules() -> list[dict]:
 
 @mcp.tool()
 def get_rule(rule_id: str) -> str:
-    """Obtiene el contenido completo de una regla por su id (ej. 01-build-tooling)."""
-    for fname in list_rules_files():
-        if rule_id in fname:
-            with open(os.path.join(RULES_DIR, fname)) as f:
-                return f.read()
+    """Obtiene el contenido completo de una regla por su id (ej. build-tooling, 01-build-tooling). Match exacto por frontmatter id, fallback a filename."""
+    fname = find_rule_by_id(rule_id)
+    if fname:
+        with open(os.path.join(RULES_DIR, fname)) as f:
+            return f.read()
     return f"No se encontró la regla '{rule_id}'."
 
 
@@ -163,20 +162,14 @@ def search_rules(query: str) -> list[dict]:
 
 @mcp.tool()
 def list_templates() -> list[str]:
-    """Lista todos los templates disponibles en repository-structure."""
-    templates = []
-    for root, dirs, files in os.walk(REPO_STRUCTURE_DIR):
-        dirs[:] = [d for d in dirs if d not in (".githooks", "site", ".gitkeep")]
-        for f in files:
-            rel = os.path.relpath(os.path.join(root, f), REPO_STRUCTURE_DIR)
-            templates.append(rel)
-    return sorted(templates)
+    """Lista todos los templates disponibles (repository-structure, gitignore, rule-template). Filtra .gitkeep."""
+    return list_all_templates()
 
 
 @mcp.tool()
 def get_template(path: str) -> str:
-    """Obtiene un template por su ruta relativa dentro de repository-structure."""
-    full = os.path.join(REPO_STRUCTURE_DIR, path)
+    """Obtiene un template por su ruta relativa global (repository-structure/..., gitignore/..., rule-template.md.tmpl)."""
+    full = os.path.join(TEMPLATES_DIR, path)
     if os.path.isfile(full):
         with open(full) as f:
             return f.read()
