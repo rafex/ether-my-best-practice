@@ -82,6 +82,25 @@ case "$action" in
 		gh workflow run "$workflow" --ref "$ref" "${gh_args[@]}"
 		echo "Workflow $workflow disparado correctamente en $ref"
 		;;
+	release-create)
+		if ! command -v gh >/dev/null 2>&1; then
+			echo "GitHub CLI (gh) no está disponible. Instala gh para crear releases." >&2
+			exit 1
+		fi
+		tag="${2:-}"
+		asset="${3:-}"
+		if [[ -z "$tag" ]]; then
+			echo "Missing tag for release-create" >&2
+			exit 1
+		fi
+		echo "Creando GitHub Release $tag..."
+		gh_args=(--title "$tag — Ether Best Practices" --generate-notes)
+		if [[ -n "$asset" && -f "$asset" ]]; then
+			gh_args+=("$asset")
+		fi
+		gh release create "$tag" "${gh_args[@]}"
+		echo "Release $tag creado."
+		;;
 	*)
 		echo "Unknown action: $action" >&2
 		exit 1 ;;

@@ -6,6 +6,7 @@ Bienvenido a la documentación de Ether My Best Practice.
 
 - [Guía de Inicio Rápido](getting-started.md)
 - [Contribuyendo](contributing.md)
+- [Descargar el MCP](mcp.md)
 - [Índice de Reglas](rules/00-index.md)
 
 ## Resumen

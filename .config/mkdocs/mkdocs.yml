@@ -18,6 +18,7 @@ nav:
   - Inicio: index.md
   - Guía de Inicio: getting-started.md
   - Contribuyendo: contributing.md
+  - Descargar el MCP: mcp.md
   - Reglas:
       - Índice: rules/00-index.md
       - Herramientas de Construcción: rules/01-build-tooling.md

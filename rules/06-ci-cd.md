@@ -137,6 +137,8 @@ make ci
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make image`, `make ci`, `make build`, `make test`
 - [Regla 08: Stack Tecnológico](08-stack.md) — Containerfile, podman, imágenes base
 - [.github/workflows/static.yml](../.github/workflows/static.yml) — ejemplo de wrapper para GitHub Pages
+- [.github/workflows/release.yml](../.github/workflows/release.yml) — CD: empaqueta MCP + GitHub Release
+- [Regla 07: Agentes y MCP](07-agents-mcp.md) — paquete distribuible
 - [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl) — targets `runtime`, `image`, `ci`
 - [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
 - [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)

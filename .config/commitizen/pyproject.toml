@@ -7,6 +7,7 @@ tag_format = "v$version"
 version_files = [
     "pyproject.toml:version",
     "../../VERSION",
+    "../../mcp/pyproject.toml:version",
     "../../Cargo.toml:version",
     "../../package.json:version",
 ]

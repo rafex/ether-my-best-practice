@@ -136,7 +136,8 @@ El agente invoca el prompt `scaffold_project(slug="patos", stack="java+maven")` 
 - [Regla 15: Reutilización de Scripts](15-script-reuse.md) — libs comunes (logs, messages, colors, exceptions).
 - [Regla 14: Archivos de Configuración](14-config-files.md) — `.config/` por herramienta.
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers como capa única de ejecución.
-- [mcp-config.json](../mcp-config.json) — configuración del servidor para clientes MCP.
+- [mcp/pyproject.toml](../mcp/pyproject.toml) — paquete Python distribuible (wheel).
+- [mcp/README.md](../mcp/README.md) — manual de instalación y uso.
 - [templates/repository-structure/mcp/](../templates/repository-structure/mcp/) — plantillas del servidor MCP.
 
 ## Plantilla

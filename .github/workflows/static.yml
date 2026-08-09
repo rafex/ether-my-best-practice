@@ -40,6 +40,12 @@ jobs:
       - name: Build site
         run: make docs
 
+      - name: Copy ether-rules content to site
+        run: |
+          mkdir -p site/ether-rules
+          cp -r rules site/ether-rules/rules
+          cp -r templates site/ether-rules/templates
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

@@ -4,7 +4,8 @@ MCP Server ether-rules — expone reglas, templates y herramientas
 del estándar Ether Best Practices como Resources, Tools y Prompts
 para agentes de IA (Claude, opencode, Copilot).
 
-Ejecutar: uv run python mcp/source/server.py
+Paquete instalable: uvx ether-mcp
+Ejecutar en sitio: uv run python mcp/ether_mcp_my_best_practices/server.py
 Config:   mcp-config.json → "ether-rules" server.
 """
 
@@ -12,13 +13,15 @@ import os
 import shutil
 import sys
 
-# Reutilizar libs comunes (regla 15)
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "python", "lib"))
+# Reutilizar libs comunes empaquetadas (regla 15)
+_lib_dir = os.path.join(os.path.dirname(__file__), "lib")
+if os.path.isdir(_lib_dir):
+    sys.path.insert(0, _lib_dir)
 from lib.logs import get_logger
 from lib.messages import success as mcp_success, error as mcp_error, info as mcp_info
 
 from mcp.server import MCPServer
-from config import (
+from ether_mcp_my_best_practices.config import (
     RULES_DIR,
     TEMPLATES_DIR,
     GITIGNORE_DIR,
@@ -406,6 +409,11 @@ def _basic_project_check(target: str) -> str:
     return "Chequeo básico de estructura:\n" + "\n".join(checks)
 
 
-if __name__ == "__main__":
+def main():
+    """Entry point for the installed package (ether-mcp command)."""
     mcp_info("MCP server ether-rules v1.0.0 iniciado")
     mcp.run()
+
+
+if __name__ == "__main__":
+    main()

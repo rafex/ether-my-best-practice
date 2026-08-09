@@ -1,4 +1,4 @@
-.PHONY: help validate lint format link-rules docs pages-build pages clean
+.PHONY: help validate lint format link-rules docs pages-build pages clean version-bump package release deploy
 
 SITE_DIR ?= site
 PAGES_WORKFLOW ?= static.yml
@@ -13,6 +13,10 @@ help:
 	@echo "  make docs          - Generar el sitio MkDocs localmente"
 	@echo "  make pages-build   - Generar el sitio en $(SITE_DIR)"
 	@echo "  make pages         - Disparar el workflow de GitHub Pages"
+	@echo "  make version-bump  - Bump de versión con Commitizen (tag + componentes)"
+	@echo "  make package       - Construir wheel del MCP (mcp/dist/*.whl)"
+	@echo "  make release       - Publicar release en GitHub con el wheel"
+	@echo "  make deploy        - CI completo: validate + package + release"
 	@echo "  make clean         - Eliminar el sitio generado ($(SITE_DIR))"
 	@echo ""
 	@echo "Operativas de levantar (serve) pertenecen a Justfile: just serve"
@@ -42,3 +46,15 @@ pages:
 
 clean:
 	rm -rf "$(SITE_DIR)"
+
+version-bump:
+	bash helpers/shell/cz.sh --action bump
+
+package:
+	bash helpers/shell/release.sh --action package
+
+release:
+	bash helpers/shell/release.sh --action release
+
+deploy:
+	bash helpers/shell/release.sh --action deploy
