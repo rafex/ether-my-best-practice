@@ -8,6 +8,7 @@ version_files = [
     "pyproject.toml:version",
     "../../VERSION",
     "../../mcp/pyproject.toml:version",
+    "../../mcp/ether_mcp_my_best_practices/__init__.py:__version__",
     "../../Cargo.toml:version",
     "../../package.json:version",
 ]
