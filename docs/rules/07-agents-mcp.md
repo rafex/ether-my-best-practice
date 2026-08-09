@@ -9,7 +9,9 @@ tags: [agents, ai, mcp, server, resources, tools, prompts]
 
 ## Premisa
 
-Las reglas y plantillas de este repositorio deben ser accesibles a agentes de IA (Claude, GitHub Copilot, opencode) mediante el **Model Context Protocol (MCP)**, exponiendo resources (datos), tools (acciones) y prompts (plantillas de interacción). El servidor MCP `ether-rules` se implementa en Python con `uv` y reutiliza las librerías comunes (`helpers/python/lib/`) para logging, mensajes, y manejo de errores (regla 15). El agente puede así consultar reglas, buscar por contexto, obtener templates y generar cascarones de proyecto sin clonar el repositorio.
+Las reglas y plantillas de este repositorio deben ser accesibles a agentes de IA (Claude, GitHub Copilot, opencode) mediante el **Model Context Protocol (MCP)**, exponiendo resources (datos), tools (acciones) y prompts (plantillas de interacción). El servidor MCP `ether-rules` se implementa en Python con `uv` y reutiliza las librerías comunes (`helpers/python/lib/`) para logging, mensajes, y manejo de errores (regla 15).
+
+> **El MCP es infraestructura opcional de este repositorio** para disponibilizar las definiciones a agentes. El template `mcp/` del espejo (`repository-structure/mcp/`) es una **sugerencia de intención**, no una obligación. Si un proyecto consumidor no usa agentes MCP, puede omitir la carpeta `mcp/` por completo.
 
 ## Estructura
 

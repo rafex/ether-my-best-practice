@@ -35,7 +35,7 @@ proyecto/
 ├── containers/                      # definiciones de imágenes
 │   └── Containerfile                # imagen CI base
 │
-├── mcp/                             # configuración MCP (opcional)
+├── mcp/                             # SUGERENCIA — MCP opcional (ver regla 07)
 │   └── mcp-config.json
 │
 └── source/                          # código fuente por rol + lenguaje

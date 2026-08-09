@@ -58,12 +58,14 @@ proyecto/
 │   ├── ci/Containerfile.ci          # CI: toolchain completo (build + test + lint)
 │   └── cd/Containerfile             # CD: runtime ligero + herramientas de deploy
 │
-├── mcp/                             # servidor Model Context Protocol (regla 07)
+├── mcp/                             # SUGERENCIA (opcional, regla 07) — servidor MCP
 │   ├── mcp-config.json              # configuración para clientes MCP
-│   └── source/                      # código del servidor
+│   └── source/                      # código del servidor (sugerido)
 │       ├── server.py                # MCPServer: resources, tools, prompts
 │       ├── config.py                # rutas (RULES_DIR, TEMPLATES_DIR)
 │       └── requirements.txt         # mcp>=1.0, PyYAML>=6.0
+│
+│   🛈 Si tu proyecto no usa agentes MCP, puedes omitir esta carpeta.
 │
 └── source/                          # código fuente por rol + lenguaje
     ├── backend/                     # aplicaciones y servicios backend

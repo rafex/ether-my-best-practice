@@ -4,6 +4,19 @@ MCP Server ether-rules — expone reglas, templates y herramientas
 del estándar Ether Best Practices como Resources, Tools y Prompts
 para agentes de IA (Claude, opencode, Copilot).
 
+SUGERENCIA (no obligación): este servidor MCP es opcional. Se incluye
+como guía de intención para proyectos que quieran exponer sus propias
+definiciones a agentes. Recomendamos Python 3.12+ con uv, siguiendo
+la estructura de directorios:
+  mcp/
+  ├── source/
+  │   ├── server.py       (MCPServer con resources/tools/prompts)
+  │   ├── config.py       (rutas RULES_DIR, TEMPLATES_DIR)
+  │   └── requirements.txt (mcp>=1.0, PyYAML>=6.0)
+  └── .venv/              (uv venv — no trackeado, en .gitignore)
+
+Si tu proyecto no consume agentes MCP, puedes omitir mcp/ por completo.
+
 Ejecutar: uv run python helpers/mcp/source/server.py
 Config:   mcp-config.json → "ether-rules" server.
 """
