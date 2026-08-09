@@ -3,11 +3,17 @@
 # messages.sh — Mensajes de UI para helpers shell.
 # Source: source "$(dirname "${BASH_SOURCE[0]}")/lib/messages.sh"
 #
-# Requiere: logs.sh, colors.sh (deben sourcearse antes).
+# Requisito: logs.sh (debe sourcearse antes).
+# Auto-sourcea colors.sh si no se ha hecho.
 # Funciones: success, error, warning, info, step, die, header.
-#
-# Para agentes de IA: usar mensajes estandarizados en vez de echo
-# para mantener consistencia UI y auditoría.
+
+# Auto-source colors.sh si no se ha hecho
+if [[ -z "${COLOR_ENABLED:-}" ]]; then
+    _lib_dir="$(dirname "${BASH_SOURCE[0]:-$0}")"
+    if [[ -f "$_lib_dir/colors.sh" ]]; then
+        source "$_lib_dir/colors.sh"
+    fi
+fi
 # ------------------------------------------------------------------
 
 # success <message>
