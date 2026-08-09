@@ -231,6 +231,24 @@ else
 fi
 
 echo ""
+
+# Verificar capa de helpers completa (helpers/mk/ y helpers/just/)
+echo "Validando estructura de helpers/..."
+HELPERS_MK_DIR="./helpers/mk"
+HELPERS_JUST_DIR="./helpers/just"
+if [ ! -d "$HELPERS_MK_DIR" ]; then
+	echo "  ERROR falta helpers/mk/ (módulos de Makefile por dominio)"
+	((ERRORS++))
+fi
+if [ ! -d "$HELPERS_JUST_DIR" ]; then
+	echo "  ERROR falta helpers/just/ (módulos de Justfile por dominio)"
+	((ERRORS++))
+fi
+if [ -d "$HELPERS_MK_DIR" ] && [ -d "$HELPERS_JUST_DIR" ]; then
+	echo "  Capa de helpers completa (mk/ + just/ + shell/ + python/)."
+fi
+
+echo ""
 echo "----------------------------------------"
 echo "Errores: $ERRORS  |  Warnings: $WARNINGS"
 echo "----------------------------------------"
