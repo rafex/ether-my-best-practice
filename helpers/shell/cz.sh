@@ -108,10 +108,8 @@ case "$action" in
 esac
 
 # Resto de acciones requieren logging y venv
-init_log
-exec > >(tee -a "$log_file") 2>&1
+init_log "cz"
 
-echo "Audit log: $log_file"
 echo "Action: $action"
 echo "Workspace: $workspace"
 
@@ -122,18 +120,18 @@ ensure_venv
 case "$action" in
 	commit)
 		echo "Starting interactive commit assistant..."
-		exec "$CZ_BIN" --config "$CZ_CONFIG" commit "${cz_args[@]}"
+		exec "$CZ_BIN" --config "$CZ_CONFIG" commit ${cz_args[@]+"${cz_args[@]}"}
 		;;
 	changelog)
 		echo "Generating changelog..."
-		"$CZ_BIN" --config "$CZ_CONFIG" changelog "${cz_args[@]}"
+		"$CZ_BIN" --config "$CZ_CONFIG" changelog ${cz_args[@]+"${cz_args[@]}"}
 		;;
 	version)
-		"$CZ_BIN" --config "$CZ_CONFIG" version "${cz_args[@]}"
+		"$CZ_BIN" --config "$CZ_CONFIG" version ${cz_args[@]+"${cz_args[@]}"}
 		;;
 	bump)
 		echo "Bumping version with Commitizen..."
-		"$CZ_BIN" --config "$CZ_CONFIG" bump "${cz_args[@]}"
+		"$CZ_BIN" --config "$CZ_CONFIG" bump --yes ${cz_args[@]+"${cz_args[@]}"}
 		;;
 	init)
 		echo "Iniciando configuración interactiva de Commitizen..."
@@ -142,7 +140,7 @@ case "$action" in
 		echo "  2. Ajusta version_files según los lenguajes del proyecto."
 		echo "  3. Ejecuta 'just version' para verificar la versión configurada."
 		echo ""
-		exec "$CZ_BIN" init "${cz_args[@]}"
+		exec "$CZ_BIN" init ${cz_args[@]+"${cz_args[@]}"}
 		;;
 	*)
 		echo "Unknown action: $action. Expected bootstrap|commit|changelog|version|bump|init" >&2
