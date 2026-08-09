@@ -1,56 +1,94 @@
 # Ether My Best Practice
 
-Plantilla de buenas prácticas para construir APIs REST con reglas consumibles por agentes de IA y plantillas reutilizables que sirven como cascarones de implementación.
+Estándar de buenas prácticas multi-lenguaje con reglas versionadas consumibles por agentes de IA y plantillas reutilizables que sirven como cascarones de implementación.
 
 ## Objetivo
 
 Este repositorio define una base de trabajo para proyectos donde:
 
-- Las reglas de desarrollo viven como documentos versionados en [rules](rules).
-- Los agentes de IA pueden consultar esas reglas mediante archivos o mediante MCP.
-- Las plantillas en [templates](templates) funcionan como esqueletos que los agentes pueden copiar y adaptar para crear proyectos consistentes.
+- Las reglas de desarrollo viven como documentos versionados en [rules](rules) con frontmatter YAML, secciones estandarizadas y validación automática de estructura/enlaces.
+- Los agentes de IA pueden consultar esas reglas por lectura directa o mediante el [servidor MCP](mcp/source/server.py) (`resources`, `tools`, `prompts`).
+- Las plantillas en [templates](templates) funcionan como esqueletos que los agentes copian y adaptan para crear proyectos consistentes.
 
-La intención no es solo documentar estándares, sino permitir que un agente entienda cómo debe construir una API REST siguiendo tu forma de trabajar.
+La intención no es solo documentar estándares, sino permitir que un agente entienda cómo debe construir una API REST — o cualquier componente backend/frontend — siguiendo tu forma de trabajar.
 
 ## Qué contiene
 
-- [rules](rules): reglas de arquitectura, testing, documentación, control de versiones, CI/CD y agentes/MCP.
-- [templates](templates): cascarones reutilizables para Makefile, Justfile, configuración MCP y estructura de proyecto.
-- [docs](docs): documentación MkDocs para navegar el estándar como sitio estático.
-- [helpers/shell/validate-rules.sh](helpers/shell/validate-rules.sh): validación de estructura, enlaces entre reglas y referencias a plantillas.
-- `Makefile` y [Justfile](Justfile): tareas operativas de este repositorio (validar, publicar sitio, lint, format).
+| Capa | Directorio | Contenido |
+|---|---|---|
+| **Definiciones** (objetivo) | [rules](rules) | 16 reglas con frontmatter — build tooling, arquitectura hexagonal, testing, documentación, version control, CI/CD, agentes/MCP, stack, estructura de repo, githooks, commitizen, gitignore, secretos, .config, script reuse. Las marcadas `status: Definida` están completas; las `Borrador` contienen Premisa + Restricciones. |
+| **Definiciones** (objetivo) | [templates](templates) | [repository-structure/](templates/repository-structure) (espejo del proyecto consumidor: `helpers/`, `containers/`, `.config/`, `.githooks/`, `source/`, `Makefile`, `Justfile`), [gitignore/](templates/gitignore) (biblioteca de `.gitignore` por contexto), [rule-template.md.tmpl](templates/rule-template.md.tmpl). |
+| **Operativa** | [.config](.config) | Configuración centralizada de herramientas: commitizen (`pyproject.toml`), mkdocs (`mkdocs.yml` + `requirements.txt`), sops (`.sops.yaml`). |
+| **Operativa** | [mcp](mcp) | Servidor MCP `ether-rules`: expone `rules://`, `templates://`, `gitignore://`, `helpers://`, `docs://` como resources + 9 tools (`scaffold_project`, `search_rules`, …) + 5 prompts. Infraestructura opcional de este repositorio para disponibilizar las definiciones a agentes. [mcp-config.json](mcp-config.json) para clientes. |
+| **Operativa** | [helpers](helpers) | [validate-rules.sh](helpers/shell/validate-rules.sh) (estructura + enlaces + sincronía rules↔docs/rules), [rules-link.sh](helpers/shell/rules-link.sh) (hard links para MkDocs), [serve.sh](helpers/shell/serve.sh) (node static server), [hooks.sh](helpers/shell/hooks.sh) (gates pre-commit/pre-push con gitleaks/trufflehog), [cz.sh](helpers/shell/cz.sh), [secrets.sh](helpers/shell/secrets.sh) (sops+age), [github.sh](helpers/shell/github.sh) (workflows). Librerías comunes en `lib/` (shell: commons, logs, colors, messages, try-catch; python: commons, logs, colors, messages, exceptions). |
+| **Operativa** | [docs](docs) | Documentación MkDocs: index, getting-started, contributing, `rules/` (hard links a las reglas). |
+| **Operativa** | raíz | [Makefile](Makefile) (orquestación: validate, link-rules, docs, pages-build, pages, clean) y [Justfile](Justfile) (operativas: serve, serve-dev, link-rules, hooks-install, commit, changelog, version, prepare-release, cz-init, edit-secrets, env, secrets-verify, keygen). |
+
+> **Separación de responsabilidades:** [rules](rules) y [templates](templates) son **el objetivo del repositorio** (lo que los agentes consumen). Todo lo demás — `.config/`, `mcp/`, `helpers/`, `docs/`, `Makefile`, `Justfile`, `.github/` — atiende únicamente a la **operación de este repositorio**: validar reglas, publicar el sitio, mantener la documentación y disponibilizar las definiciones vía MCP.
 
 ## Cómo lo usaría un agente
 
-1. Lee [rules/00-index.md](rules/00-index.md) para descubrir las reglas disponibles.
-2. Consulta reglas concretas como [rules/02-architecture.md](rules/02-architecture.md) y [rules/07-agents-mcp.md](rules/07-agents-mcp.md).
-3. Usa [templates](templates) como base para generar archivos iniciales de un proyecto API REST.
-4. Mantiene trazabilidad porque las reglas y plantillas están versionadas en el mismo repositorio.
+1. Lee [rules/00-index.md](rules/00-index.md) para descubrir las reglas disponibles (por lectura directa o vía `list_rules()` del MCP).
+2. Consulta reglas concretas con `get_rule("08-stack")` / `search_rules("secretos")` o leyendo los archivos `.md`.
+3. Usa [templates](templates) como base: `scaffold_project("patos", "java")` via MCP, o copia manualmente `repository-structure/` + `gitignore/<lenguaje>`.
+4. Aplica las Restricciones, Comandos y Ejemplos de cada regla al generar código.
+5. Valida con `check_project(dir)` vía MCP o ejecutando `bash helpers/shell/validate-rules.sh` en el proyecto generado.
 
-> **Separación de responsabilidades:** [rules](rules) y [templates](templates) son el objetivo del repositorio (lo que los agentes consumen). `Makefile`, [Justfile](Justfile) y [helpers](helpers) en la raíz atienden únicamente a la operación de este repositorio: validar reglas, publicar el sitio y mantener la documentación.
+También puede conectarse al servidor MCP configurando `mcp-config.json` en su cliente (Claude, opencode):
 
-## Flujo recomendado
+```json
+{
+  "mcpServers": {
+    "ether-rules": {
+      "command": "uv",
+      "args": ["run", "--directory", "mcp", "python", "source/server.py"],
+      "env": { "RULES_DIR": "rules", "TEMPLATES_DIR": "templates" }
+    }
+  }
+}
+```
 
-1. Mantener las reglas como fuente de verdad.
-2. Exponerlas a agentes por lectura directa del repo o mediante MCP.
-3. Usar las plantillas como punto de partida para nuevos servicios.
-4. Ajustar los cascarones generados en el proyecto consumidor sin convertir este repositorio en un proyecto final.
+O ejecutarlo directamente: `uv run --directory mcp python source/server.py`.
 
 ## Operar este repositorio
 
-```bash
-make validate      # Validar estructura y enlaces de reglas y plantillas
-make docs          # Generar el sitio MkDocs
-make pages-build   # Validar reglas + generar sitio
-make pages         # Disparar workflow de GitHub Pages
-```
-
-O con Just:
+### Validación y sitio
 
 ```bash
-just validate
-just docs
-just serve         # Servir documentación localmente
+make validate      # Estructura, enlaces y sincronía rules↔docs/rules (0 errores)
+make link-rules    # Hard links rules/ → docs/rules/ (necesario para MkDocs)
+make docs          # Generar sitio estático (.config/mkdocs/mkdocs.yml)
+make pages-build   # validate + link-rules + docs
+make pages         # Disparar workflow de GitHub Pages (gh workflow run)
+make clean         # Eliminar site/
 ```
 
-El workflow que publica el sitio es [.github/workflows/static.yml](.github/workflows/static.yml). Ejecuta `make validate` + `make docs` como wrapper. El directorio [site](site) no se sube al repositorio: se genera en el workflow y se publica como artefacto de Pages.
+### Just — operativas locales
+
+```bash
+just serve         # Build + npx serve site (static server en :8000)
+just serve-dev     # MkDocs dev server con live-reload
+just link-rules    # Crear/refrescar hard links rules/ → docs/rules/
+```
+
+### Just — githooks, commits y release
+
+```bash
+just hooks-install # Instalar git hooks + bootstrap Commitizen (core.hooksPath)
+just commit        # Asistente de commit (Commitizen)
+just changelog     # Generar CHANGELOG.md desde Conventional Commits
+just version       # Leer/bumpear versión
+just prepare-release # Bump + changelog + tag + commit "chore(release): vX.Y.Z"
+just cz-init       # Configuración interactiva de Commitizen (para humanos)
+```
+
+### Just — secretos
+
+```bash
+just keygen              # age-keygen -o ~/.age/<proyecto>-key.txt
+just edit-secrets dev    # sops edit .secrets/secrets.dev.enc.yaml
+just env dev             # Generar .env.dev desde secrets.dev.enc.yaml
+just secrets-verify      # gitleaks git --staged
+```
+
+El sitio se publica con [.github/workflows/static.yml](.github/workflows/static.yml) (wrapper: `make validate` + `make docs` → Pages). `[site/](site)` y `mcp/.venv/` no se versionan.
