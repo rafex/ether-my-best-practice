@@ -13,7 +13,7 @@ Este repositorio contiene un conjunto de premisas y estándares para el desarrol
 | 3 | **[03-testing.md](03-testing.md)** | Estrategias de testing (TDD, pirámide de tests) |
 | 4 | **[04-documentation.md](04-documentation.md)** | Documentación como código (Markdown, MkDocs) |
 | 5 | **[05-version-control.md](05-version-control.md)** | Control de versiones (Git flow, Conventional Commits) |
-| 6 | **[06-ci-cd.md](06-ci-cd.md)** | Integración y despliegue continuo (Pipelines, GitHub Pages) |
+| 6 | **[06-ci.md](06-ci.md)** | Integración Continua (pipelines, contenedores) |
 | 7 | **[07-agents-mcp.md](07-agents-mcp.md)** | Reglas para agentes de IA y Model Context Protocol |
 | 8 | **[08-stack.md](08-stack.md)** | Stack tecnológico recomendado (versiones, runtimes, contenedores) |
 | 9 | **[09-repository-structure.md](09-repository-structure.md)** | Estructura de repositorio multi-lenguaje por rol |
@@ -23,6 +23,7 @@ Este repositorio contiene un conjunto de premisas y estándares para el desarrol
 | 13 | **[13-secrets.md](13-secrets.md)** | Gestión de secretos con sops+age, gitleaks y trufflehog |
 | 14 | **[14-config-files.md](14-config-files.md)** | Archivos de configuración (.config) — centralización por herramienta |
 | 15 | **[15-script-reuse.md](15-script-reuse.md)** | Reutilización de Scripts — librerías comunes shell y python |
+| 16 | **[16-cd.md](16-cd.md)** | Despliegue Continuo — CD portable, local-first, sops+age |
 
 > **Estado:** cada regla declara su estado (`Definida` | `Borrador`) en el frontmatter YAML del archivo. Las reglas en **Borrador** contienen premisa y restricciones pero aún no alcanzan la profundidad completa (Comandos, Estructura detallada, etc.).
 

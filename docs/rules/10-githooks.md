@@ -190,7 +190,7 @@ CHANGELOG.md generated (version 1.2.0, changes since v1.1.0)
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make lint`, `make test`, capa de helpers.
 - [Regla 05: Control de Versiones](05-version-control.md) — Conventional Commits.
-- [Regla 06: CI/CD](06-ci-cd.md) — pipeline local como complemento a los hooks.
+- [Regla 06: CI](06-ci.md) — pipeline local como complemento a los hooks.
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — `.githooks/` en el árbol del proyecto.
 - [Regla 11: Commitizen](11-commitizen.md) — asistente de commit + release (co-propietaria del objetivo).
 - [Regla 13: Gestión de Secretos](13-secrets.md) — gitleaks (pre-commit) + trufflehog (pre-push).

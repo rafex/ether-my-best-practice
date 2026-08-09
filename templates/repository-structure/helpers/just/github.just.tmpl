@@ -1,0 +1,7 @@
+# helpers/just/github.just — Operativas de GitHub.
+# Publicar release, disparar workflows, etc. (operativas → Justfile).
+
+# Publicar release en GitHub (orquesta make package + github.sh)
+@release:
+    make package
+    bash helpers/shell/github.sh --action release-create

@@ -56,4 +56,4 @@ make test LANG=rust BUILD_TOOL=cargo
 - Kent Beck — Test Driven Development
 - Martin Fowler — TestPyramid
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make test`
-- [Regla 06: CI/CD](06-ci-cd.md) — tests en el pipeline
+- [Regla 06: CI](06-ci.md) — tests en el pipeline

@@ -327,7 +327,7 @@ Los dispatchers `.githooks/*` llaman a `make <target>` o `just <receta>`, nunca 
 
 ## Referencias
 
-- [Regla 06: CI/CD](06-ci-cd.md)
+- [Regla 06: CI](06-ci.md)
 - [Regla 08: Stack Tecnológico](08-stack.md)
 - [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl)
 - [templates/Justfile.tmpl](../templates/repository-structure/Justfile.tmpl)

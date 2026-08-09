@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# deploy.sh — Script de operativa de despliegue.
+# Orquestado por Justfile (cd.just). Descifra secretos + despliega al destino.
+# No construye (la construcción la hace make package antes de llamar).
+
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logs.sh"
+source "$SCRIPT_DIR/lib/messages.sh"
+init_log "deploy"
+
+env_name=""
+mode=""
+host=""
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--env)  env_name="${2:-}"; shift 2 ;;
+		--k8s)  mode="k8s"; shift ;;
+		--ssh)  mode="ssh"; shift ;;
+		--host) host="${2:-}"; shift 2 ;;
+		*) die "Unknown flag: $1" ;;
+	esac
+done
+
+if [[ -z "$env_name" ]]; then
+	die "Missing required --env (dev, prod, staging...)"
+fi
+
+header "Deploy: $env_name"
+
+# Cargar variables del entorno descifradas
+env_file=".env.${env_name}"
+if [[ ! -f "$env_file" ]]; then
+	die "No existe $env_file. Ejecuta 'just env $env_name' primero."
+fi
+set -o allexport
+source "$env_file" 2>/dev/null || die "Error al cargar $env_file"
+set +o allexport
+
+case "$mode" in
+	k8s)
+		step 1 1 "Desplegando a Kubernetes ($env_name)..."
+		kubectl apply -f deploy/ --namespace "${K8S_NAMESPACE:-default}"
+		success "Kubernetes deploy completado."
+		;;
+	ssh)
+		if [[ -z "$host" ]]; then
+			host="${SSH_HOST:-}"
+		fi
+		if [[ -z "$host" ]]; then
+			die "Missing --host or SSH_HOST env var"
+		fi
+		step 1 2 "Sincronizando artefactos a $host..."
+		rsync -avz dist/ "${SSH_USER:-deploy}@${host}:/app/" || die "rsync falló"
+		step 2 2 "Reiniciando servicio en $host..."
+		ssh "${SSH_USER:-deploy}@${host}" "systemctl restart mi-app" || warning "ssh restart falló — verificar manualmente"
+		success "SSH deploy completado a $host."
+		;;
+	*)
+		die "Missing deploy mode: --k8s or --ssh"
+		;;
+esac

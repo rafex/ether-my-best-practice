@@ -10,7 +10,7 @@
 - Regla 03: Estrategias de Testing y TDD.
 - Regla 04: Documentación como Código (Markdown + MermaidJS + MkDocs).
 - Regla 05: Control de Versiones (Git, Conventional Commits).
-- Regla 06: Integración y Despliegue Continuo (CI/CD).
+- Regla 06: Integración y Despliegue Continuo (CI).
 - Regla 07: Agentes de IA y Model Context Protocol (MCP).
 - Regla 08: Stack Tecnológico Recomendado.
 - Regla 09: Estructura de Repositorio (monorepo multi-lenguaje por rol).

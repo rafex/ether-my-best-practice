@@ -50,7 +50,7 @@ make serve            # mkdocs serve (operativa Justfile en proyectos consumidor
 
 ### Publicación
 
-Publicar en GitHub Pages a través de CI/CD: workflow genera `site/` y despliega como artefacto.
+Publicar en GitHub Pages a través de CI: workflow genera `site/` y despliega como artefacto.
 
 ## Referencias
 
@@ -58,5 +58,5 @@ Publicar en GitHub Pages a través de CI/CD: workflow genera `site/` y despliega
 - [MkDocs Material](https://squidfunk.github.io/mkdocs-material/)
 - [mkdocs.yml](../.config/mkdocs/mkdocs.yml)
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make docs`, `make serve`
-- [Regla 06: CI/CD](06-ci-cd.md) — publicación en Pages
+- [Regla 06: CI](06-ci.md) — publicación en Pages
 - [templates/helpers/shell/docs.sh.tmpl](../templates/repository-structure/helpers/shell/docs.sh.tmpl)

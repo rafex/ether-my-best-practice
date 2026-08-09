@@ -17,7 +17,7 @@ Ether My Best Practice es una plantilla de buenas prácticas orientada a proyect
 - 📝 Documentación como código (Markdown + MermaidJS + MkDocs)
 - ✅ Testing y TDD
 - 🔄 Git Flow y Conventional Commits
-- 🚀 CI/CD automatizado con podman/Containerfile
+- 🚀 CI automatizado con podman/Containerfile
 - 🛠️ Stack tecnológico predefinido para consistencia
 - 🤖 Integración con agentes de IA (MCP)
 

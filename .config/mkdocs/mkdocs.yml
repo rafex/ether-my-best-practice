@@ -26,7 +26,7 @@ nav:
       - Testing: rules/03-testing.md
       - Documentación: rules/04-documentation.md
       - Control de Versiones: rules/05-version-control.md
-      - CI/CD: rules/06-ci-cd.md
+      - CI: rules/06-ci.md
       - Agentes IA y MCP: rules/07-agents-mcp.md
       - Stack Tecnológico: rules/08-stack.md
       - Estructura de Repositorio: rules/09-repository-structure.md
@@ -36,6 +36,7 @@ nav:
       - Gestión de Secretos: rules/13-secrets.md
       - Archivos de Configuración: rules/14-config-files.md
       - Reutilización de Scripts: rules/15-script-reuse.md
+      - Despliegue Continuo: rules/16-cd.md
 
 plugins:
   - search:

@@ -1,0 +1,21 @@
+# helpers/just/cd.just — Dominio de despliegue continuo.
+# Operativas de deploy (no construcción — eso es Makefile).
+# Secretos via sops+age (regla 13), orquestación via scripts atómicos.
+
+# Desplegar a un entorno (orquesta make package + secrets + deploy.sh)
+@deploy env:
+    make package
+    bash helpers/shell/secrets.sh --action env --env {{env}}
+    bash helpers/shell/deploy.sh --env {{env}}
+
+# Push a Kubernetes
+@k8s-push env="dev":
+    make package
+    bash helpers/shell/secrets.sh --action env --env {{env}}
+    bash helpers/shell/deploy.sh --k8s --env {{env}}
+
+# Desplegar vía SSH
+@ssh-deploy host env="dev":
+    make package
+    bash helpers/shell/secrets.sh --action env --env {{env}}
+    bash helpers/shell/deploy.sh --ssh --host {{host}} --env {{env}}

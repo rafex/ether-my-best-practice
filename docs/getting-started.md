@@ -101,7 +101,7 @@ El detalle de este enfoque está en [../rules/07-agents-mcp.md](rules/07-agents-
 
 1. Explora las [Reglas](rules/00-index.md)
 2. Copia las plantillas a tu proyecto
-3. Configura CI/CD según [Regla 06](rules/06-ci-cd.md)
+3. Configura CI según [Regla 06](rules/06-ci.md)
 4. Publica documentación en GitHub Pages
 
 > **Nota:** el `Makefile` y `Justfile` en la raíz de este repositorio son para operar el repositorio mismo (validar reglas, publicar sitio). Las plantillas de build/CI que los agentes deben copiar a proyectos consumidores están en [templates/](../templates/).
