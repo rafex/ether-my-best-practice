@@ -7,11 +7,15 @@ tags: [config, dotfiles, organization, tools, structure]
 
 # Regla 14: Archivos de Configuración (.config)
 
-## Premisa
+
+
+### Premisa: Premisa
 
 Todos los archivos de configuración de herramientas del proyecto se concentran en una carpeta `.config/` en la raíz del repositorio, organizados por subcarpeta según el dominio, producto o herramienta: `.config/<herramienta>/archivo`. Ningún archivo de configuración suelto debe quedar en la raíz. Cada herramienta (`mkdocs`, `commitizen`, `sops`) conoce la ruta de su configuración mediante flags explícitos (`-f`, `--config`), resolviendo la ruta desde `ROOT=$(pwd)` con fallback a ruta relativa.
 
-## Estructura
+tags: [obligatorio]
+
+### Estructura: Estructura
 
 ### Árbol de `.config/`
 
@@ -44,7 +48,9 @@ Los helpers (`cz.sh`, `secrets.sh`, `Makefile`) usan la variable `ROOT=$(pwd)`:
 2. Fallback: ruta relativa `.config/<herramienta>/archivo` (funciona si el CWD es la raíz del repo).
 3. Si ninguna existe, usan la búsqueda por defecto de la herramienta.
 
-## Comandos
+tags: [opcional]
+
+### Comando: Comandos
 
 ### MkDocs
 
@@ -79,7 +85,9 @@ just commit                  # → cz --config .config/commitizen/pyproject.toml
 just edit-secrets dev        # → sops --config .config/sops/.sops.yaml edit ...
 ```
 
-## Ejemplos
+tags: [opcional]
+
+### Ejemplo: Ejemplos
 
 ### Configuración de Commitizen en `.config/commitizen/pyproject.toml`
 
@@ -135,7 +143,9 @@ fi
 # Usar con: cz --config "$use_config" <comando>
 ```
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **Ningún archivo de configuración suelto en la raíz.** Todo archivo de configuración de herramienta vive en `.config/<herramienta>/`.
 - **Una subcarpeta por herramienta.** Commitizen tiene su propia subcarpeta, MkDocs la suya, SOPS la suya. No mezclar configuraciones de herramientas distintas en la misma subcarpeta.
@@ -145,7 +155,9 @@ fi
 - **Si la ruta de configuración cambia, se actualizan tanto el helper como la referencia en esta regla y en los templates.**
 - **La estructura `.config/` escala** al agregar nuevas herramientas sin romper las existentes.
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers como capa única de ejecución.
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — `.config/` en el árbol del proyecto.
@@ -156,9 +168,13 @@ fi
 - [templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl](../templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl)
 - [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
 
-## Plantilla
+tags: [obligatorio]
+
+### Plantilla: Plantilla
 
 - [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](../templates/repository-structure/.config/commitizen/pyproject.toml.tmpl)
 - [templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl](../templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl)
 - [templates/repository-structure/.config/mkdocs/requirements.txt.tmpl](../templates/repository-structure/.config/mkdocs/requirements.txt.tmpl)
 - [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
+
+tags: [opcional]

@@ -20,9 +20,9 @@ Este repositorio mantiene reglas de mejores prácticas para APIs REST, documenta
 
 - Las reglas viven en [rules](rules) con formato `NN-topic.md`.
 - Toda regla distinta de [rules/00-index.md](rules/00-index.md) debe incluir frontmatter YAML (`id`, `title`, `status`, `tags`) y un `#` principal.
-- Secciones obligatorias en toda regla: `## Premisa`, `## Restricciones`, `## Ejemplos`, `## Referencias`.
-- Secciones opcionales (whitelist): `## Estructura`, `## Nombres Sugeridos`, `## Comandos`, `## Plantilla`. Las reglas con `status: Definida` requieren `## Comandos` y `## Estructura`.
+- Las reglas usan **bloques tipados**: `### Tipo: Nombre` con `tags: [obligatorio|opcional]`. La taxonomía de 14 tipos y el esquema AST están definidos en `rules/.config/RULES_COMPILER.md`. Ver [docs/contributing.md](docs/contributing.md) para la guía de escritura.
 - Si agregas una regla nueva, usa [templates/rule-template.md.tmpl](templates/rule-template.md.tmpl) como esqueleto. Luego actualiza el índice en [rules/00-index.md](rules/00-index.md) y la navegación en [.config/mkdocs/mkdocs.yml](.config/mkdocs/mkdocs.yml).
+- El compilador (`helpers/python/rules_compiler.py`) valida bloques tipados determinísticamente: `uv run python helpers/python/rules_compiler.py --action validate --all`.
 - Mantén el contenido y los comentarios en español salvo que un archivo existente requiera otro idioma.
 - Conserva enlaces relativos entre reglas y documentación.
 

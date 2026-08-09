@@ -7,11 +7,15 @@ tags: [git, gitignore, secrets, artifacts, templates, security]
 
 # Regla 12: Gitignore y Exclusión de Archivos
 
-## Premisa
+
+
+### Premisa: Premisa
 
 Todo repositorio debe tener un archivo `.gitignore` en la raíz del proyecto, y uno por cada ubicación de código fuente (`source/<rol>/<lenguaje>/<proyecto>/`) con las exclusiones específicas de ese lenguaje. Se disponibiliza una biblioteca de templates en `templates/gitignore/` para que el agente de IA elija los adecuados según el tipo de proyecto, combinando templates de raíz, lenguaje y complementos (secretos, temporales, MCP).
 
-## Estructura
+tags: [obligatorio]
+
+### Estructura: Estructura
 
 ### Biblioteca de templates
 
@@ -43,7 +47,9 @@ templates/
     └── .gitignore.mcp.tmpl
 ```
 
-## Comandos
+tags: [opcional]
+
+### Comando: Comandos
 
 ### Copiar el template de raíz
 
@@ -86,7 +92,9 @@ cat templates/gitignore/.gitignore.mcp.tmpl >> .gitignore
 cat templates/gitignore/.gitignore.temporales.tmpl >> .gitignore
 ```
 
-## Ejemplos
+tags: [opcional]
+
+### Ejemplo: Ejemplos
 
 ### Proyecto multi-lenguaje (backend Java + frontend NodeJS)
 
@@ -124,7 +132,9 @@ cat templates/gitignore/.gitignore.secretos.tmpl >> .gitignore
 cp templates/gitignore/.gitignore.python.tmpl source/backend/python/api/.gitignore
 ```
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **Todo repositorio debe tener un `.gitignore` en la raíz.** Es la primera línea de defensa para evitar que artefactos y secretos lleguen al repositorio.
 - **Nunca versionar secretos ni credenciales:** `.env` (salvo `.env.example`), `*.pem`, `*.key`, `*.p12`, `*.jks`, carpetas `.aws/`, `.ssh/`, tokens. Si un secreto llega al historial de git, rotarlo inmediatamente.
@@ -135,7 +145,9 @@ cp templates/gitignore/.gitignore.python.tmpl source/backend/python/api/.gitigno
 - **La biblioteca `templates/gitignore/` es la fuente de referencia.** El placeholder `templates/repository-structure/.gitignore.tmpl` es mínimo; la biblioteca es la que contiene los patrones completos.
 - **Los templates incluyen comentarios y opciones comentadas** para que el agente decida qué incluir según el framework o herramienta usada.
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Regla 05: Control de Versiones](05-version-control.md) — todo artefacto y secreto debe excluirse del versionado.
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — estructura `source/<rol>/<lenguaje>/<proyecto>/`.
@@ -144,7 +156,9 @@ cp templates/gitignore/.gitignore.python.tmpl source/backend/python/api/.gitigno
 - [templates/gitignore/](../templates/gitignore/) — biblioteca de templates de `.gitignore` por contexto.
 - [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder del espejo.
 
-## Plantilla
+tags: [obligatorio]
+
+### Plantilla: Plantilla
 
 - [templates/gitignore/.gitignore.raiz.tmpl](../templates/gitignore/.gitignore.raiz.tmpl)
 - [templates/gitignore/.gitignore.java.tmpl](../templates/gitignore/.gitignore.java.tmpl)
@@ -156,3 +170,5 @@ cp templates/gitignore/.gitignore.python.tmpl source/backend/python/api/.gitigno
 - [templates/gitignore/.gitignore.temporales.tmpl](../templates/gitignore/.gitignore.temporales.tmpl)
 - [templates/gitignore/.gitignore.mcp.tmpl](../templates/gitignore/.gitignore.mcp.tmpl)
 - [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder
+
+tags: [opcional]

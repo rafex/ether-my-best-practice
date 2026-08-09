@@ -7,13 +7,17 @@ tags: [ci, pipeline, build, test, containers, github-actions]
 
 # Regla 06: Integración Continua
 
-## Premisa
+
+
+### Premisa: Premisa
 
 Toda integración debe ser automatizada, repetible y declarativa. La base de CI debe ser auto-suficiente dentro del repositorio: primero pipeline local en contenedor, luego integración externa (GitHub Actions, GitLab CI, Jenkins) como envoltura opcional que solo **parametriza** variables.
 
 > **Nota:** esta regla describe el pipeline de **Integración Continua** para proyectos consumidores. El **Despliegue Continuo** (CD portable, local-first, con sops+age) se define en la [Regla 16: CD](16-cd.md). El workflow real de este repositorio ([.github/workflows/static.yml](../.github/workflows/static.yml)) es un ejemplo de CI para publicar el sitio de documentación.
 
-## Estructura
+tags: [obligatorio]
+
+### Estructura: Estructura
 
 ### Pipeline base
 
@@ -54,7 +58,9 @@ proyecto/
 └── site/                # Sitio MkDocs (no trackeado)
 ```
 
-## Comandos
+tags: [opcional]
+
+### Comando: Comandos
 
 ### Pipeline local (auto-suficiente)
 
@@ -85,7 +91,9 @@ make pages-build                 # Validar + generar sitio
 make pages                       # Disparar workflow de GitHub Pages
 ```
 
-## Ejemplos
+tags: [opcional]
+
+### Ejemplo: Ejemplos
 
 ### GitHub Actions como wrapper (invoca targets existentes del Makefile)
 
@@ -124,7 +132,9 @@ make ci
     publish_dir: ./site
 ```
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **No depender de runners remotos** para validar la construcción. El pipeline local (`make ci`) debe funcionar en cualquier máquina con `podman` o `docker`.
 - **No duplicar lógica** en los archivos de CI externa. GitHub Actions, GitLab CI o Jenkins deben ser **wrappers/parametrizadores que invocan targets del Makefile** (`make ci`, `make docs`) e inyectan variables. Nunca reescribir la lógica de build ni ser dueños de secretos de la aplicación.
@@ -132,7 +142,9 @@ make ci
 - **No trackear artefactos generados** en el repositorio (`site/`, `target/`, `dist/`, `build/`).
 - **El workflow debe ser declarativo** y ejecutable localmente sin configuración adicional de CI remoto.
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make image`, `make ci`, `make build`, `make test`
 - [Regla 08: Stack Tecnológico](08-stack.md) — Containerfile, podman, imágenes base
@@ -142,7 +154,11 @@ make ci
 - [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
 - [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)
 
-## Plantilla
+tags: [obligatorio]
+
+### Plantilla: Plantilla
 
 - [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
 - [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)
+
+tags: [opcional]

@@ -7,18 +7,24 @@ tags: [git, version-control, conventional-commits, branching, semver]
 
 # Regla 05: Control de Versiones
 
-## Premisa
+
+
+### Premisa: Premisa
 
 Git es el estándar. Mensajes de commit claros y convencionales, branching predecible y versionado semántico facilitan el mantenimiento, la automatización de releases y la lectura por agentes de IA.
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **No hacer push a `main` directamente.** Todo cambio entra vía Pull Request con code review.
 - **No usar mensajes de commit genéricos** (`fix`, `update`, `wip`). Siempre Conventional Commits.
 - **No mantener branches muertas.** Eliminar la rama después del merge.
 - **No crear tags sin seguir Semantic Versioning** (`vMAJOR.MINOR.PATCH`).
 
-## Ejemplos
+tags: [obligatorio]
+
+### Ejemplo: Ejemplos
 
 ### Conventional Commits
 
@@ -54,8 +60,12 @@ git push origin v1.2.0
 
 Formato: `v{MAJOR}.{MINOR}.{PATCH}`
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Semantic Versioning](https://semver.org/)
 - [Regla 10: Git Hooks](10-githooks.md) — commit-msg valida Conventional Commits en cada commit.
+
+tags: [obligatorio]

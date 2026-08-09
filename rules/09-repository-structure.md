@@ -7,11 +7,15 @@ tags: [structure, monorepo, backend, frontend, shared, multi-language, scaffoldi
 
 # Regla 09: Estructura de Repositorio
 
-## Premisa
+
+
+### Premisa: Premisa
 
 Todo proyecto consumidor debe seguir una estructura de repositorio predecible y multi-lenguaje, organizada por **rol** (`backend`, `frontend`, `shared`) y **lenguaje** (`java`, `nodejs`, `python`, `rust`). Un mismo proyecto puede combinar múltiples roles y lenguajes (ej: backend Java + frontend NodeJS + libs compartidas). Los helpers constituyen la capa única de ejecución compartida en la raíz del repositorio, nunca duplicada por lenguaje.
 
-## Estructura
+tags: [obligatorio]
+
+### Estructura: Estructura
 
 ### Tree completo
 
@@ -81,7 +85,9 @@ proyecto/
 
 > Nota: bajo `backend/` y `frontend/` puede haber más de un lenguaje, pero cada proyecto (`<proyecto>/`) pertenece a un solo lenguaje.
 
-## Nombres Sugeridos
+tags: [opcional]
+
+### Nombre Sugerido: Nombres Sugeridos
 
 - **Roles:** `backend`, `frontend`, `shared` — en minúsculas, sin plurales.
 - **Lenguajes:** `java`, `python`, `rust`, `nodejs`, `javascript`. El nombre del lenguaje refleja el ecosistema de build (`java` usa Maven/Gradle; `nodejs` usa npm/pnpm).
@@ -89,7 +95,9 @@ proyecto/
 - **Subdirectorios de helpers:** `mk`, `shell`, `python`, `just` — idénticos bajo `helpers/` y `templates/`.
 - `site/` nunca versionado (`.gitignore`).
 
-## Comandos
+tags: [opcional]
+
+### Comando: Comandos
 
 ### Scaffolding del repositorio
 
@@ -122,7 +130,9 @@ cp templates/helpers/mk/*.tmpl helpers/mk/
 cp templates/helpers/shell/*.tmpl helpers/shell/
 ```
 
-## Ejemplos
+tags: [opcional]
+
+### Ejemplo: Ejemplos
 
 ### Proyecto "patos" — backend Java + frontend NodeJS + libs compartidas
 
@@ -170,7 +180,9 @@ make test   LANG=java       BUILD_TOOL=maven  MODULE=source/backend/java/patos
 make test   LANG=javascript BUILD_TOOL=pnpm   MODULE=source/frontend/nodejs/web
 ```
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **`source/` no mezcla roles dentro de la misma carpeta:** cada rol (`backend/`, `frontend/`, `shared/`) es una carpeta independiente.
 - **Helpers en raíz, nunca duplicados:** `helpers/` está en la raíz del repositorio y es compartido por todos los roles. No se replica dentro de `source/backend/java/` ni `source/frontend/nodejs/`.
@@ -180,7 +192,9 @@ make test   LANG=javascript BUILD_TOOL=pnpm   MODULE=source/frontend/nodejs/web
 - **El rol `shared/` no debe contener lógica de infraestructura** (HTTP, persistencia). Solo DTOs, tipos, contratos, validaciones.
 - **Cada proyecto (`<proyecto>/`) tiene su propia herramienta de build** — no hay un pom.xml global ni un package.json raíz. La orquestación es responsabilidad del Makefile en la raíz.
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — Makefile, Justfile, capa de helpers.
 - [Regla 02: Arquitectura Hexagonal](02-architecture.md) — domain/application/infrastructure/ports.
@@ -191,7 +205,9 @@ make test   LANG=javascript BUILD_TOOL=pnpm   MODULE=source/frontend/nodejs/web
 - [templates/helpers/mk/](../templates/repository-structure/helpers/mk/) y [templates/helpers/shell/](../templates/repository-structure/helpers/shell/) — origen de los helpers copiados a `helpers/`.
 - [templates/gitignore/](../templates/gitignore/) — biblioteca de `.gitignore` por contexto.
 
-## Plantilla
+tags: [obligatorio]
+
+### Plantilla: Plantilla
 
 - [templates/repository-structure/](../templates/repository-structure/) — estructura completa con placeholders para copiar.
 - [templates/helpers/mk/](../templates/repository-structure/helpers/mk/) — módulos Makefile.
@@ -199,3 +215,5 @@ make test   LANG=javascript BUILD_TOOL=pnpm   MODULE=source/frontend/nodejs/web
 - [templates/helpers/just/](../templates/repository-structure/helpers/just/) — operativas de aplicación.
 - [templates/Containerfile.tmpl](../templates/repository-structure/containers/Containerfile.tmpl) — definición de imagen CI.
 - [templates/gitignore/](../templates/gitignore/) — biblioteca de `.gitignore` por ubicación (raíz, java, python, rust, nodejs, container, secretos, temporales, mcp).
+
+tags: [opcional]

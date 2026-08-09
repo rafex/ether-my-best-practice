@@ -7,11 +7,15 @@ tags: [secrets, security, sops, age, encryption, gitleaks, trufflehog]
 
 # Regla 13: Gestión de Secretos
 
-## Premisa
+
+
+### Premisa: Premisa
 
 Ningún secreto viaja en plano en el repositorio. Todo secreto (claves de API, contraseñas de base de datos, tokens, certificados) se cifra con **sops + age** en archivos `.secrets/secrets.<env>.enc.yaml`. La clave privada age vive en el host del desarrollador (`~/.age/<proyecto>-key.txt`) y **nunca** se versiona. Solo los `*.enc.yaml` cifrados se suben al repositorio. Los hooks `pre-commit` (gitleaks) y `pre-push` (trufflehog) bloquean cualquier secreto en plano que intente llegar al historial. Las variables de entorno (`.env.dev`, `.env.prod`, `.env.int`) se generan bajo demanda con `just env <entorno>` y nunca se versionan.
 
-## Estructura
+tags: [obligatorio]
+
+### Estructura: Estructura
 
 ### Componentes del sistema de secretos
 
@@ -92,7 +96,9 @@ else
 fi
 ```
 
-## Nombres Sugeridos
+tags: [opcional]
+
+### Nombre Sugerido: Nombres Sugeridos
 
 - **Carpeta de secretos:** `.secrets/` en raíz del repositorio.
 - **Archivos cifrados:** `secrets.<env>.enc.yaml` (dev, prod, int, staging...).
@@ -101,7 +107,9 @@ fi
 - **Envs generados:** `.env.<env>` (dev, prod, int) — ignorados por git.
 - **Plantilla versionable:** `.env.example` (sin valores, solo nombres de variables).
 
-## Comandos
+tags: [opcional]
+
+### Comando: Comandos
 
 ### Generar clave age (una vez por máquina)
 
@@ -158,7 +166,9 @@ just edit-secrets dev
 just env dev
 ```
 
-## Ejemplos
+tags: [opcional]
+
+### Ejemplo: Ejemplos
 
 ### `.secrets/secrets.dev.enc.yaml` (cifrado, versionable)
 
@@ -200,7 +210,9 @@ API_KEY=sk-dev-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 REDIS_URL=redis://localhost:6379/0
 ```
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **Nunca versionar la clave privada age** (`~/.age/<proyecto>-key.txt`). Cada desarrollador genera su propia clave y añade su clave pública a `.sops.yaml`.
 - **Nunca versionar `.env.*` (`.env.dev`, `.env.prod`, `.env.int`).** Estos se generan con `just env <entorno>` y están en `.gitignore`. La plantilla `.env.example` (sin valores) sí se versiona.
@@ -213,7 +225,9 @@ REDIS_URL=redis://localhost:6379/0
 - **Las claves age son por máquina, no por repositorio compartido.** Si un nuevo desarrollador se une al proyecto, genera su clave age y añade su clave pública a `.sops.yaml`.
 - **Si un secreto se sube en plano por accidente, rotarlo inmediatamente** y eliminarlo del historial (esto implica revocar la clave/token real, no solo borrar el commit).
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Regla 10: Git Hooks](10-githooks.md) — gates de pre-commit y pre-push donde se integran gitleaks y trufflehog.
 - [Regla 12: Gitignore](12-gitignore.md) — `.gitignore.secretos.tmpl` con exclusiones de `.env.*`, `.secrets/*.yaml`, claves.
@@ -226,9 +240,13 @@ REDIS_URL=redis://localhost:6379/0
 - [templates/helpers/shell/secrets.sh.tmpl](../templates/repository-structure/helpers/shell/secrets.sh.tmpl)
 - [templates/gitignore/.gitignore.secretos.tmpl](../templates/gitignore/.gitignore.secretos.tmpl)
 
-## Plantilla
+tags: [obligatorio]
+
+### Plantilla: Plantilla
 
 - [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
 - [templates/repository-structure/.secrets/](../templates/repository-structure/.secrets/)
 - [templates/helpers/shell/secrets.sh.tmpl](../templates/repository-structure/helpers/shell/secrets.sh.tmpl)
 - [templates/gitignore/.gitignore.secretos.tmpl](../templates/gitignore/.gitignore.secretos.tmpl)
+
+tags: [opcional]

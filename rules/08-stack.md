@@ -7,11 +7,15 @@ tags: [stack, versions, java, nodejs, python, podman, containerfile, mermaid]
 
 # Regla 08: Stack Tecnológico Recomendado
 
-## Premisa
+
+
+### Premisa: Premisa
 
 Todo proyecto generado con este estándar debe usar un stack tecnológico predefinido para eliminar ambigüedad de versiones, herramientas y runtimes. Esto garantiza que los agentes de IA generen proyectos consistentes y que los builds sean reproducibles en cualquier entorno.
 
-## Estructura
+tags: [obligatorio]
+
+### Estructura: Estructura
 
 ### Matriz del stack recomendado
 
@@ -40,7 +44,9 @@ helpers/shell/lint.sh        →  lint multi-lenguaje
 helpers/shell/format.sh      →  format multi-lenguaje
 ```
 
-## Nombres Sugeridos
+tags: [opcional]
+
+### Nombre Sugerido: Nombres Sugeridos
 
 - `Containerfile` o `Containerfile.ci` para imágenes de CI (nunca `Dockerfile`).
 - Imágenes base: `alpine:3.20`, `debian:bookworm-slim` (con hash).
@@ -49,7 +55,9 @@ helpers/shell/format.sh      →  format multi-lenguaje
 - Python: entorno gestionado con `uv` + `pyproject.toml`.
 - Node: `.nvmrc` para fijar la versión LTS.
 
-## Comandos
+tags: [opcional]
+
+### Comando: Comandos
 
 ### Verificación del toolchain
 
@@ -83,7 +91,9 @@ make image                     # docker build -f Containerfile.ci ...
 
 El helper `container.sh` emite un warning: `Docker detectado. Podman es la opción recomendada.`
 
-## Ejemplos
+tags: [opcional]
+
+### Ejemplo: Ejemplos
 
 ### Diagrama de arquitectura del stack (MermaidJS)
 
@@ -135,7 +145,9 @@ WARNING: Docker detectado. Podman es la opción recomendada según la regla 08-s
 Container runtime: docker
 ```
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **No usar `Dockerfile` como nombre de archivo.** Usar `Containerfile` o `Containerfile.ci`.
 - **No usar Docker si podman está disponible** — el helper de contenedores lo detecta automáticamente y emite un warning si elige Docker.
@@ -146,7 +158,9 @@ Container runtime: docker
 - **No mezclar sistemas de construcción de documentación** — MkDocs es el estándar único.
 - **No usar Python < 3.12** en nuevos proyectos consumidores.
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers por lenguaje, `container.mk`, `container.sh`
 - [Regla 04: Documentación](04-documentation.md) — Markdown + MermaidJS + MkDocs
@@ -158,8 +172,12 @@ Container runtime: docker
 - [Podman](https://podman.io/)
 - [MermaidJS](https://mermaid.js.org/)
 
-## Plantilla
+tags: [obligatorio]
+
+### Plantilla: Plantilla
 
 - [templates/Containerfile.tmpl](../templates/repository-structure/containers/Containerfile.tmpl)
 - [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
 - [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)
+
+tags: [opcional]

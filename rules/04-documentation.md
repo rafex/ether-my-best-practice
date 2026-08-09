@@ -7,20 +7,26 @@ tags: [documentation, markdown, mkdocs, adr]
 
 # Regla 04: Documentación
 
-## Premisa
+
+
+### Premisa: Premisa
 
 La documentación es código. Debe vivir junto al código fuente, versionarse con Git, ser fácil de mantener y generarse como sitio estático con MkDocs. Los diagramas deben ser código versionable: **MermaidJS** embebido en Markdown, no imágenes binarias (PNG, SVG exportado).
 
 > Ver [Regla 08: Stack Tecnológico](08-stack.md) para la elección del stack de documentación.
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **No mantener documentación fuera del repositorio** (wikis externas, Google Docs, Confluence no versionado).
 - **No duplicar información** entre README, docs/ y docstrings. Cada tipo de documento tiene su propósito.
 - El directorio `site/` **no se versiona** — se genera en CI y se publica como artefacto.
 - Los enlaces entre documentos deben ser relativos y funcionales (el validador los comprueba).
 
-## Ejemplos
+tags: [obligatorio]
+
+### Ejemplo: Ejemplos
 
 ### Estructura de documentación
 
@@ -52,7 +58,9 @@ make serve            # mkdocs serve (operativa Justfile en proyectos consumidor
 
 Publicar en GitHub Pages a través de CI: workflow genera `site/` y despliega como artefacto.
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [MkDocs](https://www.mkdocs.org/)
 - [MkDocs Material](https://squidfunk.github.io/mkdocs-material/)
@@ -60,3 +68,5 @@ Publicar en GitHub Pages a través de CI: workflow genera `site/` y despliega co
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make docs`, `make serve`
 - [Regla 06: CI](06-ci.md) — publicación en Pages
 - [templates/helpers/shell/docs.sh.tmpl](../templates/repository-structure/helpers/shell/docs.sh.tmpl)
+
+tags: [obligatorio]

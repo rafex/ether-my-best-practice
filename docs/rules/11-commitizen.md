@@ -7,13 +7,17 @@ tags: [commitizen, conventional-commits, release, changelog, versioning]
 
 # Regla 11: Commitizen — Commit Convencional y Release
 
-## Premisa
+
+
+### Premisa: Premisa
 
 Commitizen (`cz`) es la herramienta estándar para asistir la creación de commits convencionales y gestionar el release (bump de versión, changelog, tag). Se instala en un entorno virtual interno no trackeable (`.githooks/.tools/.commitizen-venv`) y se accede exclusivamente mediante recetas `just` (nunca `cz` directo). El wrapper `cz.sh` centraliza la lógica de bootstrap y ejecución.
 
 > **Co-propiedad con [Regla 10: Git Hooks](10-githooks.md):** la regla 10 define los gates (lint/test/commit-msg); esta regla define la herramienta que los respalda — el asistente de commit convencional, la generación de changelog y el bump de versión. Ambas son **co-propietarias** del objetivo: commit + release gestionado.
 
-## Estructura
+tags: [obligatorio]
+
+### Estructura: Estructura
 
 ### Componentes del sistema
 
@@ -68,7 +72,9 @@ changelog_file = "CHANGELOG.md"
 bump_message = "chore(release): v$new_version"
 ```
 
-## Comandos
+tags: [opcional]
+
+### Comando: Comandos
 
 ### Instalación (bootstrap del venv)
 
@@ -121,7 +127,9 @@ Para agentes de IA: **no usar `cz init`.** En su lugar, editar directamente `pyp
 bash helpers/shell/cz.sh --action bootstrap
 ```
 
-## Ejemplos
+tags: [opcional]
+
+### Ejemplo: Ejemplos
 
 ### Flujo típico de un release
 
@@ -174,7 +182,9 @@ uv run python helpers/python/version.py
 uv run python helpers/python/changelog.py
 ```
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **`cz` nunca se ejecuta directamente.** Toda interacción con Commitizen es mediante `just` y `cz.sh` (wrapper). Esto garantiza que el venv esté bootstrapeado y la auditoría funcione.
 - **El venv `.githooks/.tools/.commitizen-venv/` no se versiona nunca.** Está en `.gitignore`. El bootstrap lo recrea en cualquier máquina.
@@ -184,7 +194,9 @@ uv run python helpers/python/changelog.py
 - **El bootstrap usa `uv` si está disponible** (regla 08); si no, fallback `python3 -m venv`.
 - **`cz bump` determina la versión automáticamente** desde los commits desde el último tag. Si se necesita una versión explícita, usar `just version --bump <part>` o editar `pyproject.toml:version` y usar `just changelog`.
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Regla 10: Git Hooks](10-githooks.md) — **co-propietaria** del objetivo commit+release. Define los gates; esta regla define la herramienta.
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers como capa única de ejecución (cz.sh).
@@ -196,9 +208,13 @@ uv run python helpers/python/changelog.py
 - [templates/gitignore/.gitignore.raiz.tmpl](../templates/gitignore/.gitignore.raiz.tmpl) — incluye `.githooks/.tools/.commitizen-venv/`.
 - [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder del espejo.
 
-## Plantilla
+tags: [obligatorio]
+
+### Plantilla: Plantilla
 
 - [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](../templates/repository-structure/.config/commitizen/pyproject.toml.tmpl)
 - [templates/helpers/shell/cz.sh.tmpl](../templates/repository-structure/helpers/shell/cz.sh.tmpl)
 - [templates/gitignore/.gitignore.raiz.tmpl](../templates/gitignore/.gitignore.raiz.tmpl)
 - [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder
+
+tags: [opcional]

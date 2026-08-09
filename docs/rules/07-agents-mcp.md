@@ -7,13 +7,17 @@ tags: [agents, ai, mcp, server, resources, tools, prompts]
 
 # Regla 07: Agentes de IA y Model Context Protocol (MCP)
 
-## Premisa
+
+
+### Premisa: Premisa
 
 Las reglas y plantillas de este repositorio deben ser accesibles a agentes de IA (Claude, GitHub Copilot, opencode) mediante el **Model Context Protocol (MCP)**, exponiendo resources (datos), tools (acciones) y prompts (plantillas de interacción). El servidor MCP `ether-rules` se implementa en Python con `uv` y reutiliza las librerías comunes (`helpers/python/lib/`) para logging, mensajes, y manejo de errores (regla 15).
 
 > **El MCP es infraestructura opcional de este repositorio** para disponibilizar las definiciones a agentes. El template `mcp/` del espejo (`repository-structure/mcp/`) es una **sugerencia de intención**, no una obligación. Si un proyecto consumidor no usa agentes MCP, puede omitir la carpeta `mcp/` por completo.
 
-## Estructura
+tags: [obligatorio]
+
+### Estructura: Estructura
 
 ### Servidor MCP
 
@@ -76,7 +80,9 @@ mcp/
 }
 ```
 
-## Comandos
+tags: [opcional]
+
+### Comando: Comandos
 
 ### Ejecutar el servidor MCP
 
@@ -104,7 +110,9 @@ print('Server:', mcp.name)
 "
 ```
 
-## Ejemplos
+tags: [opcional]
+
+### Ejemplo: Ejemplos
 
 ### Flujo completo de un agente con MCP
 
@@ -119,7 +127,9 @@ print('Server:', mcp.name)
 
 El agente invoca el prompt `scaffold_project(slug="patos", stack="java+maven")` y recibe una guía detallada de 7 pasos para generar el proyecto, referenciando las reglas 01, 02, 03, 05, 08, 09, 12, 15.
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **El servidor MCP no requiere clonar el repositorio.** El cliente ejecuta `uv run` apuntando a la ruta del server; el server lee `rules/` y `templates/` del sistema de archivos local.
 - **Las plantillas son cascarones reutilizables, no proyectos finales.** El agente copia y adapta, nunca modifica el repositorio de reglas.
@@ -129,7 +139,9 @@ El agente invoca el prompt `scaffold_project(slug="patos", stack="java+maven")` 
 - **Los resources aceptan parámetros en la URI** (ej. `rules://{id}`) usando el formato de template de MCP.
 - **`scaffold_project` genera en un destino dado por el agente**, no en el repositorio de reglas.
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Model Context Protocol](https://modelcontextprotocol.io/)
 - [Model Context Protocol Python SDK](https://github.com/modelcontextprotocol/python-sdk)
@@ -140,9 +152,13 @@ El agente invoca el prompt `scaffold_project(slug="patos", stack="java+maven")` 
 - [mcp/README.md](../mcp/README.md) — manual de instalación y uso.
 - [templates/repository-structure/mcp/](../templates/repository-structure/mcp/) — plantillas del servidor MCP.
 
-## Plantilla
+tags: [obligatorio]
+
+### Plantilla: Plantilla
 
 - [templates/repository-structure/mcp/mcp-config.json.tmpl](../templates/repository-structure/mcp/mcp-config.json.tmpl)
 - [templates/repository-structure/mcp/source/server.py.tmpl](../templates/repository-structure/mcp/source/server.py.tmpl)
 - [templates/repository-structure/mcp/source/config.py.tmpl](../templates/repository-structure/mcp/source/config.py.tmpl)
 - [templates/repository-structure/mcp/source/requirements.txt.tmpl](../templates/repository-structure/mcp/source/requirements.txt.tmpl)
+
+tags: [opcional]

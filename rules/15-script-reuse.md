@@ -7,11 +7,15 @@ tags: [scripts, libraries, reuse, helpers, shell, python, commons]
 
 # Regla 15: Reutilización de Scripts (Librerías Comunes)
 
-## Premisa
+
+
+### Premisa: Premisa
 
 La lógica común de los helpers debe centralizarse en librerías reutilizables (`helpers/shell/lib/` y `helpers/python/lib/`). Una función independizada es **máxima reutilización**: se escribe una vez, se usa desde cualquier helper, y cualquier mejora impacta a todos los consumidores. Los helpers ejecutables **nunca duplican** lógica que ya existe en `lib/`. Cada función tiene una sola responsabilidad y es independiente del contexto del proyecto.
 
-## Estructura
+tags: [obligatorio]
+
+### Estructura: Estructura
 
 ### Árbol de librerías
 
@@ -60,14 +64,18 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "lib"))
 from lib.logs import get_logger
 ```
 
-## Nombres Sugeridos
+tags: [opcional]
+
+### Nombre Sugerido: Nombres Sugeridos
 
 - **Carpeta de librerías:** `helpers/shell/lib/`, `helpers/python/lib/` — en minúsculas, sin guiones, siempre `lib/`.
 - **Nombres de módulos:** descriptivos del propósito: `commons`, `logs`, `colors`, `messages`, `try-catch` (shell), `commons`, `logs`, `colors`, `messages`, `exceptions` (python). Snake_case para python (`exceptions.py`, no `try_catch.py`).
 - **Funciones de log:** `init_log <script_name>` (shell), `get_logger <name>` (python). El parámetro identifica al script en el archivo de auditoría.
 - **Funciones de mensajes:** `success/error/warning/info/step/die/header` — mismas firmas en ambos lenguajes.
 
-## Comandos
+tags: [opcional]
+
+### Comando: Comandos
 
 ### Shell: sourcear libs y usar funciones
 
@@ -108,7 +116,9 @@ step(1, 3, "Validando configuración")
 success("Proceso completado")
 ```
 
-## Ejemplos
+tags: [opcional]
+
+### Ejemplo: Ejemplos
 
 ### Antes (sin libs): bloque de log duplicado
 
@@ -151,25 +161,9 @@ success("Proceso completado")
 
 Agregar una nueva función a `commons.sh` o `logs.py` impacta **automáticamente** a todos los helpers que las sourcean/importan. Ejemplo: añadir `log_json <data>` a `logs.sh` → disponible en todos los helpers shell sin modificar ninguno.
 
-## Scripts Atómicos vs Scripts de Dominio
+tags: [obligatorio]
 
-Los scripts se organizan en dos niveles:
-
-**Scripts atómicos** — una responsabilidad, una función, reutilizables:
-- `helpers/shell/lint.sh` — valida sintaxis de un lenguaje.
-- `helpers/shell/validate-rules.sh` — valida estructura de reglas.
-- `helpers/shell/secrets.sh verify` — verifica secretos.
-- `helpers/shell/docs.sh` — build/serve de documentación.
-- `lib/logs.sh`, `lib/messages.sh` — librerías comunes.
-
-**Scripts de dominio** — orquestan scripts atómicos para una operación compuesta:
-- `helpers/shell/pre-commit.sh` — orquesta `lint.sh` + `validate-rules.sh` + `secrets.sh verify`.
-- `helpers/shell/users.sh` — orquesta `validate.sh` + `db.sh` + `lib/`.
-- `helpers/shell/pre-push.sh` — orquesta test scripts + `trufflehog`.
-
-Un script de dominio **nunca duplica** lógica de un atómico. Si necesita validar sintaxis, llama a `lint.sh`; nunca reimplementa el parseo de sintaxis. Si necesita logging, usa `lib/`; nunca redefine `init_log`.
-
-## Restricciones
+### Restriccion: Restricciones
 
 - **Nunca duplicar lógica de lib en un helper ejecutable.** Si un bloque de código se repite en 2+ helpers, extraerlo a `lib/`.
 - **Una función, una responsabilidad.** `init_log` inicializa el log, no parsea flags. `parse_common_flags` parsea flags, no inicializa el log. Cada función hace una cosa y la hace bien.
@@ -178,14 +172,39 @@ Un script de dominio **nunca duplica** lógica de un atómico. Si necesita valid
 - **Las libs son no ejecutables** (`source` en shell, `import` en python). No tienen `#!/bin/...` funcional ni `main()`. El punto de entrada son los helpers.
 - **Las libs residen en `helpers/<lang>/lib/`** en el proyecto consumidor. Los templates fuente viven en `templates/repository-structure/helpers/<lang>/lib/`.
 
-## Referencias
+tags: [obligatorio]
+
+### Comando: Sourcear libs en shell e importar en python
+
+```bash
+# Shell: sourcear libs
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logs.sh"
+source "$SCRIPT_DIR/lib/messages.sh"
+init_log "mi-helper"
+```
+
+```python
+# Python: importar libs
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "lib"))
+from lib.logs import get_logger
+from lib.messages import success, error
+log = get_logger("mi-helper")
+```
+
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers como capa única de ejecución.
 - [Regla 14: Archivos de Configuración](14-config-files.md) — configuración de herramientas.
 - [templates/repository-structure/helpers/shell/lib/](../templates/repository-structure/helpers/shell/lib/)
 - [templates/repository-structure/helpers/python/lib/](../templates/repository-structure/helpers/python/lib/)
 
-## Plantilla
+tags: [obligatorio]
+
+### Plantilla: Plantilla
 
 - [templates/repository-structure/helpers/shell/lib/commons.sh.tmpl](../templates/repository-structure/helpers/shell/lib/commons.sh.tmpl)
 - [templates/repository-structure/helpers/shell/lib/logs.sh.tmpl](../templates/repository-structure/helpers/shell/lib/logs.sh.tmpl)
@@ -197,3 +216,5 @@ Un script de dominio **nunca duplica** lógica de un atómico. Si necesita valid
 - [templates/repository-structure/helpers/python/lib/colors.py.tmpl](../templates/repository-structure/helpers/python/lib/colors.py.tmpl)
 - [templates/repository-structure/helpers/python/lib/messages.py.tmpl](../templates/repository-structure/helpers/python/lib/messages.py.tmpl)
 - [templates/repository-structure/helpers/python/lib/exceptions.py.tmpl](../templates/repository-structure/helpers/python/lib/exceptions.py.tmpl)
+
+tags: [opcional]

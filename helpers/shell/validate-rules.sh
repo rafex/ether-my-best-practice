@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Valida estructura de reglas: frontmatter, secciones obligatorias,
-# madurez por estado, enlaces internos y referencias a plantillas.
+# Wrapper de validación de reglas — orquesta y delega en el compilador.
+# Valida: frontmatter, bloques tipados (AST, vía rules_compiler.py),
+# enlaces internos y referencias a plantillas.
 
 set -e
 
@@ -10,160 +11,46 @@ TEMPLATES_DIR="./templates"
 ERRORS=0
 WARNINGS=0
 
-# ------------------------------------------------------------------
-# Lista blanca de secciones permitidas para reglas (excluye 00-index)
-# ------------------------------------------------------------------
-MANDATORY_SECTIONS=("Premisa" "Restricciones" "Ejemplos" "Referencias")
-OPTIONAL_SECTIONS=("Estructura" "Nombres Sugeridos" "Comandos" "Plantilla" "Default Help" "Justfile como Task Manager (no proxy pass)" "Hooks y Makefile/Justfile" "Scripts Atómicos vs Scripts de Dominio")
-# Índice no requiere frontmatter ni estas secciones
 INDEX_FILE="00-index.md"
 
-# ------------------------------------------------------------------
-# Extrae el contenido entre los delimitadores --- de un frontmatter YAML
-# ------------------------------------------------------------------
-extract_frontmatter() {
-	local file="$1"
-	awk '
-		/^---$/ { c++; next }
-		c == 1 { print }
-		c == 2 { exit }
-	' "$file"
-}
-
-# ------------------------------------------------------------------
-# Extrae el valor de un campo del frontmatter (id:, title:, status:, tags:)
-# ------------------------------------------------------------------
-get_frontmatter_value() {
-	local fm="$1"
-	local field="$2"
-	echo "$fm" | grep -E "^${field}:" | head -1 | sed -E "s/^${field}:\s*//" | xargs
-}
-
-# ------------------------------------------------------------------
-# Valida una regla individual
-# ------------------------------------------------------------------
-validate_rule() {
-	local file="$1"
-	local basename
-	basename="$(basename "$file")"
-
-	echo "  Validando $basename..."
-
-	# --- Frontmatter ---
-	local first_line
-	first_line="$(head -1 "$file")"
-	if [[ "$first_line" != "---" ]]; then
-		echo "    ERROR falta frontmatter (---)"
-		((ERRORS++))
-	else
-		local fm
-		fm="$(extract_frontmatter "$file")"
-
-		local has_closing
-		has_closing="$(grep -c '^---$' "$file" || true)"
-		if [[ "$has_closing" -lt 2 ]]; then
-			echo "    ERROR frontmatter no cerrado (falta segundo ---)"
-			((ERRORS++))
-		fi
-
-		local f_id f_title f_status f_tags
-		f_id="$(get_frontmatter_value "$fm" "id")"
-		f_title="$(get_frontmatter_value "$fm" "title")"
-		f_status="$(get_frontmatter_value "$fm" "status")"
-		f_tags="$(get_frontmatter_value "$fm" "tags")"
-
-		if [[ -z "$f_id" ]]; then
-			echo "    ERROR falta id: en frontmatter"
-			((ERRORS++))
-		fi
-		if [[ -z "$f_title" ]]; then
-			echo "    ERROR falta title: en frontmatter"
-			((ERRORS++))
-		fi
-		if [[ "$f_status" != "Definida" && "$f_status" != "Borrador" ]]; then
-			echo "    ERROR status: debe ser 'Definida' o 'Borrador' (encontrado: '$f_status')"
-			((ERRORS++))
-		fi
-		if [[ -z "$f_tags" ]]; then
-			echo "    ERROR falta tags: en frontmatter"
-			((ERRORS++))
-		fi
-	fi
-
-	# --- Secciones obligatorias ---
-	for sec in "${MANDATORY_SECTIONS[@]}"; do
-		if ! grep -q "^## $sec" "$file"; then
-			echo "    ERROR falta sección obligatoria '## $sec'"
-			((ERRORS++))
-		fi
-	done
-
-	# --- Secciones fuera de la lista blanca (warning) ---
-	local all_headers
-	all_headers="$(grep '^## ' "$file" | sed 's/^## //' || true)"
-	local full_whitelist=("${MANDATORY_SECTIONS[@]}" "${OPTIONAL_SECTIONS[@]}" "Plantilla")
-	while IFS= read -r header; do
-		[[ -z "$header" ]] && continue
-		local found=false
-		for w in "${full_whitelist[@]}"; do
-			if [[ "$header" == "$w" ]]; then
-				found=true
-				break
-			fi
-		done
-		if [[ "$found" == false ]]; then
-			echo "    WARNING sección '## $header' no está en la lista blanca (¿typo?)"
-			((WARNINGS++))
-		fi
-	done <<< "$all_headers"
-
-	# --- Regla de madurez: Definida requiere Comandos + Estructura ---
-	if [[ "$f_status" == "Definida" ]]; then
-		if ! grep -q "^## Comandos" "$file"; then
-			echo "    ERROR status=Definida requiere '## Comandos'"
-			((ERRORS++))
-		fi
-		if ! grep -q "^## Estructura" "$file"; then
-			echo "    ERROR status=Definida requiere '## Estructura'"
-			((ERRORS++))
-		fi
-	fi
-}
-
-# ==================================================================
-# MAIN
-# ==================================================================
-
 echo "Validando reglas..."
+echo ""
 
-# Verificar que 00-index.md existe
-if [ ! -f "$RULES_DIR/$INDEX_FILE" ]; then
-	echo "ERROR falta $INDEX_FILE"
-	exit 1
+# === Compilador (motor determinista de bloques tipados) ===
+echo "=== Compilador de Reglas (AST) ==="
+COMPILER="helpers/python/rules_compiler.py"
+if [ -f "$COMPILER" ]; then
+	python3 "$COMPILER" --action validate --all 2>&1 || {
+		((ERRORS++))
+	}
+else
+	echo "  WARNING Compilador no encontrado en $COMPILER"
+	((WARNINGS++))
 fi
+echo ""
 
-# Validar cada regla .md
+# === Frontmatter y enlaces (wrapper bash) ===
+echo "Validando estructura de reglas..."
 for file in "$RULES_DIR"/*.md; do
-	if [ ! -f "$file" ]; then continue; fi
-
+	[ -f "$file" ] || continue
 	base="$(basename "$file")"
 
-	# Título obligatorio para todos
 	if ! grep -q "^# " "$file"; then
 		echo "  ERROR falta título (# ) en $base"
 		((ERRORS++))
 	fi
 
-	# 00-index se valida por separado (sin frontmatter ni secciones obligatorias)
-	if [[ "$base" == "$INDEX_FILE" ]]; then
-		echo "  Validando $base (índice)..."
-		continue
-	fi
+	[[ "$base" == "$INDEX_FILE" ]] && { echo "  Validando $base (índice)..."; continue; }
 
-	validate_rule "$file"
+	# Frontmatter
+	first_line="$(head -1 "$file")"
+	if [[ "$first_line" != "---" ]]; then
+		echo "  ERROR falta frontmatter (---) en $base"
+		((ERRORS++))
+	fi
 done
 
-# Validar enlaces internos entre reglas
+# === Validar enlaces entre reglas ===
 echo ""
 echo "Validando enlaces entre reglas..."
 for file in "$RULES_DIR"/*.md; do
@@ -181,14 +68,12 @@ for file in "$RULES_DIR"/*.md; do
 	done < "$file"
 done
 
-# Validar directorio de plantillas
+# === Validar enlaces a plantillas ===
 echo ""
 if [ ! -d "$TEMPLATES_DIR" ]; then
 	echo "ERROR falta directorio $TEMPLATES_DIR"
 	exit 1
 fi
-
-# Validar enlaces a plantillas desde reglas y docs
 echo "Validando enlaces a plantillas..."
 for file in "$RULES_DIR"/*.md docs/*.md; do
 	[ -f "$file" ] || continue
@@ -207,9 +92,8 @@ for file in "$RULES_DIR"/*.md docs/*.md; do
 	done < "$file"
 done
 
+# === Sincronía rules/ ↔ docs/rules/ ===
 echo ""
-
-# Verificar sincronía rules/ ↔ docs/rules/ (hard links para MkDocs)
 echo "Validando sincronía rules/ ↔ docs/rules/..."
 DOCS_RULES_DIR="./docs/rules"
 if [ -d "$DOCS_RULES_DIR" ]; then
@@ -220,28 +104,27 @@ if [ -d "$DOCS_RULES_DIR" ]; then
 			echo "  ERROR docs/rules/$base: missing (run 'just link-rules')"
 			((ERRORS++))
 		elif ! diff -q "$f" "$linked" >/dev/null 2>&1; then
-			echo "  ERROR docs/rules/$base: content differs from rules/$base (run 'just link-rules')"
+			echo "  ERROR docs/rules/$base: content differs (run 'just link-rules')"
 			((ERRORS++))
 		fi
 	done
 	echo "  Sincronía verificada."
 else
-	echo "  WARNING docs/rules/ directory missing. Run 'just link-rules' first."
+	echo "  WARNING docs/rules/ directory missing."
 	((WARNINGS++))
 fi
 
+# === Capa de helpers ===
 echo ""
-
-# Verificar capa de helpers completa (helpers/mk/ y helpers/just/)
 echo "Validando estructura de helpers/..."
 HELPERS_MK_DIR="./helpers/mk"
 HELPERS_JUST_DIR="./helpers/just"
 if [ ! -d "$HELPERS_MK_DIR" ]; then
-	echo "  ERROR falta helpers/mk/ (módulos de Makefile por dominio)"
+	echo "  ERROR falta helpers/mk/"
 	((ERRORS++))
 fi
 if [ ! -d "$HELPERS_JUST_DIR" ]; then
-	echo "  ERROR falta helpers/just/ (módulos de Justfile por dominio)"
+	echo "  ERROR falta helpers/just/"
 	((ERRORS++))
 fi
 if [ -d "$HELPERS_MK_DIR" ] && [ -d "$HELPERS_JUST_DIR" ]; then

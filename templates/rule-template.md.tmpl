@@ -7,70 +7,134 @@ tags: [tag1, tag2]
 
 # Regla NN: Título
 
-## Premisa
+### Premisa: Descripción
 
-Por qué existe esta regla y qué garantiza. Responde en 1-2 frases: cuál es el problema
-que resuelve y quién se beneficia (humanos, agentes de IA, el proyecto consumidor).
+> Por qué existe esta regla y qué garantiza. Responde en 1-2 frases.
+> Usa **negritas** para conceptos clave y `backticks` para comandos.
 
-## Restricciones
+tags: [obligatorio]
 
-Qué **NO** se debe hacer. Prohibiciones explícitas, flujos inválidos, prácticas que esta
-regla declara como incorrectas.
+### Restriccion: Prohibición principal
 
-Ejemplos de formato:
+> Qué **NO** se debe hacer. Prohibiciones explícitas.
+> - No hacer X porque Y.
+> - Prohibido: `comando_invalido`.
 
-- No hacer X porque Y.
-- Prohibido: `comando_invalido`.
-- El `Makefile` nunca ejecuta comandos directos de build.
+tags: [obligatorio]
 
-## Ejemplos
+### Ejemplo: Ejemplo canónico
 
-Ejemplos de código/configuración correctos. Al menos un bloque de código.
-
-```bash
-# Ejemplo canónico de uso
+```shell
+# Ejemplo mínimo correcto
 make build LANG=java BUILD_TOOL=maven
 ```
 
-## Referencias
+tags: [obligatorio]
 
-Enlaces a plantillas, otras reglas o documentación externa que complementan esta regla.
+### Referencia: Referencias principales
 
-- [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl)
 - [Regla 01: Build Tooling](01-build-tooling.md)
+- [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl)
+
+tags: [obligatorio]
 
 ---
 
-<!-- Secciones opcionales (agregar según madurez de la regla): -->
+<!-- Tipos opcionales (agregar según madurez/necesidad de la regla).
+     Las reglas con status=Definida requieren ≥1 Comando + ≥1 (Estructura o Diagrama).
 
-<!--
-## Estructura
+### Comando: Construir con make
 
-Tree de directorios/archivos que la regla define o espera.
+```shell
+make build LANG=java BUILD_TOOL=maven
+```
+
+tags: [obligatorio]
+
+### Estructura: Árbol de directorios
 
 ```
 proyecto/
 ├── src/
-├── helpers/
-└── templates/
+└── helpers/
 ```
+
+tags: [opcional]
+
+### Diagrama: Arquitectura del flujo
+
+```mermaid
+graph TD
+    A[Makefile] --> B[helpers/mk]
+    B --> C[helpers/shell]
+```
+
+tags: [opcional]
+
+### Nombre Sugerido: Convención de naming
+
+| Elemento | Convención | Ejemplo |
+|----------|-----------|---------|
+| Archivos | kebab-case | `build-tooling.md` |
+
+tags: [opcional]
+
+### Plantilla: Enlaces a templates
+
+- [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl)
+
+tags: [opcional]
+
+### Comportamiento: Flujo de delegación
+
+> Justfile → helpers/just → helpers/shell o python → ejecuta lógica.
+
+tags: [opcional]
+
+### Sugerencia: Recomendación no obligatoria
+
+> Se recomienda usar `uv` para gestionar dependencias Python.
+
+tags: [opcional]
+
+### Flujo: Secuencia de operaciones
+
+```
+just commit → cz.sh --action commit → Commitizen interactivo
+```
+
+tags: [opcional]
+
+### Contrato: Tabla de flags obligatorios
+
+| Flag | Obligatorio | Descripción |
+|------|:-----------:|-------------|
+| `--action` | Sí | Operación a ejecutar |
+
+tags: [opcional]
+
+### Matriz: Comparativa por lenguaje
+
+| Lenguaje | Herramienta | Comando build |
+|----------|------------|---------------|
+| Java | maven | `mvn package` |
+| Python | uv | `uv build` |
+
+tags: [opcional]
 -->
 
 <!--
-## Nombres Sugeridos
+Guía de formato Markdown para agentes (IA):
 
-Convenciones de naming: archivos, targets, variables, helpers, etc.
--->
+| Elemento | Sintaxis | Cuándo usarlo |
+|---|---|---|
+| **Negrita** | `**concepto**` | Términos importantes, herramientas, prohibiciones fuertes |
+| *Cursiva* | `*énfasis*` | Énfasis secundario, definiciones |
+| Code inline | `` `comando` `` | Comandos, flags, variables, archivos |
+| Code fence con lenguaje | ` ```shell `, ` ```python `, ` ```mermaid ` | Código ejecutable, diagramas |
+| Tablas GFM | `| A | B |` `|-|-|` `| x | y |` | Comparativas, contratos, matrices |
+| Cita `>` | `> texto` | Descripción de premisas, restricciones |
+| `<mark>` | `<mark>texto</mark>` | Hitos críticos (poco frecuente) |
 
-<!--
-## Comandos
-
-Comandos canónicos que un agente debe usar para aplicar esta regla.
--->
-
-<!--
-## Plantilla
-
-Enlace a la(s) plantilla(s) de [templates/](../templates/) asociada(s) a esta regla.
-Necesario si la regla tiene templates correspondientes.
+Ver rules/.config/RULES_COMPILER.md para la definición completa del compilador y el AST.
 -->

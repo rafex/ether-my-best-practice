@@ -7,7 +7,9 @@ tags: [git, hooks, pre-commit, pre-push, commit-msg, release, conventional-commi
 
 # Regla 10: Git Hooks
 
-## Premisa
+
+
+### Premisa: Premisa
 
 Todo proyecto debe tener gates locales de calidad mediante git hooks. Los hooks son **gates puros** (sin efectos laterales). **Cada hook tiene su propio script** (`pre-commit.sh`, `pre-push.sh`, `commit-msg.sh`) para máxima reutilización. Los dispatchers `.githooks/*` llaman a **Makefile o Justfile** según la naturaleza del gate, nunca a scripts directamente:
 - `pre-commit` y `pre-push` → **gates de calidad/construcción → Makefile** (vía `.mk` que delega en el script).
@@ -16,7 +18,9 @@ Todo proyecto debe tener gates locales de calidad mediante git hooks. Los hooks 
 
 > **Co-propiedad con [Regla 11: Commitizen](11-commitizen.md):** esta regla define los gates (pre-commit, pre-push, commit-msg); la regla 11 define la herramienta que los respalda — Commitizen como asistente de commit convencional, generador de changelog y gestor de versiones. Ambas son **co-propietarias** del objetivo: commit + release gestionado.
 
-## Estructura
+tags: [obligatorio]
+
+### Estructura: Estructura
 
 ### Árbol de hooks
 
@@ -64,7 +68,9 @@ just hooks-install
 
 No se copian ni symlinkean hooks a `.git/hooks/`. La configuración `core.hooksPath` apunta directamente a `.githooks/` (git 2.9+), manteniendo el repositorio como fuente única de verdad.
 
-## Nombres Sugeridos
+tags: [opcional]
+
+### Nombre Sugerido: Nombres Sugeridos
 
 - Carpeta: `.githooks/` (oculta, en raíz del repositorio).
 - Hooks: `pre-commit`, `pre-push`, `commit-msg` — nombres estándar de git.
@@ -73,7 +79,9 @@ No se copian ni symlinkean hooks a `.git/hooks/`. La configuración `core.hooksP
 - Módulos just: `hooks.just` (recipe `commit-msg`).
 - Recipes Justfile: `hooks-install`, `prepare-release`, `version`, `changelog`.
 
-## Comandos
+tags: [opcional]
+
+### Comando: Comandos
 
 ### Instalación de hooks
 
@@ -117,7 +125,9 @@ make pre-push        # → pre-push.mk → pre-push.sh → test + secrets
 just commit-msg      # → hooks.just → commit-msg.sh
 ```
 
-## Ejemplos
+tags: [opcional]
+
+### Ejemplo: Ejemplos
 
 ### Dispatcher pre-commit
 
@@ -175,7 +185,9 @@ CHANGELOG.md generated (version 1.2.0, changes since v1.1.0)
 # ... tag creado y pusheado
 ```
 
-## Restricciones
+tags: [obligatorio]
+
+### Restriccion: Restricciones
 
 - **Los hooks NO rellenan CHANGELOG.md ni VERSION.** Hacerlo en pre-commit o post-commit produce worktree sucio, conflictos de merge y ruido en cada rama.
 - **CHANGELOG.md y VERSION se generan exclusivamente en release-time** con `just prepare-release`, llamando a `helpers/python/changelog.py` y `version.py`.
@@ -186,7 +198,9 @@ CHANGELOG.md generated (version 1.2.0, changes since v1.1.0)
 - **Los hooks nunca deben tener dependencias externas** que no estén disponibles en el entorno de desarrollo (solo bash, git, y los helpers del proyecto).
 - **Los hooks no deben romper el flujo de desarrollo.** Si un gate falla, debe mostrar un mensaje claro de qué corregir y cómo.
 
-## Referencias
+tags: [obligatorio]
+
+### Referencia: Referencias
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make lint`, `make test`, capa de helpers.
 - [Regla 05: Control de Versiones](05-version-control.md) — Conventional Commits.
@@ -200,10 +214,14 @@ CHANGELOG.md generated (version 1.2.0, changes since v1.1.0)
 - [templates/helpers/python/changelog.py.tmpl](../templates/repository-structure/helpers/python/changelog.py.tmpl)
 - [templates/helpers/python/version.py.tmpl](../templates/repository-structure/helpers/python/version.py.tmpl)
 
-## Plantilla
+tags: [obligatorio]
+
+### Plantilla: Plantilla
 
 - [templates/repository-structure/.githooks/](../templates/repository-structure/.githooks/)
 - [templates/helpers/shell/hooks.sh.tmpl](../templates/repository-structure/helpers/shell/hooks.sh.tmpl)
 - [templates/helpers/shell/commit-msg.sh.tmpl](../templates/repository-structure/helpers/shell/commit-msg.sh.tmpl)
 - [templates/helpers/python/changelog.py.tmpl](../templates/repository-structure/helpers/python/changelog.py.tmpl)
 - [templates/helpers/python/version.py.tmpl](../templates/repository-structure/helpers/python/version.py.tmpl)
+
+tags: [opcional]

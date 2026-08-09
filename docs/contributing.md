@@ -16,9 +16,9 @@
 
 ## Estilo de Contribución
 
-### Estructura de una regla
+### Estructura de una regla (bloques tipados)
 
-Toda regla (`rules/NN-topic.md`) usa frontmatter YAML y un conjunto fijo de secciones:
+Las reglas usan el compilador `helpers/python/rules_compiler.py`. Cada regla se compone de **bloques tipados** con formato `### Tipo: Nombre`. La definición completa del esquema, el AST y la taxonomía de 14 tipos vive en `rules/.config/RULES_COMPILER.md` (interna).
 
 ```yaml
 ---
