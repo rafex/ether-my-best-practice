@@ -19,6 +19,23 @@
 - Validador de reglas con frontmatter YAML y secciones obligatorias.
 - Dogfooding: MermaidJS en este sitio, Python 3.12 en CI.
 
+## v0.3.0 (2026-08-09)
+
+### Feat
+
+- **mcp**: instalador inteligente + manual de instalación por SO (Linux, macOS, Windows)
+
+### Fix
+
+- **mcp**: corregir 11 bugs del instalador y wheel v0.2.0
+- **docs**: pymdownx.tabbed (no pymdownx.tabs) — nombre correcto de la extensión
+- **docs**: habilitar pymdownx.tabs para pestañas por SO en mcp-install
+- **docs**: ruta absoluta para site-dir — corrige 404 del sitio
+- **messages**: auto-sourcear colors.sh en messages.sh para evitar command not found
+- **cz**: version_files paths relativos a CWD (VERSION, mcp/pyproject.toml, __init__)
+- **ci**: añadir PyYAML como dependencia en workflows
+- **cz**: arreglar init_log doble + set -u empty array en cz.sh
+
 ## v0.2.0 (2026-08-09)
 
 ### Feat
