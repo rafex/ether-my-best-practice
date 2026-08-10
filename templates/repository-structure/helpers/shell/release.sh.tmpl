@@ -39,14 +39,28 @@ header "CD: Ether Best Practices — $action"
 
 case "$action" in
 	package)
-		step 1 2 "Sincronizando libs al paquete MCP..."
+		step 1 3 "Sincronizando libs y snapshots al paquete MCP..."
 		if [[ -d "helpers/python/lib" ]]; then
 			rm -rf "$mcp_dir/ether_mcp_my_best_practices/lib"
 			cp -r "helpers/python/lib" "$mcp_dir/ether_mcp_my_best_practices/lib"
 			log_info "  Libs copiadas a ether_mcp_my_best_practices/lib/"
 		fi
+		# Generar build ID
+		build_id="$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")"
+		echo "BUILD = \"$build_id\"" > "$mcp_dir/ether_mcp_my_best_practices/_build.py"
+		log_info "  Build ID: $build_id"
+		# Copiar snapshots de datos (rules, templates, helpers, docs)
+		data_dir="$mcp_dir/ether_mcp_my_best_practices/data"
+		rm -rf "$data_dir"
+		mkdir -p "$data_dir"
+		for d in rules templates helpers docs; do
+			if [[ -d "$workspace/$d" ]]; then
+				cp -r "$workspace/$d" "$data_dir/$d"
+				log_info "  Snapshot: $d → data/$d"
+			fi
+		done
 
-		step 2 2 "Construyendo wheel con uv build..."
+		step 2 3 "Construyendo wheel con uv build..."
 		(cd "$mcp_dir" && uv build --out-dir dist)
 
 		# Generar checksum

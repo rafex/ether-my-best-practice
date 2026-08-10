@@ -25,10 +25,10 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
-info()  { echo "[INFO]  $*"; }
+info()  { echo "[INFO]  $*" >&2; }
 warn()  { echo "[WARN]  $*" >&2; }
 error() { echo "[ERROR] $*" >&2; }
-success(){ echo "[OK]    $*"; }
+success(){ echo "[OK]    $*" >&2; }
 
 case "${OS:-}" in Windows*) IS_WINDOWS=true ;; *) IS_WINDOWS=false ;; esac
 if [[ "$(uname -s 2>/dev/null)" == *"_NT"* ]]; then IS_WINDOWS=true; fi
@@ -48,20 +48,23 @@ download_wheel() {
 		error "No se pudo obtener la información del release."
 		return 1
 	fi
-	local wheel_url sha_url
-	wheel_url="$(echo "$api_json" | python3 -c "import sys,json; assets=json.load(sys.stdin).get('assets',[]); urls=[a['browser_download_url'] for a in assets if a['name'].endswith('.whl')]; print(urls[0] if urls else '')" 2>/dev/null || true)"
+	local wheel_url sha_url wheel_name
+	wheel_url="$(echo "$api_json" | python3 -c "import sys,json; assets=json.load(sys.stdin).get('assets',[]); urls=[(a['browser_download_url'], a['name']) for a in assets if a['name'].endswith('.whl')]; print(urls[0][0] if urls else '')" 2>/dev/null || true)"
+	wheel_name="$(echo "$api_json" | python3 -c "import sys,json; assets=json.load(sys.stdin).get('assets',[]); urls=[(a['browser_download_url'], a['name']) for a in assets if a['name'].endswith('.whl')]; print(urls[0][1] if urls else '')" 2>/dev/null || true)"
 	sha_url="$(echo "$api_json" | python3 -c "import sys,json; assets=json.load(sys.stdin).get('assets',[]); urls=[a['browser_download_url'] for a in assets if a['name'].endswith('.whl.sha256')]; print(urls[0] if urls else '')" 2>/dev/null || true)"
 	if [[ -z "$wheel_url" ]]; then
 		error "No se encontró el wheel en el último release."
 		return 1
 	fi
-	info "Descargando: $wheel_url"
-	curl -sL "$wheel_url" -o "$tmp_dir/ether_mcp.whl"
+	if [[ -z "$wheel_name" ]]; then
+		wheel_name="ether_mcp.whl"
+	fi
+	info "Descargando: $wheel_name"
+	curl -sL "$wheel_url" -o "$tmp_dir/$wheel_name"
 	if [[ -n "$sha_url" ]]; then
-		info "Descargando checksum..."
-		curl -sL "$sha_url" -o "$tmp_dir/ether_mcp.whl.sha256"
-		info "Verificando checksum..."
-		if (cd "$tmp_dir" && sha256sum -c ether_mcp.whl.sha256 2>/dev/null); then
+		local sha_name="${wheel_name}.sha256"
+		curl -sL "$sha_url" -o "$tmp_dir/$sha_name"
+		if [[ -s "$tmp_dir/$sha_name" ]] && (cd "$tmp_dir" && sha256sum -c "$sha_name" 2>/dev/null); then
 			success "Checksum verificado."
 		else
 			error "Checksum NO coincide. Abortando instalación."
@@ -71,7 +74,7 @@ download_wheel() {
 	else
 		warn "No se encontró checksum en el release — continuando sin verificar."
 	fi
-	echo "$tmp_dir"
+	echo "$tmp_dir/$wheel_name"
 }
 
 # ─── Configurar cliente ──────────────────────────────────────────────
@@ -103,7 +106,7 @@ configure_client() {
 	mkdir -p "$cfg_dir"
 
 	case "$name" in
-		claude|opencode)
+		claude)
 			local cfg_json="$cfg_file"
 			if [[ -f "$cfg_json" ]]; then
 				python3 -c "
@@ -113,15 +116,35 @@ cfg.setdefault('mcpServers', {})['ether-rules'] = {'command': 'uvx', 'args': ['e
 with open('$cfg_json', 'w') as f: json.dump(cfg, f, indent=2)
 " 2>/dev/null && return
 			fi
-			# crear nuevo
 			python3 -c "
 import json
 cfg = {'mcpServers': {'ether-rules': {'command': 'uvx', 'args': ['ether-mcp']}}}
 with open('$cfg_json', 'w') as f: json.dump(cfg, f, indent=2)
 " 2>/dev/null || true
 			;;
+		opencode)
+			local cfg_json="$cfg_file"
+			local entry='{"type": "local", "command": ["uvx", "ether-mcp"], "enabled": true}'
+			if [[ -f "$cfg_json" ]]; then
+				python3 -c "
+import json, sys
+with open('$cfg_json') as f: cfg = json.load(f)
+cfg.setdefault('mcp', {})['ether-rules'] = json.loads('''$entry''')
+with open('$cfg_json', 'w') as f: json.dump(cfg, f, indent=2)
+" 2>/dev/null && return
+			fi
+			python3 -c "
+import json
+cfg = {'mcp': {'ether-rules': json.loads('''$entry''')}}
+with open('$cfg_json', 'w') as f: json.dump(cfg, f, indent=2)
+" 2>/dev/null || true
+			;;
 		codex)
 			local cfg_toml="$cfg_file"
+			if [[ -f "$cfg_toml" ]] && grep -q '\[mcp_servers.ether-rules\]' "$cfg_toml" 2>/dev/null; then
+				info "  ether-rules ya configurado en $cfg_toml (saltando)."
+				return
+			fi
 			if [[ -f "$cfg_toml" ]]; then
 				echo '' >> "$cfg_toml"
 				echo '[mcp_servers.ether-rules]' >> "$cfg_toml"
@@ -148,14 +171,14 @@ do_install() {
 		warn "Continuando con pip como fallback..."
 	fi
 
-	local tmp_dir
-	tmp_dir="$(download_wheel)" || exit 1
+	local wheel_path
+	wheel_path="$(download_wheel)" || exit 1
 
 	info "Instalando MCP..."
 	if command -v uv >/dev/null 2>&1; then
-		uv tool install "$tmp_dir/ether_mcp.whl"
+		uv tool install "$wheel_path"
 	else
-		pip install --user "$tmp_dir/ether_mcp.whl"
+		pip install --user "$wheel_path"
 	fi
 	success "MCP ether-rules instalado (comando: ether-mcp)."
 
@@ -170,6 +193,7 @@ do_install() {
 		fi
 	done
 
+	local tmp_dir="$(dirname "$wheel_path")"
 	rm -rf "$tmp_dir"
 	success "Instalación completada."
 	success "Verifica con: claude mcp list  /  codex mcp list  /  opencode mcp list"

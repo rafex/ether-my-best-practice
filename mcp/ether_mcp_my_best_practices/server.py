@@ -9,16 +9,16 @@ Ejecutar en sitio: uv run python mcp/ether_mcp_my_best_practices/server.py
 Config:   mcp-config.json → "ether-rules" server.
 """
 
+import argparse
 import os
 import shutil
-import sys
 
-# Reutilizar libs comunes empaquetadas (regla 15)
-_lib_dir = os.path.join(os.path.dirname(__file__), "lib")
-if os.path.isdir(_lib_dir):
-    sys.path.insert(0, _lib_dir)
-from lib.logs import get_logger
-from lib.messages import success as mcp_success, error as mcp_error, info as mcp_info
+from ether_mcp_my_best_practices.lib.logs import get_logger
+from ether_mcp_my_best_practices.lib.messages import (
+    error as mcp_error,
+    info as mcp_info,
+    success as mcp_success,
+)
 
 from mcp.server import MCPServer
 from ether_mcp_my_best_practices.config import (
@@ -68,7 +68,7 @@ def resource_templates_index() -> str:
     return templates_index()
 
 
-@mcp.resource("templates://{path:path}")
+@mcp.resource("templates://{path}")
 def resource_template(path: str) -> str:
     """Template por ruta relativa global (ej. repository-structure/Makefile.tmpl, gitignore/.gitignore.java.tmpl, rule-template.md.tmpl)."""
     full = os.path.join(TEMPLATES_DIR, path)
@@ -411,7 +411,15 @@ def _basic_project_check(target: str) -> str:
 
 def main():
     """Entry point for the installed package (ether-mcp command)."""
-    mcp_info("MCP server ether-rules v1.0.0 iniciado")
+    import ether_mcp_my_best_practices
+
+    parser = argparse.ArgumentParser(prog="ether-mcp", description="MCP server ether-rules")
+    parser.add_argument("--version", action="store_true", help="Muestra la versión y build")
+    args = parser.parse_args()
+    if args.version:
+        print(f"ether-mcp {ether_mcp_my_best_practices.__version__} (build {ether_mcp_my_best_practices.BUILD})")
+        return
+    mcp_info(f"MCP server ether-rules v{ether_mcp_my_best_practices.__version__} iniciado")
     mcp.run()
 
 

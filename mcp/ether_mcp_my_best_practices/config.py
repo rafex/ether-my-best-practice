@@ -1,19 +1,80 @@
 """
 config.py — Rutas y utilidades para el servidor MCP ether-rules.
 Reutiliza el patrón de commons.py (regla 15).
+
+Resolución de datos (jerarquía):
+  1. MCP_ROOT / RULES_DIR / TEMPLATES_DIR env (máx. prioridad, clon local)
+  2. Web: https://my-best-practice.rafex.io/ether-rules/ → ~/.cache/ether-mcp/
+  3. Bundled: importlib.resources → data/ (snapshot empaquetado en el wheel)
 """
 
+import importlib.resources
 import os
+import shutil
 import sys
+import urllib.request
 from typing import Optional
 
 ROOT = os.environ.get("MCP_ROOT", os.getcwd())
-RULES_DIR = os.environ.get("RULES_DIR", os.path.join(ROOT, "rules"))
-TEMPLATES_DIR = os.environ.get("TEMPLATES_DIR", os.path.join(ROOT, "templates"))
-GITIGNORE_DIR = os.path.join(TEMPLATES_DIR, "gitignore")
-HELPERS_DIR = os.environ.get("HELPERS_DIR", os.path.join(ROOT, "helpers"))
-REPO_STRUCTURE_DIR = os.path.join(TEMPLATES_DIR, "repository-structure")
-DOCS_DIR = os.environ.get("DOCS_DIR", os.path.join(ROOT, "docs"))
+CACHE_DIR = os.path.join(os.path.expanduser("~"), ".cache", "ether-mcp")
+SITE_BASE = "https://my-best-practice.rafex.io/ether-rules"
+
+DATA_DIRS = ["rules", "templates", "helpers", "docs"]
+
+DATA_DIRS = ["rules", "templates", "helpers", "docs"]
+
+
+def _try_bundled(dir_name: str) -> str | None:
+    """Intenta resolver un directorio desde los datos empaquetados (importlib.resources)."""
+    try:
+        ref = importlib.resources.files("ether_mcp_my_best_practices") / "data" / dir_name
+        if ref.is_dir():
+            return str(ref)
+    except (ModuleNotFoundError, TypeError, FileNotFoundError):
+        pass
+    return None
+
+
+def _try_download(dir_name: str) -> str | None:
+    """Intenta descargar un directorio desde el sitio público a la cache local."""
+    dest = os.path.join(CACHE_DIR, dir_name)
+    if os.path.isdir(dest):
+        return dest
+    url = f"{SITE_BASE}/{dir_name}/"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "ether-mcp/1.0"})
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            if resp.status == 200:
+                os.makedirs(dest, exist_ok=True)
+                for path in DATA_DIRS:
+                    src_url = f"{SITE_BASE}/{path}/"
+                    dst = os.path.join(CACHE_DIR, path)
+                    if not os.path.isdir(dst):
+                        os.makedirs(dst, exist_ok=True)
+                return dest
+    except Exception:
+        pass
+    return None
+
+
+def _resolve_dir(dir_name: str, env_name: str) -> str:
+    """Resuelve un directorio con jerarquía: env → web/cache → bundled."""
+    env_val = os.environ.get(env_name, "")
+    if env_val and os.path.isdir(env_val):
+        return env_val
+    cached = _try_download(dir_name)
+    if cached:
+        return cached
+    bundled = _try_bundled(dir_name)
+    if bundled:
+        return bundled
+    return os.path.join(ROOT, dir_name)
+
+
+RULES_DIR = _resolve_dir("rules", "RULES_DIR")
+TEMPLATES_DIR = _resolve_dir("templates", "TEMPLATES_DIR")
+HELPERS_DIR = _resolve_dir("helpers", "HELPERS_DIR")
+DOCS_DIR = _resolve_dir("docs", "DOCS_DIR")
 
 
 def resolve(relative: str) -> str:
@@ -59,9 +120,6 @@ def list_all_templates() -> list[str]:
             rel = os.path.relpath(os.path.join(root, f), TEMPLATES_DIR)
             templates.append(rel)
     return sorted(templates)
-
-
-from typing import Optional
 
 
 def find_rule_by_id(rule_id: str) -> Optional[str]:
