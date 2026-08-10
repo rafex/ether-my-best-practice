@@ -125,11 +125,15 @@ def list_rules() -> list[dict]:
     for fname in list_rules_files():
         fp = os.path.join(RULES_DIR, fname)
         fm = parse_frontmatter(fp)
+        title = fm.get("title", "")
+        if fm.get("status") == "Borrador":
+            title = f"{title} [Borrador]"
         result.append({
             "file": fname,
             "id": fm.get("id", fname.replace(".md", "")),
-            "title": fm.get("title", ""),
+            "title": title,
             "status": fm.get("status", "Desconocido"),
+            "draft": fm.get("status") == "Borrador",
             "tags": fm.get("tags", []),
         })
     return result
@@ -155,11 +159,15 @@ def search_rules(query: str) -> list[dict]:
             content = f.read()
         if query.lower() in content.lower():
             fm = parse_frontmatter(fp)
+            title = fm.get("title", "")
+            if fm.get("status") == "Borrador":
+                title = f"{title} [Borrador]"
             results.append({
                 "file": fname,
                 "id": fm.get("id", fname.replace(".md", "")),
-                "title": fm.get("title", ""),
+                "title": title,
                 "status": fm.get("status", ""),
+                "draft": fm.get("status") == "Borrador",
                 "preview": _extract_context(content, query),
             })
     return results

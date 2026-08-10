@@ -5,7 +5,7 @@ status: Borrador
 tags: [documentation, markdown, mkdocs, adr]
 ---
 
-# Regla 04: Documentación
+# Regla 04: Documentación — ⚠️ *Borrador*
 
 
 

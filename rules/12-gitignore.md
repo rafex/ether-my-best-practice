@@ -149,7 +149,7 @@ tags: [obligatorio]
 
 ### Referencia: Referencias
 
-- [Regla 05: Control de Versiones](05-version-control.md) — todo artefacto y secreto debe excluirse del versionado.
+- [Regla 05: Control de Versiones](05-version-control_draft.md) — todo artefacto y secreto debe excluirse del versionado.
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — estructura `source/<rol>/<lenguaje>/<proyecto>/`.
 - [Regla 11: Commitizen](11-commitizen.md) — `.githooks/.tools/.commitizen-venv/` debe ignorarse.
 - [Regla 13: Gestión de Secretos](13-secrets.md) — `.secrets/*.enc.yaml` permitidos, `.env.*` ignorados.

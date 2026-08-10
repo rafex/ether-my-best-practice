@@ -5,7 +5,7 @@ status: Borrador
 tags: [architecture, hexagonal, ports, adapters, ddd]
 ---
 
-# Regla 02: Arquitectura
+# Regla 02: Arquitectura — ⚠️ *Borrador*
 
 
 
@@ -57,7 +57,7 @@ tags: [obligatorio]
 - Domain Driven Design (DDD) — Eric Evans
 - [templates/repository-structure/README.md](../templates/repository-structure/README.md)
 - [Regla 01: Build Tooling](01-build-tooling.md)
-- [Regla 03: Testing](03-testing.md)
+- [Regla 03: Testing](03-testing_draft.md)
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md)
 
 tags: [obligatorio]

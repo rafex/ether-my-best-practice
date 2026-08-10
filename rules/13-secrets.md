@@ -232,7 +232,7 @@ tags: [obligatorio]
 - [Regla 10: Git Hooks](10-githooks.md) — gates de pre-commit y pre-push donde se integran gitleaks y trufflehog.
 - [Regla 12: Gitignore](12-gitignore.md) — `.gitignore.secretos.tmpl` con exclusiones de `.env.*`, `.secrets/*.yaml`, claves.
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers como capa única de ejecución (secrets.sh).
-- [Regla 05: Control de Versiones](05-version-control.md) — Conventional Commits aplican a cambios en `.sops.yaml` y `.secrets/`.
+- [Regla 05: Control de Versiones](05-version-control_draft.md) — Conventional Commits aplican a cambios en `.sops.yaml` y `.secrets/`.
 - [sops + age documentation](https://getsops.io/)
 - [gitleaks](https://github.com/gitleaks/gitleaks)
 - [trufflehog](https://github.com/trufflesecurity/trufflehog)

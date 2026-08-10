@@ -163,7 +163,7 @@ tags: [obligatorio]
 ### Referencia: Referencias
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers por lenguaje, `container.mk`, `container.sh`
-- [Regla 04: Documentación](04-documentation.md) — Markdown + MermaidJS + MkDocs
+- [Regla 04: Documentación](04-documentation_draft.md) — Markdown + MermaidJS + MkDocs
 - [Regla 06: CI](06-ci.md) — pipeline local en contenedor, `make image`, `make ci`
 - [templates/Containerfile.tmpl](../templates/repository-structure/containers/Containerfile.tmpl)
 - [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)

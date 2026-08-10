@@ -6,26 +6,26 @@ Este repositorio contiene un conjunto de premisas y estándares para el desarrol
 
 > **Separación:** este repositorio distingue entre definiciones (`rules/` + `templates/`) y la infraestructura operativa del propio repositorio (`Makefile`, `Justfile`, `helpers/`). Las reglas describen cómo debe construirse un proyecto consumidor; el `Makefile` raíz solo publica el sitio y valida las reglas.
 
-| # | Regla | Tema |
-|---|-------|------|
-| 1 | **[01-build-tooling.md](01-build-tooling.md)** | Herramientas de construcción (Makefile, Justfile, helpers) |
-| 2 | **[02-architecture.md](02-architecture.md)** | Patrones arquitectónicos (Hexagonal, puertos y adaptadores) |
-| 3 | **[03-testing.md](03-testing.md)** | Estrategias de testing (TDD, pirámide de tests) |
-| 4 | **[04-documentation.md](04-documentation.md)** | Documentación como código (Markdown, MkDocs) |
-| 5 | **[05-version-control.md](05-version-control.md)** | Control de versiones (Git flow, Conventional Commits) |
-| 6 | **[06-ci.md](06-ci.md)** | Integración Continua (pipelines, contenedores) |
-| 7 | **[07-agents-mcp.md](07-agents-mcp.md)** | Reglas para agentes de IA y Model Context Protocol |
-| 8 | **[08-stack.md](08-stack.md)** | Stack tecnológico recomendado (versiones, runtimes, contenedores) |
-| 9 | **[09-repository-structure.md](09-repository-structure.md)** | Estructura de repositorio multi-lenguaje por rol |
-| 10 | **[10-githooks.md](10-githooks.md)** | Git hooks — gates de lint/test/commit-msg y flujo de release |
-| 11 | **[11-commitizen.md](11-commitizen.md)** | Commitizen — asistente de commit convencional y release |
-| 12 | **[12-gitignore.md](12-gitignore.md)** | Gitignore — exclusión de archivos por contexto |
-| 13 | **[13-secrets.md](13-secrets.md)** | Gestión de secretos con sops+age, gitleaks y trufflehog |
-| 14 | **[14-config-files.md](14-config-files.md)** | Archivos de configuración (.config) — centralización por herramienta |
-| 15 | **[15-script-reuse.md](15-script-reuse.md)** | Reutilización de Scripts — librerías comunes shell y python |
-| 16 | **[16-cd.md](16-cd.md)** | Despliegue Continuo — CD portable, local-first, sops+age |
+| # | Regla | Estado | Tema |
+|---|-------|--------|------|
+| 1 | **[01-build-tooling.md](01-build-tooling.md)** | Definida | Herramientas de construcción (Makefile, Justfile, helpers) |
+| 2 | **[02-architecture_draft.md](02-architecture_draft.md)** | ⚠️ *Borrador* | Patrones arquitectónicos (Hexagonal, puertos y adaptadores) |
+| 3 | **[03-testing_draft.md](03-testing_draft.md)** | ⚠️ *Borrador* | Estrategias de testing (TDD, pirámide de tests) |
+| 4 | **[04-documentation_draft.md](04-documentation_draft.md)** | ⚠️ *Borrador* | Documentación como código (Markdown, MkDocs) |
+| 5 | **[05-version-control_draft.md](05-version-control_draft.md)** | ⚠️ *Borrador* | Control de versiones (Git flow, Conventional Commits) |
+| 6 | **[06-ci.md](06-ci.md)** | Definida | Integración Continua (pipelines, contenedores) |
+| 7 | **[07-agents-mcp.md](07-agents-mcp.md)** | Definida | Reglas para agentes de IA y Model Context Protocol |
+| 8 | **[08-stack.md](08-stack.md)** | Definida | Stack tecnológico recomendado (versiones, runtimes, contenedores) |
+| 9 | **[09-repository-structure.md](09-repository-structure.md)** | Definida | Estructura de repositorio multi-lenguaje por rol |
+| 10 | **[10-githooks.md](10-githooks.md)** | Definida | Git hooks — gates de lint/test/commit-msg y flujo de release |
+| 11 | **[11-commitizen.md](11-commitizen.md)** | Definida | Commitizen — asistente de commit convencional y release |
+| 12 | **[12-gitignore.md](12-gitignore.md)** | Definida | Gitignore — exclusión de archivos por contexto |
+| 13 | **[13-secrets.md](13-secrets.md)** | Definida | Gestión de secretos con sops+age, gitleaks y trufflehog |
+| 14 | **[14-config-files.md](14-config-files.md)** | Definida | Archivos de configuración (.config) — centralización por herramienta |
+| 15 | **[15-script-reuse.md](15-script-reuse.md)** | Definida | Reutilización de Scripts — librerías comunes shell y python |
+| 16 | **[16-cd.md](16-cd.md)** | Definida | Despliegue Continuo — CD portable, local-first, sops+age |
 
-> **Estado:** cada regla declara su estado (`Definida` | `Borrador`) en el frontmatter YAML del archivo. Las reglas en **Borrador** contienen premisa y restricciones pero aún no alcanzan la profundidad completa (Comandos, Estructura detallada, etc.).
+> **Convención:** las reglas con `status: Borrador` en el frontmatter llevan el sufijo `_draft` en el nombre del archivo y `— ⚠️ *Borrador*` en el título H1. Contienen premisa y restricciones pero aún no alcanzan la profundidad completa.
 
 ## Cómo Usar Este Índice
 
@@ -34,4 +34,4 @@ Cada regla es un documento Markdown independiente que puede ser:
 - Servido a través de MCP para agentes de IA
 - Publicado en una página web con MkDocs
 
-Las reglas cuyo frontmatter indica `status: Borrador` contienen una premisa y restricciones, pero aún no alcanzan la profundidad de las reglas `Definida`. Las plantillas en [templates/](../templates/) complementan las reglas como cascarones listos para copiar a proyectos consumidores.
+Las plantillas en [templates/](../templates/) complementan las reglas como cascarones listos para copiar a proyectos consumidores.

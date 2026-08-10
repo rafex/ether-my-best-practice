@@ -143,6 +143,16 @@ def validate_ast(ast: RuleAST) -> list[str]:
         errs.append(f"{base}: falta id en frontmatter")
     if ast.status not in ("Definida", "Borrador"):
         errs.append(f"{base}: status inválido '{ast.status}'")
+
+    # Warnings de convención para reglas Borrador
+    # Solo se aplican si el archivo es una regla (no 00-index ni DEFINITION)
+    if ast.status == "Borrador":
+        if not base.startswith("00-") and not base.startswith("DEFINITION"):
+            if not base.endswith("_draft.md"):
+                errs.append(f"WARNING {base}: Borrador debería nombrarse NN-topic_draft.md")
+            if "Borrador" not in ast.heading:
+                errs.append(f"WARNING {base}: título H1 debería llevar '— ⚠️ *Borrador*'")
+
     if not ast.blocks:
         errs.append(f"{base}: sin bloques tipados")
         return errs

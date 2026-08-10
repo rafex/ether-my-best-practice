@@ -23,10 +23,10 @@ nav:
   - Reglas:
       - Índice: rules/00-index.md
       - Herramientas de Construcción: rules/01-build-tooling.md
-      - Arquitectura: rules/02-architecture.md
-      - Testing: rules/03-testing.md
-      - Documentación: rules/04-documentation.md
-      - Control de Versiones: rules/05-version-control.md
+      - Arquitectura: rules/02-architecture_draft.md
+      - Testing: rules/03-testing_draft.md
+      - Documentación: rules/04-documentation_draft.md
+      - Control de Versiones: rules/05-version-control_draft.md
       - CI: rules/06-ci.md
       - Agentes IA y MCP: rules/07-agents-mcp.md
       - Stack Tecnológico: rules/08-stack.md

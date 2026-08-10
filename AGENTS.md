@@ -36,7 +36,7 @@ Este repositorio mantiene reglas de mejores prácticas para APIs REST, documenta
 
 - Al mejorar una regla existente, prioriza claridad, ejemplos correctos y referencias cruzadas útiles.
 - Al crear una regla nueva, sigue la numeración existente, usa [templates/rule-template.md.tmpl](templates/rule-template.md.tmpl) y evita renumerar archivos ya publicados.
-- Si cambias plantillas de proyecto, mantén coherencia con la estructura hexagonal descrita en [templates/repository-structure/README.md](templates/repository-structure/README.md) y en [rules/02-architecture.md](rules/02-architecture.md).
+- Si cambias plantillas de proyecto, mantén coherencia con la estructura hexagonal descrita en [templates/repository-structure/README.md](templates/repository-structure/README.md) y en [rules/02-architecture_draft.md](rules/02-architecture_draft.md).
 - Si modificas guía para agentes o MCP, mantén alineación con [rules/07-agents-mcp.md](rules/07-agents-mcp.md).
 - Si el cambio afecta cómo un agente genera una API REST, ajusta tanto la regla aplicable como el template relacionado para que intención y cascarón no diverjan.
 

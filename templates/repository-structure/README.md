@@ -185,7 +185,7 @@ Los templates de `.gitignore` por contexto viven en [templates/gitignore/](../gi
 ## Referencias
 
 - [Regla 01: Build Tooling](../rules/01-build-tooling.md) — Makefile, Justfile, helpers.
-- [Regla 02: Arquitectura Hexagonal](../rules/02-architecture.md) — domain/application/infrastructure/ports.
+- [Regla 02: Arquitectura Hexagonal](../rules/02-architecture_draft.md) — domain/application/infrastructure/ports.
 - [Regla 08: Stack Tecnológico](../rules/08-stack.md) — versiones, Podman, Containerfile.
 - [Regla 09: Estructura de Repositorio](../rules/09-repository-structure.md) — esta estructura como estándar.
 - [Regla 10: Git Hooks](../rules/10-githooks.md) — prefieres, flujo de release.

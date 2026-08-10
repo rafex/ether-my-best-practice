@@ -194,7 +194,7 @@ tags: [obligatorio]
 - **Los hooks son gates puros:** lint/test/validation, sin efectos laterales. Si un hook escribe archivos, está mal diseñado.
 - **No copiar hooks a `.git/hooks/`** ni usar symlinks. Usar `git config core.hooksPath .githooks` (fuente única de verdad).
 - **Los dispatchers en `.githooks/` llaman a `make <target>` o `just <receta>`, nunca a scripts directamente.** La lógica vive en un script por hook (`pre-commit.sh`, `pre-push.sh`, `commit-msg.sh`) que orquesta scripts atómicos.
-- **commit-msg valida Conventional Commits alineado con [Regla 05](05-version-control.md).** Merge commits y initial commit se ignoran.
+- **commit-msg valida Conventional Commits alineado con [Regla 05](05-version-control_draft.md).** Merge commits y initial commit se ignoran.
 - **Los hooks nunca deben tener dependencias externas** que no estén disponibles en el entorno de desarrollo (solo bash, git, y los helpers del proyecto).
 - **Los hooks no deben romper el flujo de desarrollo.** Si un gate falla, debe mostrar un mensaje claro de qué corregir y cómo.
 
@@ -203,7 +203,7 @@ tags: [obligatorio]
 ### Referencia: Referencias
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make lint`, `make test`, capa de helpers.
-- [Regla 05: Control de Versiones](05-version-control.md) — Conventional Commits.
+- [Regla 05: Control de Versiones](05-version-control_draft.md) — Conventional Commits.
 - [Regla 06: CI](06-ci.md) — pipeline local como complemento a los hooks.
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — `.githooks/` en el árbol del proyecto.
 - [Regla 11: Commitizen](11-commitizen.md) — asistente de commit + release (co-propietaria del objetivo).

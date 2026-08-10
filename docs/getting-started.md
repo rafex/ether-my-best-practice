@@ -29,7 +29,7 @@ Las reglas están en el directorio `rules/`:
 cat rules/00-index.md
 
 # Ver una regla específica
-cat rules/02-architecture.md
+cat rules/02-architecture_draft.md
 ```
 
 ## Usar las Plantillas
@@ -46,7 +46,7 @@ cp templates/repository-structure/Makefile.tmpl mi-proyecto/Makefile
 cp templates/repository-structure/Justfile.tmpl mi-proyecto/Justfile
 ```
 
-También puedes tomar [templates/repository-structure/README.md](../templates/repository-structure/README.md) como base de estructura para un servicio nuevo y complementar el proyecto con las reglas de [../rules/02-architecture.md](rules/02-architecture.md), [../rules/03-testing.md](rules/03-testing.md) y [../rules/07-agents-mcp.md](rules/07-agents-mcp.md).
+También puedes tomar [templates/repository-structure/README.md](../templates/repository-structure/README.md) como base de estructura para un servicio nuevo y complementar el proyecto con las reglas de [../rules/02-architecture_draft.md](rules/02-architecture_draft.md), [../rules/03-testing_draft.md](rules/03-testing_draft.md) y [../rules/07-agents-mcp.md](rules/07-agents-mcp.md).
 
 ## Generar Documentación
 
@@ -81,8 +81,8 @@ Agrega referencia a las reglas en tu README:
 Este proyecto sigue [Ether My Best Practice](https://github.com/rafex/ether-my-best-practice).
 
 Reglas aplicables:
-- [Arquitectura Hexagonal](https://github.com/rafex/ether-my-best-practice/blob/main/rules/02-architecture.md)
-- [Testing y TDD](https://github.com/rafex/ether-my-best-practice/blob/main/rules/03-testing.md)
+- [Arquitectura Hexagonal](https://github.com/rafex/ether-my-best-practice/blob/main/rules/02-architecture_draft.md)
+- [Testing y TDD](https://github.com/rafex/ether-my-best-practice/blob/main/rules/03-testing_draft.md)
 ```
 
 Si el proyecto va a trabajar con agentes de IA, expón también estas reglas por lectura directa del repositorio o mediante MCP para que el agente pueda decidir cómo construir endpoints, tests, documentación y automatizaciones siguiendo este estándar.

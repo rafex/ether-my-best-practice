@@ -5,7 +5,7 @@ status: Borrador
 tags: [testing, tdd, unit-tests, integration, e2e, coverage]
 ---
 
-# Regla 03: Testing
+# Regla 03: Testing — ⚠️ *Borrador*
 
 
 

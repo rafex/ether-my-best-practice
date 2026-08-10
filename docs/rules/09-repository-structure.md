@@ -197,7 +197,7 @@ tags: [obligatorio]
 ### Referencia: Referencias
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — Makefile, Justfile, capa de helpers.
-- [Regla 02: Arquitectura Hexagonal](02-architecture.md) — domain/application/infrastructure/ports.
+- [Regla 02: Arquitectura Hexagonal](02-architecture_draft.md) — domain/application/infrastructure/ports.
 - [Regla 08: Stack Tecnológico](08-stack.md) — versiones, Podman, Containerfile, Alpine.
 - [Regla 12: Gitignore](12-gitignore.md) — exclusión de archivos por contexto y plantillas.
 - [Regla 14: Archivos de Configuración](14-config-files.md) — `.config/` centraliza configuraciones de herramientas.

@@ -5,7 +5,7 @@ status: Borrador
 tags: [git, version-control, conventional-commits, branching, semver]
 ---
 
-# Regla 05: Control de Versiones
+# Regla 05: Control de Versiones — ⚠️ *Borrador*
 
 
 

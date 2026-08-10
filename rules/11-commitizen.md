@@ -200,7 +200,7 @@ tags: [obligatorio]
 
 - [Regla 10: Git Hooks](10-githooks.md) — **co-propietaria** del objetivo commit+release. Define los gates; esta regla define la herramienta.
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers como capa única de ejecución (cz.sh).
-- [Regla 05: Control de Versiones](05-version-control.md) — Conventional Commits.
+- [Regla 05: Control de Versiones](05-version-control_draft.md) — Conventional Commits.
 - [Regla 08: Stack Tecnológico](08-stack.md) — Python 3.12+, uv.
 - [Commitizen Documentation](https://commitizen-tools.github.io/commitizen/)
 - [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](../templates/repository-structure/.config/commitizen/pyproject.toml.tmpl) — configuración base.

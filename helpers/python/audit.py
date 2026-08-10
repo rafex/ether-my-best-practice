@@ -166,6 +166,16 @@ def rules_defined() -> list[str]:
     return defined
 
 
+def rules_draft() -> list[str]:
+    """Retorna lista de rule_id con status=Borrador desde frontmatter."""
+    drafts = []
+    for fname in list_rules_files():
+        fm = parse_frontmatter(os.path.join(RULES_DIR, fname))
+        if fm.get("status") == "Borrador":
+            drafts.append(fm.get("id", fname.replace(".md", "")))
+    return drafts
+
+
 def audit_dir(target: str, ids: Optional[list[str]] = None) -> dict:
     """Audita un directorio, retorna {repo, global, level, rules: [...]}."""
     if ids is None:
@@ -294,7 +304,8 @@ def main():
 
     _header("Auditoría Ether Best Practices")
     defined_ids = rules_defined()
-    _info(f"{len(defined_ids)} reglas Definida encontradas")
+    draft_ids = rules_draft()
+    _info(f"{len(defined_ids)} reglas Definida encontradas · {len(draft_ids)} en Borrador (no auditadas" + (f": {', '.join(draft_ids)}" if draft_ids else "") + ")")
 
     result = audit_dir(args.path, ids=defined_ids)
     if "error" in result:
