@@ -10,15 +10,7 @@ para mantener consistencia UI y auditoría.
 """
 
 import logging
-from ether_mcp_my_best_practices.lib.colors import (
-    COLOR_BLUE,
-    COLOR_BOLD,
-    COLOR_CYAN,
-    COLOR_GREEN,
-    COLOR_RED,
-    COLOR_YELLOW,
-    colorize,
-)
+from lib.colors import colorize, COLOR_GREEN, COLOR_RED, COLOR_YELLOW, COLOR_BLUE, COLOR_CYAN, COLOR_BOLD
 import sys
 
 

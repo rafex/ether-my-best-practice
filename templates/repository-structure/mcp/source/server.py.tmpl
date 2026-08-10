@@ -12,6 +12,8 @@ Config:   mcp-config.json → "ether-rules" server.
 import argparse
 import os
 import shutil
+import subprocess
+import sys
 
 from ether_mcp_my_best_practices.lib.logs import get_logger
 from ether_mcp_my_best_practices.lib.messages import (
@@ -222,7 +224,26 @@ def scaffold_project(slug: str, lang: str = "java", destination: str = "") -> st
 
 
 @mcp.tool()
-def check_project(dir_path: str = ".") -> str:
+def audit_project(dir_path: str = ".", format: str = "markdown") -> str:
+    """Audita un repositorio consumidor: qué tiene, qué falta y grado de adopción contra las reglas Definida.
+
+    Args:
+        dir_path: Ruta al directorio raíz del proyecto a auditar.
+        format: Formato de salida — markdown (por defecto, legible por humano/agente) o json.
+    """
+    import subprocess
+
+    auditor = os.path.join(HELPERS_DIR, "python", "audit.py")
+    if not os.path.isfile(auditor):
+        return "No se encontró audit.py. El MCP debe ejecutarse desde el repositorio clonado."
+
+    result = subprocess.run(
+        [sys.executable, auditor, "--path", dir_path, "--format", format],
+        capture_output=True, text=True, timeout=30,
+    )
+    if result.returncode != 0:
+        return f"Error en auditoría:\n{result.stderr}"
+    return result.stdout.strip()
     """Valida que un proyecto consumidor cumpla las reglas de Ether Best Practices.
     Reutiliza validate-rules.sh adaptado al proyecto en dir_path.
 

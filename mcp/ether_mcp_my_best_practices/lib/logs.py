@@ -47,8 +47,8 @@ def get_logger(name: str, level: str = "INFO") -> logging.Logger:
     ))
     logger.addHandler(handler)
 
-    # MCP stdio reserves stdout for JSON-RPC messages; diagnostics belong on stderr.
-    stream_handler = logging.StreamHandler(sys.stderr)
+    # También a stdout para consistencia con shell (tee)
+    stream_handler = logging.StreamHandler(sys.stdout)
     stream_handler.setFormatter(logging.Formatter("%(message)s"))
     logger.addHandler(stream_handler)
 
