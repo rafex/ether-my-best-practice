@@ -1,4 +1,4 @@
-.PHONY: runtime image ci
+.PHONY: runtime image ci build-cross
 
 PROJECT_NAME ?= $(notdir $(CURDIR))
 CONTAINER_RUNTIME ?=
@@ -6,6 +6,11 @@ CI_IMAGE ?= project-ci:local
 CI_CONTAINERFILE ?= Containerfile.ci
 CONTAINER_HELPER ?= helpers/shell/container.sh
 CONTAINER_HELPER_PY ?= helpers/python/container.py
+CROSS_HELPER ?= helpers/shell/cross.sh
+
+TARGET_OS ?= linux
+TARGET_ARCH ?= amd64
+CROSS_OUTPUT ?= dist
 
 runtime:
 	@if [ -f "$(CONTAINER_HELPER)" ]; then \
@@ -34,5 +39,13 @@ ci:
 		uv run python "$(CONTAINER_HELPER_PY)" --action ci --project-name "$(PROJECT_NAME)" --container-runtime "$(CONTAINER_RUNTIME)" --ci-image "$(CI_IMAGE)" --containerfile "$(CI_CONTAINERFILE)"; \
 	else \
 		echo "No container helper found. Expected helpers/shell/container.sh or helpers/python/container.py"; \
+		exit 1; \
+	fi
+
+build-cross:
+	@if [ -f "$(CROSS_HELPER)" ]; then \
+		bash "$(CROSS_HELPER)" --runtime "$(CONTAINER_RUNTIME)" --target-os "$(TARGET_OS)" --target-arch "$(TARGET_ARCH)" --containerfile "$(CI_CONTAINERFILE)" --output "$(CROSS_OUTPUT)"; \
+	else \
+		echo "No cross helper found. Expected helpers/shell/cross.sh"; \
 		exit 1; \
 	fi

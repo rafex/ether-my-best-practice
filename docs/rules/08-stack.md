@@ -29,6 +29,7 @@ tags: [obligatorio]
 | **Runtime de contenedores** | Podman | Docker (con **warning**) | Detección automática; sobreescribible con `CONTAINER_RUNTIME` |
 | **Imagen base** | Alpine (latest estable) | Debian-slim (si Alpine no es viable) | Imágenes etiquetadas por hash, no por `:latest` |
 | **Definición de imagen** | `Containerfile` (o `Containerfile.ci`) | — | **Nunca `Dockerfile`**. `podman build -f Containerfile` / `docker build -f Containerfile` |
+| **Cross-compilación** | `--platform linux/amd64` (build en imagen) + `QEMU` (binfmt) como fallback | — | Compilar para otra arquitectura usando `make build-cross` y `cross.sh` (regla 06) |
 
 ### Herramientas de soporte
 

@@ -134,13 +134,75 @@ make ci
 
 tags: [obligatorio]
 
-### Restriccion: Restricciones
+### Estructura: Compilación cruzada en contenedores (cross-build)
+
+Los artefactos deben compilarse **siempre** en contenedor con la toolchain de la arquitectura destino, nunca con el sistema del host. Esto garantiza que el binario sea correcto para la plataforma de despliegue sin importar en qué máquina se construye.
+
+```
+Host (macOS arm64)
+  └─ make build-cross TARGET_OS=linux TARGET_ARCH=amd64
+       └─ helpers/shell/cross.sh
+            ├─ detecta runtime (podman|docker)
+            ├─ compara arquitectura host (arm64) vs target (amd64)
+            ├─ si difieren → registra QEMU (binfmt_misc) si --qemu auto
+            ├─ podman build --platform linux/amd64 -f Containerfile
+            ├─ podman run --platform linux/amd64 → make build
+            └─ extrae artefacto a dist/<app>-linux-amd64
+```
+
+**Convención de artefactos:** `dist/<app>-<os>-<arch>` (ej. `dist/app-linux-amd64`, `dist/app-linux-arm64`, `dist/app-windows-amd64`).
+
+**QEMU como fallback:** cuando el runtime no puede ejecutar la arquitectura destino nativamente, `cross.sh` registra automáticamente binfmt (`qemu-user-static`) para emulación. Si no hay privilegios para el registro, emite un warning claro y aborta.
+
+tags: [opcional]
+
+### Comando: Cross-build por arquitectura
+
+```bash
+make build-cross TARGET_OS=linux   TARGET_ARCH=amd64
+make build-cross TARGET_OS=linux   TARGET_ARCH=arm64
+make build-cross TARGET_OS=windows TARGET_ARCH=amd64
+```
+
+Los flags se pasan al `container.mk` → `cross.sh`, que determina el `--platform` y gestiona QEMU.
+
+tags: [opcional]
+
+### Ejemplo: Host macOS arm64 → Binario linux/amd64
+
+```bash
+# Local: construir contenedor de CI con toolchain linux/amd64
+make image TARGET_OS=linux TARGET_ARCH=amd64
+
+# Local: compilar binario para linux/amd64 desde macOS
+make build-cross TARGET_OS=linux TARGET_ARCH=amd64
+# → cross.sh detecta host=arm64 target=amd64 → registra QEMU (binfmt)
+# → podman build --platform linux/amd64
+# → podman run --platform linux/amd64 → make build
+# → artefacto en dist/app-linux-amd64
+
+# CI (wrapper parametrizador)
+# El workflow solo inyecta TARGET_OS/TARGET_ARCH, el make/cross.sh hacen el resto.
+```
+
+```yaml
+# .github/workflows/build.yml (wrapper)
+- name: Cross-build linux/amd64
+  run: make build-cross TARGET_OS=linux TARGET_ARCH=amd64
+```
+
+tags: [obligatorio]
+
+### Restriccion: Restricciones de cross-build (complementarias)
 
 - **No depender de runners remotos** para validar la construcción. El pipeline local (`make ci`) debe funcionar en cualquier máquina con `podman` o `docker`.
 - **No duplicar lógica** en los archivos de CI externa. GitHub Actions, GitLab CI o Jenkins deben ser **wrappers/parametrizadores que invocan targets del Makefile** (`make ci`, `make docs`) e inyectan variables. Nunca reescribir la lógica de build ni ser dueños de secretos de la aplicación.
 - **Detectar runtime obligatoriamente:** `podman` → `docker`. Si ninguno existe, el pipeline debe fallar con mensaje claro y sugerir instalación.
 - **No trackear artefactos generados** en el repositorio (`site/`, `target/`, `dist/`, `build/`).
 - **El workflow debe ser declarativo** y ejecutable localmente sin configuración adicional de CI remoto.
+- **Los artefactos para una arquitectura destino se compilan siempre en contenedor** con el `--platform` de esa arquitectura. Nunca se compilan con el toolchain del sistema host (riesgo de binario incompatible).
+- **QEMU (binfmt_misc) es el fallback** cuando la arquitectura destino no es ejecutable por el runtime del host. `cross.sh` registra binfmt automáticamente si `--qemu auto`; si falla (sin privilegios), emite un warning claro y aborta.
+- **Nombrado canónico de artefactos:** `dist/<app>-<os>-<arch>` (sufijo plataforma: `-linux-amd64`, `-linux-arm64`, `-windows-amd64`).
 
 tags: [obligatorio]
 
@@ -153,6 +215,7 @@ tags: [obligatorio]
 - [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl) — targets `runtime`, `image`, `ci`
 - [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
 - [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)
+- [templates/helpers/shell/cross.sh.tmpl](../templates/repository-structure/helpers/shell/cross.sh.tmpl)
 
 tags: [obligatorio]
 
@@ -160,5 +223,6 @@ tags: [obligatorio]
 
 - [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
 - [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)
+- [templates/helpers/shell/cross.sh.tmpl](../templates/repository-structure/helpers/shell/cross.sh.tmpl)
 
 tags: [opcional]

@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logs.sh"
+source "$SCRIPT_DIR/lib/messages.sh"
+init_log "cross"
+
+# ------------------------------------------------------------------
+# cross.sh — Cross-compila artefactos en contenedor para la
+# arquitectura destino. Reutilizable por Makefile (container.mk) y Justfile.
+#
+# Flujo (regla 06 — cross-build en contenedores):
+#   1. Detectar runtime (podman|docker).
+#   2. Comparar arquitectura host vs target.
+#   3. Si difieren → registrar QEMU (binfmt) si --qemu auto.
+#   4. podman build --platform <target> -f Containerfile .
+#   5. podman run --platform <target> → make build
+#   6. Extraer artefacto a dist/<app>-<os>-<arch>.
+#
+# Contrato (regla 01):
+#   --runtime podman|docker          Runtime (auto-detecta)
+#   --target-os linux|windows|darwin  SO destino (default linux)
+#   --target-arch amd64|arm64        Arquitectura destino (default amd64)
+#   --containerfile Containerfile    Archivo de imagen de build
+#   --output dist                    Directorio de artefactos
+#   --app-name                       Nombre del artefacto (default: project name)
+#   --qemu auto|off                  Registrar binfmt si falta (default auto)
+#   --log-file /ruta/al/log          Obligatorio
+#   --log-level info                 (opcional)
+#
+# Convención de artefactos (regla 06): dist/<app>-<os>-<arch>
+#
+# Auditoría: helpers/shell/lib/logs.sh (regla 15)
+# ------------------------------------------------------------------
+
+runtime=""
+target_os="linux"
+target_arch="amd64"
+containerfile="Containerfile"
+output_dir="dist"
+app_name=""
+qemu_mode="auto"
+workspace="$(pwd)"
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--runtime)        runtime="${2:-}"; shift 2 ;;
+		--target-os)      target_os="${2:-}"; shift 2 ;;
+		--target-arch)    target_arch="${2:-}"; shift 2 ;;
+		--containerfile)  containerfile="${2:-}"; shift 2 ;;
+		--output)         output_dir="${2:-}"; shift 2 ;;
+		--app-name)       app_name="${2:-}"; shift 2 ;;
+		--qemu)           qemu_mode="${2:-}"; shift 2 ;;
+		--log-file)       log_file="${2:-}"; shift 2 ;;
+		--log-level)      log_level="${2:-}"; shift 2 ;;
+		*)
+			die "Unknown flag: $1"
+			;;
+	esac
+done
+
+if [[ -z "$app_name" ]]; then
+	app_name="$(basename "$workspace")"
+fi
+
+step 1 5 "Detectando runtime..."
+resolve_runtime() {
+	if [[ -n "$runtime" ]]; then
+		echo "$runtime"
+		return
+	fi
+	if command -v podman >/dev/null 2>&1; then
+		echo "podman"
+	elif command -v docker >/dev/null 2>&1; then
+		warning "Docker detectado. Podman es la opción recomendada (regla 08-stack)."
+		echo "docker"
+	else
+		die "No container runtime found. Install podman or docker."
+	fi
+}
+runtime="$(resolve_runtime)"
+log_info "  Runtime: $runtime"
+
+step 2 5 "Determinando arquitectura host vs target..."
+host_arch="$(uname -m)"
+# Normalizar nombres
+case "$host_arch" in
+	x86_64)  host_arch="amd64" ;;
+	aarch64) host_arch="arm64" ;;
+esac
+target_platform="${target_os}/${target_arch}"
+log_info "  Host: $host_arch"
+log_info "  Target: $target_arch → platform: $target_platform"
+
+step 3 5 "Verificando compatibilidad de arquitectura..."
+needs_qemu=false
+if [[ "$host_arch" != "$target_arch" ]]; then
+	needs_qemu=true
+	log_info "  Arquitecturas diferentes (host=$host_arch, target=$target_arch)."
+	if [[ "$qemu_mode" == "auto" ]]; then
+		log_info "  Registrando QEMU (binfmt_misc)..."
+		if "$runtime" run --privileged --rm tonistiigi/binfmt --install "$target_arch" 2>/dev/null; then
+			success "  QEMU registrado para $target_arch."
+		else
+			die "  No se pudo registrar QEMU. Requiere privilegios (--privileged)."
+		fi
+	else
+		log_info "  QEMU desactivado (--qemu off)."
+	fi
+else
+	log_info "  Arquitectura nativa — no requiere QEMU."
+fi
+
+step 4 5 "Construyendo imagen con --platform $target_platform..."
+if [[ ! -f "$containerfile" ]]; then
+	die "No se encontró $containerfile."
+fi
+"$runtime" build --platform "$target_platform" -f "$containerfile" -t "cross-builder" "$workspace"
+
+step 5 5 "Compilando en contenedor ($target_platform)..."
+"$runtime" run --rm \
+	--platform "$target_platform" \
+	-v "$workspace":/workspace \
+	-w /workspace \
+	"cross-builder" \
+	sh -lc 'make build'
+
+# Extraer artefactos
+artifact_dir="$output_dir/${app_name}-${target_os}-${target_arch}"
+mkdir -p "$artifact_dir"
+log_info "Extrayendo artefactos de dist/ → $artifact_dir/"
+if [[ -d "$workspace/dist" ]]; then
+	cp -r "$workspace/dist/"* "$artifact_dir/" 2>/dev/null || true
+fi
+if [[ -d "$workspace/target/release" ]]; then
+	cp -r "$workspace/target/release/"* "$artifact_dir/" 2>/dev/null || true
+fi
+
+success "Cross-build completado: $artifact_dir/"
+ls -la "$artifact_dir/" 2>/dev/null || log_info "  (sin artefactos binarios detectados)"
