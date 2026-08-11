@@ -41,3 +41,8 @@ mcp/ether_mcp_my_best_practices/data/
 
 # Documentation
 site/
+
+# opencode — worktrees (generados, no committear)
+.opencode/worktrees/
+.opencode/worktrees.db
+.opencode/worktrees.log

@@ -1,0 +1,27 @@
+# helpers/just/worktree.just — Operativas de worktrees (trabajo en paralelo).
+# Reutiliza helpers/shell/worktree.sh (script atómico, regla 15).
+# Convención: directorios hermanos ../wt-<rama> (recomendación de git).
+
+# Crear worktree + rama
+@wt-add branch:
+    bash helpers/shell/worktree.sh --action add --branch {{branch}}
+
+# Listar worktrees activos
+@wt-list:
+    bash helpers/shell/worktree.sh --action list
+
+# Eliminar worktree (requiere trabajo commiteado)
+@wt-remove path:
+    bash helpers/shell/worktree.sh --action remove --path {{path}}
+
+# Bloquear worktree para evitar eliminación accidental
+@wt-lock path reason="":
+    bash helpers/shell/worktree.sh --action lock --path {{path}} --reason "{{reason}}"
+
+# Desbloquear worktree
+@wt-unlock path:
+    bash helpers/shell/worktree.sh --action unlock --path {{path}}
+
+# Limpiar metadatos huérfanos
+@wt-prune:
+    bash helpers/shell/worktree.sh --action prune

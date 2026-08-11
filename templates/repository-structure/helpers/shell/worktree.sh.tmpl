@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logs.sh"
+source "$SCRIPT_DIR/lib/messages.sh"
+init_log "worktree"
+
+# ------------------------------------------------------------------
+# worktree.sh — Gestión de git worktrees (trabajo en paralelo).
+# Reutilizable por Makefile y Justfile (helpers/just/worktree.just).
+#
+# Contrato (regla 01):
+#   --action add|list|remove|lock|unlock|prune|status
+#   --path <ruta>          Ruta del worktree (obligatoria para add/remove/lock)
+#   --branch <rama>        Rama a crear/checkout (add)
+#   --base main            Rama base (add, default main)
+#   --reason <texto>       Motivo de lock
+#   --log-file /ruta/log   Obligatorio
+#   --log-level info       (opcional)
+#
+# Convención de paths (regla 05): directorios hermanos ../wt-<rama>
+# Ejemplo: git worktree add ../wt-feature-x -b feature/x main
+#
+# Seguridad: prohibido remover el worktree principal (repositorio actual).
+#
+# Auditoría: helpers/shell/lib/logs.sh (regla 15)
+# ------------------------------------------------------------------
+
+action=""
+path=""
+branch=""
+base="main"
+reason=""
+workspace="$(pwd)"
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--action)   action="${2:-}"; shift 2 ;;
+		--path)     path="${2:-}"; shift 2 ;;
+		--branch)   branch="${2:-}"; shift 2 ;;
+		--base)     base="${2:-}"; shift 2 ;;
+		--reason)   reason="${2:-}"; shift 2 ;;
+		--log-file) log_file="${2:-}"; shift 2 ;;
+		--log-level)log_level="${2:-}"; shift 2 ;;
+		*)
+			die "Unknown flag: $1"
+			;;
+	esac
+done
+
+[[ -z "$action" ]] && die "Missing required flag --action"
+
+# Guard: no remover/lockear el worktree principal
+_guard_primary() {
+	if [[ "$(readlink -f "${1:-}" 2>/dev/null || echo "$1")" == "$workspace" ]]; then
+		die "Operación no permitida sobre el worktree principal ($workspace). Usa 'git checkout -b' para crear ramas locales."
+	fi
+}
+
+case "$action" in
+	add)
+		[[ -z "$branch" ]] && die "Missing --branch para add"
+		wt_path="${path:-../wt-${branch}}"
+		log_info "Creando worktree: $wt_path (branch=$branch, base=$base)"
+		git worktree add "$wt_path" -b "$branch" "$base"
+		success "Worktree creado en $wt_path"
+		;;
+	list)
+		git worktree list
+		;;
+	remove)
+		[[ -z "$path" ]] && die "Missing --path para remove"
+		_guard_primary "$path"
+		warn "Asegúrate de que el trabajo en '$path' esté commiteado."
+		git worktree remove "$path"
+		success "Worktree '$path' removido."
+		;;
+	lock)
+		[[ -z "$path" ]] && die "Missing --path para lock"
+		_guard_primary "$path"
+		reason_arg=""
+		[[ -n "$reason" ]] && reason_arg="--reason \"$reason\""
+		log_info "Bloqueando worktree: $path"
+		git worktree lock "$path" ${reason_arg:+"$reason_arg"}
+		success "Worktree '$path' bloqueado."
+		;;
+	unlock)
+		[[ -z "$path" ]] && die "Missing --path para unlock"
+		git worktree unlock "$path"
+		success "Worktree '$path' desbloqueado."
+		;;
+	prune)
+		log_info "Limpiando worktrees huérfanos..."
+		git worktree prune
+		success "Prune completado."
+		;;
+	status)
+		git worktree list
+		;;
+	*)
+		die "Unknown action: $action. Expected add|list|remove|lock|unlock|prune|status."
+		;;
+esac
