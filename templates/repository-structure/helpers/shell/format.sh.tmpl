@@ -25,6 +25,7 @@ init_log "format"
 #   uv     → uv run ruff format .
 #   poetry → poetry run ruff format .
 #   cargo  → cargo fmt
+#   markdown → mdformat docs/  (solo docs/, nunca rules/ — regla 04)
 #
 # Auditoría: /var/log/<proyecto>/log-format-<ts>.log
 #             Fallback → /tmp/<proyecto>/log-format-<ts>.log
@@ -95,8 +96,9 @@ resolve_cmd() {
 		uv)     echo "uv run ruff format ." ;;
 		poetry) echo "poetry run ruff format ." ;;
 		cargo)  echo "cargo fmt" ;;
+		markdown) echo "mdformat \"$module\"" ;;
 		*)
-			echo "Unknown tool: $tool. Expected npm|pnpm|yarn|maven|gradle|uv|poetry|cargo" >&2
+			echo "Unknown tool: $tool. Expected npm|pnpm|yarn|maven|gradle|uv|poetry|cargo|markdown" >&2
 			exit 1
 			;;
 	esac

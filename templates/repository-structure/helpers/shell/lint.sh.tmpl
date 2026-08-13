@@ -6,11 +6,12 @@ source "$SCRIPT_DIR/lib/messages.sh"
 init_log "lint"
 
 # ------------------------------------------------------------------
-# lint.sh — Validación de sintaxis de helpers shell y python.
+# lint.sh — Validación de sintaxis de helpers shell, python y markdown.
 # Llamado por make lint (vía helpers/mk/lint.mk) o pre-commit.
 #
 # Valida: bash -n en todos los .sh de helpers/shell/ + lib/
 #         python3 -m py_compile en todos los .py de helpers/python/ + lib/
+#         markdownlint-cli2 en docs/ (si está instalado)
 #
 # Auditoría: helpers/shell/lib/logs.sh (regla 15)
 # ------------------------------------------------------------------
@@ -70,6 +71,20 @@ for f in "$workspace"/helpers/python/lib/*.py; do
     fi
     checked=$((checked + 1))
 done
+
+# Markdown (docs/) — markdownlint-cli2
+if command -v markdownlint-cli2 >/dev/null 2>&1; then
+    header "Lint: markdown (docs/)"
+    if markdownlint-cli2 "docs/**/*.md" 2>/dev/null; then
+        log_info "  OK: docs/"
+    else
+        error "  FAIL: docs/ (markdownlint)"
+        failed=$((failed + 1))
+    fi
+    checked=$((checked + 1))
+else
+    warning "markdownlint-cli2 no detectado — lint de Markdown omitido."
+fi
 
 echo ""
 if [[ $failed -eq 0 ]]; then

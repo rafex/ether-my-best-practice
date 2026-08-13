@@ -19,6 +19,7 @@ nav:
 plugins:
   - search:
       lang: es
+  - macros
 
 markdown_extensions:
   - admonition
@@ -32,3 +33,37 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+
+# ---------------------------------------------------------------------------
+# Documentos relacionados por tag (regla 04 — frontmatter + tags).
+#
+# El plugin `macros` permite el snippet estático `{{ related_docs("tag") }}`
+# en cualquier página. Para habilitarlo, define la macro en un archivo
+# `main.py` junto al mkdocs.yml (mkdocs-macros lo detecta automáticamente):
+#
+#   ```python
+#   # main.py — definición de la macro related_docs
+#   import os
+#
+#   def define_env(env):
+#       @env.macro
+#       def related_docs(tag):
+#           docs_dir = "docs"
+#           matches = []
+#           for f in os.listdir(docs_dir):
+#               if not f.endswith(".md"):
+#                   continue
+#               with open(os.path.join(docs_dir, f)) as fh:
+#                   front = fh.read()
+#               # parsear frontmatter simple (líneas 'tags: [...]')
+#               if f'tags: [' in front and tag in front:
+#                   matches.append(f"- [{f[:-3]}]({f[:-3]})")
+#           return "\n".join(matches) if matches else "_Sin documentos relacionados._"
+#   ```
+#
+# Uso en cualquier página docs/:
+#   ```markdown
+#   ## Documentos relacionados
+#   {{ related_docs("security") }}
+#   ```
+# ---------------------------------------------------------------------------
