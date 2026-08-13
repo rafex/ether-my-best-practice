@@ -17,23 +17,30 @@ tags: [obligatorio]
 
 ### Estructura: Estructura
 
-### Componentes del sistema de secretos
+### Componentes del sistema de secretos y variables de entorno
 
 ```
 proyecto/
+├── .enviroments/                           # variables de entorno (SIN secretos)
+│   ├── .gitignore                          # evita subir .env-* con secretos
+│   ├── .env.example                        # plantilla (versionable, sin valores)
+│   ├── .env.dev                            # (generado por just env dev)
+│   ├── .env.test
+│   └── .env.prod
+├── .env → .enviroments/.env.dev            # symlink (apunta al entorno activo)
 ├── .secrets/                               # secretos cifrados (solo *.enc.yaml versionados)
 │   ├── .gitkeep
 │   ├── secrets.dev.enc.yaml                # cifrado con sops+age
 │   ├── secrets.prod.enc.yaml
 │   └── secrets.int.enc.yaml
 ├── .sops.yaml                              # configuración de sops (age recipients públicos)
-├── .env.example                            # plantilla de variables (sin valores, versionable)
 │
 ├── helpers/
 │   └── shell/
-│       └── secrets.sh                      # wrapper: edit, env, verify, keygen
+│       ├── secrets.sh                      # wrapper: edit, env, verify, keygen
+│       └── env.sh                          # merge de secretos + variables, symlink
 │
-├── Justfile                                # recipes: edit-secrets, env, secrets-verify
+├── Justfile                                # recipes: edit-secrets, env, env-link, env-merge
 └── ~/.age/<proyecto>-key.txt               # clave privada age (FUERA del repo, nunca versionada)
 ```
 
@@ -47,14 +54,35 @@ just edit-secrets dev     → secrets.sh --action edit --env dev
                               Abre $EDITOR (vi), al guardar → sops edit encripta
 
 just env dev              → secrets.sh --action env --env dev
-                              sops decrypt → genera .env.dev (ignorado por git)
+                              sops decrypt → .enviroments/.env.dev
+
+just env-link dev         → env.sh --action link --env dev
+                              .env → .enviroments/.env.dev (symlink)
+
+just env-merge dev        → env.sh --action merge --env dev
+                              merge YAML desencriptado + variables del proceso
 
 git commit                → pre-commit: gitleaks git --staged
-                              Bloquea el commit si detecta secretos en plano
+                              + doble-check de .env/secretos en plano
 
 git push                  → pre-push: trufflehog git file://.
                               Bloquea el push si hay secretos en el historial
 ```
+
+tags: [opcional]
+
+### Comportamiento: Merge de secretos + variables de entorno
+
+Las aplicaciones suelen buscar el archivo `.env` en la raíz para cargar su configuración. El estándar usa un **symlink** `.env → .enviroments/.env.<entorno>` para controlar qué entorno está activo, y un helper de **merge** que combina las variables no-secretas (`.enviroments/`) con los secretos desencriptados (`.secrets/`).
+
+1. **`secrets.sh --action env <env>`** desencripta `.secrets/secrets.<env>.enc.yaml` y genera `.enviroments/.env.<env>` con las variables **no-secretas**.
+2. **`env.sh --action merge <env>`** combina el YAML desencriptado + las variables de entorno del proceso, generando el `.env.<env>` final en runtime.
+3. **`env.sh --action link <env>`** actualiza el symlink `.env → .enviroments/.env.<env>`.
+4. Las aplicaciones leen `.env` (symlink), que apunta al entorno activo.
+
+**Precedencia en el merge:** si un secreto (de `.secrets/`) y una variable pública (de `.enviroments/`) tienen el mismo nombre, **el secreto gana**. El helper de merge **lanza un warning mostrando el valor de la variable pública que se perdió** (el secreto **nunca** se imprime en logs).
+
+tags: [obligatorio]
 
 ### Contenido de `.sops.yaml`
 
@@ -100,12 +128,14 @@ tags: [opcional]
 
 ### Nombre Sugerido: Nombres Sugeridos
 
+- **Carpeta de variables de entorno:** `.enviroments/` en raíz del repositorio.
+- **Archivos de entorno:** `.env.example` (plantilla versionable), `.env.dev`, `.env.test`, `.env.prod` — con punto, como en el estándar actual.
+- **Symlink activo:** `.env → .enviroments/.env.<entorno>` (no versionado).
 - **Carpeta de secretos:** `.secrets/` en raíz del repositorio.
 - **Archivos cifrados:** `secrets.<env>.enc.yaml` (dev, prod, int, staging...).
 - **Clave age:** `~/.age/<proyecto>-key.txt` (nombre del repositorio en kebab-case).
 - **Configuración sops:** `.sops.yaml` en raíz.
-- **Envs generados:** `.env.<env>` (dev, prod, int) — ignorados por git.
-- **Plantilla versionable:** `.env.example` (sin valores, solo nombres de variables).
+- **Helpers:** `secrets.sh` (edit/env/verify/keygen), `env.sh` (link/merge/verify).
 
 tags: [opcional]
 
@@ -137,8 +167,21 @@ just edit-secrets int
 ### Generar `.env.<entorno>`
 
 ```bash
-just env dev          # → genera .env.dev desde secrets.dev.enc.yaml
-just env prod         # → genera .env.prod
+just env dev          # → genera .enviroments/.env.dev desde secrets.dev.enc.yaml
+just env prod         # → genera .enviroments/.env.prod
+```
+
+### Activar entorno (symlink .env)
+
+```bash
+just env-link dev     # → .env → .enviroments/.env.dev
+just env-link prod    # → .env → .enviroments/.env.prod
+```
+
+### Merge de secretos + variables
+
+```bash
+just env-merge dev    # → combina YAML desencriptado + variables del proceso
 ```
 
 ### Verificar que no hay secretos en plano
@@ -215,8 +258,12 @@ tags: [obligatorio]
 ### Restriccion: Restricciones
 
 - **Nunca versionar la clave privada age** (`~/.age/<proyecto>-key.txt`). Cada desarrollador genera su propia clave y añade su clave pública a `.sops.yaml`.
-- **Nunca versionar `.env.*` (`.env.dev`, `.env.prod`, `.env.int`).** Estos se generan con `just env <entorno>` y están en `.gitignore`. La plantilla `.env.example` (sin valores) sí se versiona.
+- **Nunca versionar `.env`, `.env.*` ni `.enviroments/.env.*`.** Estos se generan con `just env <entorno>` y están en `.gitignore`. La plantilla `.env.example` (sin valores) y `.enviroments/.gitignore` sí se versionan.
+- **Los `.env.*` en `.enviroments/` NUNCA contienen secretos.** Si una variable es secreta, va en `.secrets/`; el merge la inyecta en runtime. Los valores no-secretos (públicos) sí pueden estar en `.enviroments/`.
 - **Nunca versionar secretos en plano** en archivos YAML, JSON, properties, `.env`, código fuente ni ningún otro formato. Todo secreto debe pasar por `sops edit` y vivir en `.secrets/*.enc.yaml`.
+- **El symlink `.env` no se versiona** (está en `.gitignore`). Apunta a `.enviroments/.env.<entorno>` y se gestiona con `env.sh --action link`.
+- **Merge con precedencia:** si un secreto y una variable pública tienen el mismo nombre, **el secreto gana**. El helper de merge lanza un warning mostrando el valor de la variable pública perdida (el secreto **nunca** se imprime).
+- **Doble-check:** `pre-commit` (gate) y `commit-msg` (validación dura) rechazan `.env`, `.env.*` con contenido, o secretos sin cifrar staged.
 - **`gitleaks git --staged` se ejecuta en pre-commit** y bloquea el commit si detecta secretos en los archivos staged.
 - **`trufflehog git file://.` se ejecuta en pre-push** y bloquea el push si hay secretos en cualquier parte del historial.
 - **Solo los archivos `*.enc.yaml` dentro de `.secrets/` se versionan.** Cualquier otro `.yaml`, `.yml` o `.json` en `.secrets/` es ignorado por git.
@@ -238,6 +285,7 @@ tags: [obligatorio]
 - [trufflehog](https://github.com/trufflesecurity/trufflehog)
 - [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
 - [templates/helpers/shell/secrets.sh.tmpl](../templates/repository-structure/helpers/shell/secrets.sh.tmpl)
+- [templates/helpers/shell/env.sh.tmpl](../templates/repository-structure/helpers/shell/env.sh.tmpl)
 - [templates/gitignore/.gitignore.secretos.tmpl](../templates/gitignore/.gitignore.secretos.tmpl)
 
 tags: [obligatorio]
@@ -246,7 +294,9 @@ tags: [obligatorio]
 
 - [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
 - [templates/repository-structure/.secrets/](../templates/repository-structure/.secrets/)
+- [templates/repository-structure/.enviroments/](../templates/repository-structure/.enviroments/)
 - [templates/helpers/shell/secrets.sh.tmpl](../templates/repository-structure/helpers/shell/secrets.sh.tmpl)
+- [templates/helpers/shell/env.sh.tmpl](../templates/repository-structure/helpers/shell/env.sh.tmpl)
 - [templates/gitignore/.gitignore.secretos.tmpl](../templates/gitignore/.gitignore.secretos.tmpl)
 
 tags: [opcional]

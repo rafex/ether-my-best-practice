@@ -36,6 +36,20 @@ fi
 
 # Validar formato Conventional Commits
 if echo "$msg" | grep -qE '^(feat|fix|docs|style|refactor|test|chore|build|ci|perf|revert)(\([a-zA-Z0-9._-]+\))?!?: .+'; then
+	# Doble-check: rechazar .env / secretos en plano staged
+	staged_env="$(git diff --cached --name-only 2>/dev/null | grep -E '(^|/)(\.env$|\.env\.[a-z]+$)' || true)"
+	if [[ -n "$staged_env" ]]; then
+		for f in $staged_env; do
+			case "$f" in
+				*.env.example) continue ;;
+			esac
+			echo "" >&2
+			echo "ERROR: archivo de entorno con contenido staged: $f" >&2
+			echo "Los secretos van en .secrets/*.enc.yaml; las variables públicas en .enviroments/." >&2
+			echo "Usa 'just env-link <env>' para el symlink .env." >&2
+			exit 1
+		done
+	fi
 	exit 0
 fi
 

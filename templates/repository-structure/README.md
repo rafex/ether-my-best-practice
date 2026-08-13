@@ -35,6 +35,14 @@ proyecto/
 │   ├── .gitkeep
 │   └── secrets.{dev,prod,int}.enc.yaml  # solo los *.enc.yaml se versionan
 │
+├── .enviroments/                    # variables de entorno (SIN secretos, regla 13)
+│   ├── .gitignore                   # evita subir .env-* con secretos
+│   ├── .env.example                 # plantilla (versionable, sin valores)
+│   ├── .env.dev                     # (generado por just env dev)
+│   ├── .env.test
+│   └── .env.prod
+├── .env → .enviroments/.env.dev     # symlink al entorno activo (no versionado)
+│
 ├── docs/                            # documentación en Markdown + MermaidJS
 │   ├── index.md
 │   ├── architecture.md

@@ -14,12 +14,25 @@ bash "$SCRIPT_DIR/lint.sh" || die "lint falló"
 step 2 3 "Validación de reglas..."
 bash "$SCRIPT_DIR/validate-rules.sh" || die "validate falló"
 
-step 3 3 "Verificación de secretos..."
+step 3 4 "Verificación de secretos..."
 if command -v gitleaks >/dev/null 2>&1; then
     gitleaks git --staged
     log_info "gitleaks: sin secretos detectados."
 else
     log_info "gitleaks no instalado — verificación saltada."
+fi
+
+step 4 4 "Doble-check de .env y secretos en plano..."
+# Rechazar staged de .env, .env.* con contenido, y secretos sin cifrar
+staged_env="$(git diff --cached --name-only | grep -E '(^|/)(\.env$|\.env\.[a-z]+$)' || true)"
+if [[ -n "$staged_env" ]]; then
+    # Permitir .env.example (plantilla sin valores)
+    for f in $staged_env; do
+        case "$f" in
+            *.env.example) continue ;;
+        esac
+        die "Archivo .env staged ($f). Los secretos van en .secrets/. Usa 'just env-link <env>' para el symlink."
+    done
 fi
 
 success "pre-commit superado."

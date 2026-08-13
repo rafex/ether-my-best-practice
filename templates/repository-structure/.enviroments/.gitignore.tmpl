@@ -1,0 +1,10 @@
+# .enviroments/.gitignore — variables de entorno (SIN secretos).
+# Template de referencia: templates/repository-structure/.enviroments/.gitignore.tmpl
+# Los secretos viven en .secrets/*.enc.yaml (regla 13).
+
+# Ignorar todos los .env.* con valores (generados por just env <entorno>)
+.env.*
+!.env.example
+
+# El symlink .env de la raíz (apunta al entorno activo)
+/.env
