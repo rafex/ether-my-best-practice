@@ -24,6 +24,7 @@ Este repositorio contiene un conjunto de premisas y estándares para el desarrol
 | 14 | **[14-config-files.md](14-config-files.md)** | Definida | Archivos de configuración (.config) — centralización por herramienta |
 | 15 | **[15-script-reuse.md](15-script-reuse.md)** | Definida | Reutilización de Scripts — librerías comunes shell y python |
 | 16 | **[16-cd.md](16-cd.md)** | Definida | Despliegue Continuo — CD portable, local-first, sops+age |
+| 17 | **[17-code-clean-types-and-enums_draft.md](17-code-clean-types-and-enums_draft.md)** | ⚠️ *Borrador* | Código Limpio — Tipos fuertes y enums (evitar stringly-typed) |
 
 > **Convención:** las reglas con `status: Borrador` en el frontmatter llevan el sufijo `_draft` en el nombre del archivo y `— ⚠️ *Borrador*` en el título H1. Contienen premisa y restricciones pero aún no alcanzan la profundidad completa.
 

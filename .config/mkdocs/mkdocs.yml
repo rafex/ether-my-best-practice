@@ -38,6 +38,7 @@ nav:
       - Archivos de Configuración: rules/14-config-files.md
       - Reutilización de Scripts: rules/15-script-reuse.md
       - Despliegue Continuo: rules/16-cd.md
+      - Código Limpio: rules/17-code-clean-types-and-enums_draft.md
 
 plugins:
   - search:
