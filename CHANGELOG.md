@@ -19,6 +19,18 @@
 - Validador de reglas con frontmatter YAML y secciones obligatorias.
 - Dogfooding: MermaidJS en este sitio, Python 3.12 en CI.
 
+## v0.4.0 (2026-08-13)
+
+### Feat
+
+- **rules**: regla 17 — código limpio, tipos fuertes y enums (Borrador)
+- **secrets**: manejo de variables de entorno (.enviroments/ + symlink + merge)
+- **docs**: formatters y tags para relacionar documentos (regla 04)
+- **worktrees**: gestión de git worktrees en el estándar (regla 05 + templates)
+- **ci**: cross-compilación en contenedores + QEMU (regla 06)
+- **rules**: convención _draft para reglas Borrador — visual, MCP, auditoría
+- **mcp**: auditoría de adopción — audit_project tool + audit.py CLI
+
 ## v0.3.0 (2026-08-09)
 
 ### Feat
