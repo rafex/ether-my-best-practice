@@ -41,8 +41,7 @@ Añade al archivo `mcp-config.json` de tu cliente:
       "command": "uvx",
       "args": ["ether-mcp"],
       "env": {
-        "RULES_DIR": "",
-        "TEMPLATES_DIR": ""
+        "RULES_REMOTE_URL": "https://my-best-practice.rafex.io/ether-rules"
       }
     }
   }
@@ -50,6 +49,33 @@ Añade al archivo `mcp-config.json` de tu cliente:
 ```
 
 > Si instalaste con `uv tool install`, cambia `"command": "uvx"` por `"command": "ether-mcp"` y quita `"args"`.
+
+## Resolución de las reglas (remoto → empaquetado)
+
+El servidor resuelve las reglas, templates, helpers y docs en este orden:
+
+1. **Override explícito** — variables `RULES_DIR`, `TEMPLATES_DIR`, `HELPERS_DIR`, `DOCS_DIR` si apuntan a un directorio existente.
+2. **Remoto (web)** — descarga desde `RULES_REMOTE_URL` (por defecto `https://my-best-practice.rafex.io/ether-rules`, el contenido público que sirve el sitio [my-best-practice.rafex.io](https://my-best-practice.rafex.io)). Usa el manifest `checksums.json` para descargar **solo** los archivos nuevos o cuyo hash cambió, y los guarda en `~/.cache/ether-mcp/`.
+3. **Empaquetado (bundled)** — usa el snapshot `data/` incluido en el wheel, si el remoto no está disponible.
+4. **Clon local** — `MCP_ROOT/<dir>`.
+
+Cada regla (`rules/*.md`) lleva su propio hash en el frontmatter (`checksum: <sha256>`), generado con `make checksums`. El manifest `checksums.json` se publica en el sitio (no se versiona en el repositorio) mediante `make publish-checksums`. Para forzar una fuente concreta, configura `RULES_REMOTE_URL` en el `env` del servidor:
+
+```json
+{
+  "mcpServers": {
+    "ether-rules": {
+      "command": "uvx",
+      "args": ["ether-mcp"],
+      "env": {
+        "RULES_REMOTE_URL": "https://my-best-practice.rafex.io/ether-rules"
+      }
+    }
+  }
+}
+```
+
+> Si `RULES_REMOTE_URL` no es accesible (sin red, error HTTP, etc.), el servidor cae automáticamente a la versión empaquetada sin interrumpir el servicio.
 
 ## Resources disponibles
 

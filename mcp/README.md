@@ -33,8 +33,7 @@ Añadir al archivo `mcp-config.json` de tu cliente (Claude Desktop, opencode, et
       "command": "uvx",
       "args": ["ether-mcp"],
       "env": {
-        "RULES_DIR": "",
-        "TEMPLATES_DIR": ""
+        "RULES_REMOTE_URL": "https://my-best-practice.rafex.io/ether-rules"
       }
     }
   }
@@ -48,7 +47,7 @@ Añadir al archivo `mcp-config.json` de tu cliente (Claude Desktop, opencode, et
 El servidor resuelve los datos de reglas y templates en este orden:
 
 1. **Variables de entorno** `RULES_DIR` / `TEMPLATES_DIR` (máxima prioridad) — para usar un clon local del repositorio.
-2. **Sitio público** [`https://my-best-practice.rafex.io/ether-rules/`](https://my-best-practice.rafex.io/ether-rules/) — intenta descargar el contenido más actualizado a una caché local (`~/.cache/ether-mcp/`).
+2. **Sitio público** [`https://my-best-practice.rafex.io/ether-rules/`](https://my-best-practice.rafex.io/ether-rules/) — intenta descargar el contenido más actualizado a una caché local (`~/.cache/ether-mcp/`), comparando con el manifest `checksums.json` para descargar solo los archivos nuevos o cambiados.
 3. **Snapshot empaquetado** (fallback autocontenido dentro del wheel).
 
 ## Resources
