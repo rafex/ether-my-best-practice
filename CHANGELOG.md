@@ -19,6 +19,13 @@
 - Validador de reglas con frontmatter YAML y secciones obligatorias.
 - Dogfooding: MermaidJS en este sitio, Python 3.12 en CI.
 
+## v0.5.0 (2026-08-14)
+
+### Feat
+
+- **release**: publicar checksums.json y contenido raw en el sitio
+- **mcp**: resolver reglas desde el sitio público vía manifest checksums.json
+
 ## v0.4.0 (2026-08-13)
 
 ### Feat
