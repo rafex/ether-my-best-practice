@@ -41,6 +41,7 @@ mcp/ether_mcp_my_best_practices/data/
 
 # Documentation
 site/
+checksums.json
 
 # opencode — worktrees (generados, no committear)
 .opencode/worktrees/

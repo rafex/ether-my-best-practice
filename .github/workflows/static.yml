@@ -42,11 +42,26 @@ jobs:
       - name: Build site
         run: make docs
 
-      - name: Copy ether-rules content to site
+      - name: Publish ether-rules content + checksums
+        run: make publish-checksums
+
+      - name: Verify published manifest
         run: |
-          mkdir -p site/ether-rules
-          cp -r rules site/ether-rules/rules
-          cp -r templates site/ether-rules/templates
+          python3 - <<'PY'
+          import json, sys
+          sys.path.insert(0, "helpers/python/lib")
+          from commons import content_hash
+
+          manifest = json.load(open("site/ether-rules/checksums.json"))
+          files = manifest["files"]
+          if not files:
+              sys.exit("manifest vacío")
+          for rel in ("rules/01-build-tooling.md", "rules/00-index.md"):
+              with open(f"site/ether-rules/{rel}", encoding="utf-8") as f:
+                  text = f.read()
+              assert content_hash(rel, text) == files[rel], f"checksum mismatch: {rel}"
+          print(f"OK: manifest válido ({len(files)} archivos), checksum de reglas correcto")
+          PY
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

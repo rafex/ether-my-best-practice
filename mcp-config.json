@@ -4,8 +4,7 @@
       "command": "uv",
       "args": ["run", "--directory", "mcp", "python", "ether_mcp_my_best_practices/server.py"],
       "env": {
-        "RULES_DIR": "rules",
-        "TEMPLATES_DIR": "templates"
+        "RULES_REMOTE_URL": "https://my-best-practice.rafex.io/ether-rules"
       }
     }
   }

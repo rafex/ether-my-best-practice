@@ -19,6 +19,8 @@ help:
 	@echo "  make pages         - Disparar workflow de GitHub Pages"
 	@echo "  make clean         - Limpiar artefactos (site, mcp/dist)"
 	@echo "  make version-bump  - Bump de versión con Commitizen"
+	@echo "  make checksums     - Generar checksums.json + incrustar hash en reglas"
+	@echo "  make publish-checksums - Publicar checksums.json + contenido raw en site/"
 	@echo "  make package       - Wheel del MCP (mcp/dist/*.whl)"
 	@echo "  make release       - Publicar GitHub Release"
 	@echo "  make deploy        - CI: validate + package + release"
