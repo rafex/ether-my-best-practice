@@ -3,6 +3,7 @@ id: commitizen
 title: Commitizen — Commit Convencional y Release
 status: Definida
 tags: [commitizen, conventional-commits, release, changelog, versioning]
+checksum: c7905ba1841d34e6c3fef64d8c13ca57211ebad2ea113646faa8308ed7e991b2
 ---
 
 # Regla 11: Commitizen — Commit Convencional y Release

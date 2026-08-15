@@ -3,6 +3,7 @@ id: documentation
 title: Documentación como Código
 status: Borrador
 tags: [documentation, markdown, mkdocs, adr]
+checksum: 9a7e44d8e7f274a0bbb0ff28865c875d38565ee892fdb24868bcace2183061d0
 ---
 
 # Regla 04: Documentación — ⚠️ *Borrador*

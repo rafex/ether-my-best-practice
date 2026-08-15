@@ -3,6 +3,7 @@ id: githooks
 title: Git Hooks
 status: Definida
 tags: [git, hooks, pre-commit, pre-push, commit-msg, release, conventional-commits]
+checksum: a0e3c46e6153d477db237321afc17030f185f637c901ad623ba79481060554ee
 ---
 
 # Regla 10: Git Hooks

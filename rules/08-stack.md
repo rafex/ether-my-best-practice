@@ -3,6 +3,7 @@ id: stack
 title: Stack Tecnológico Recomendado
 status: Definida
 tags: [stack, versions, java, nodejs, python, podman, containerfile, mermaid]
+checksum: c80034d7ed764da025c7ff82fa9af263b19f6d10abfe252a62a79a466a8f0cbc
 ---
 
 # Regla 08: Stack Tecnológico Recomendado

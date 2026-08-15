@@ -3,6 +3,7 @@ id: script-reuse
 title: Reutilización de Scripts (Librerías Comunes)
 status: Definida
 tags: [scripts, libraries, reuse, helpers, shell, python, commons]
+checksum: aecf8623247f6b20d7e6e53326062fe1a4652917d44661b967b0858bce609f20
 ---
 
 # Regla 15: Reutilización de Scripts (Librerías Comunes)

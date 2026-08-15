@@ -3,6 +3,7 @@ id: agents-mcp
 title: Agentes de IA y Model Context Protocol
 status: Definida
 tags: [agents, ai, mcp, server, resources, tools, prompts]
+checksum: 8ac5529c3c0ade32017d72b000b511476d319ca9aff5a3d03121636875ebe4bb
 ---
 
 # Regla 07: Agentes de IA y Model Context Protocol (MCP)

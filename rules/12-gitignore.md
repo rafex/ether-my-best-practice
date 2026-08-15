@@ -3,6 +3,7 @@ id: gitignore
 title: Gitignore y Exclusión de Archivos
 status: Definida
 tags: [git, gitignore, secrets, artifacts, templates, security]
+checksum: 24413259f1cef02b46e1902918e28b98cb00cbff4fdc5c40276d2d54112a9bf1
 ---
 
 # Regla 12: Gitignore y Exclusión de Archivos

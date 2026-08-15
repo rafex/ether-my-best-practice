@@ -3,6 +3,7 @@ id: architecture
 title: Arquitectura Hexagonal
 status: Borrador
 tags: [architecture, hexagonal, ports, adapters, ddd]
+checksum: 50e910e2a4988f352b4f241b365dbe29e5dc4558634b8375cc1202cc7b81dae0
 ---
 
 # Regla 02: Arquitectura — ⚠️ *Borrador*

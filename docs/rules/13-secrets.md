@@ -3,6 +3,7 @@ id: secrets
 title: Gestión de Secretos
 status: Definida
 tags: [secrets, security, sops, age, encryption, gitleaks, trufflehog]
+checksum: f915ce0f59e20f78d9e9e897a16b43fba14113041a20651c7a0bf17fc8de2876
 ---
 
 # Regla 13: Gestión de Secretos

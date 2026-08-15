@@ -3,6 +3,7 @@ id: ci
 title: Integración Continua
 status: Definida
 tags: [ci, pipeline, build, test, containers, github-actions]
+checksum: b428ec96d27de9ff2adafcfed57cd898094e8df56ab2a300663a43babf388574
 ---
 
 # Regla 06: Integración Continua

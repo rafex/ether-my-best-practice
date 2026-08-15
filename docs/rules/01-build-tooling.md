@@ -3,6 +3,7 @@ id: build-tooling
 title: Herramientas de Construcción
 status: Definida
 tags: [build, tooling, makefile, justfile, helpers, shell, python]
+checksum: e77860828030401a22b9330da3320283c87a55a287223ae2160311d6f2faec01
 ---
 
 # Regla 01: Herramientas de Construcción

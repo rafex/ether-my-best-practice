@@ -3,6 +3,7 @@ id: version-control
 title: Control de Versiones
 status: Borrador
 tags: [git, version-control, conventional-commits, branching, semver]
+checksum: 7b1ce2a7f00fe1221b9f66091c584935961abd0a572844154b1cb989dbe7bc6b
 ---
 
 # Regla 05: Control de Versiones — ⚠️ *Borrador*

@@ -3,6 +3,7 @@ id: testing
 title: Estrategias de Testing
 status: Borrador
 tags: [testing, tdd, unit-tests, integration, e2e, coverage]
+checksum: f4776560135e370cb2400cf03aeab7e0b2e3551b451d46d88d1e5253a2dcc03b
 ---
 
 # Regla 03: Testing — ⚠️ *Borrador*

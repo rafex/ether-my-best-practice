@@ -3,6 +3,7 @@ id: code-clean-types-and-enums
 title: Código Limpio — Tipos Fuertes y Enums
 status: Borrador
 tags: [code-clean, types, enums, stringly-typed, lint, refactoring]
+checksum: e55cb0b7fb7714f0c2f82e47acec8b2fad874fdd73acc4966fbca15337edb123
 ---
 
 # Regla 17: Código Limpio — Tipos Fuertes y Enums — ⚠️ *Borrador*

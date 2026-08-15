@@ -3,6 +3,7 @@ id: config-files
 title: Archivos de Configuración (.config)
 status: Definida
 tags: [config, dotfiles, organization, tools, structure]
+checksum: 727d3dbe8c3feeb6a7f7de7a4a36ff68448b9e46fcf4379734ba2da887578bb3
 ---
 
 # Regla 14: Archivos de Configuración (.config)

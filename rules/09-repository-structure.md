@@ -3,6 +3,7 @@ id: repository-structure
 title: Estructura de Repositorio
 status: Definida
 tags: [structure, monorepo, backend, frontend, shared, multi-language, scaffolding]
+checksum: e346cfb1b33233be57af742306f877246bae14254510685316f2e167909d2476
 ---
 
 # Regla 09: Estructura de Repositorio

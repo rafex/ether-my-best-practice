@@ -3,23 +3,32 @@ config.py — Rutas y utilidades para el servidor MCP ether-rules.
 Reutiliza el patrón de commons.py (regla 15).
 
 Resolución de datos (jerarquía):
-  1. MCP_ROOT / RULES_DIR / TEMPLATES_DIR env (máx. prioridad, clon local)
-  2. Web: https://my-best-practice.rafex.io/ether-rules/ → ~/.cache/ether-mcp/
+  1. RULES_DIR / TEMPLATES_DIR / HELPERS_DIR / DOCS_DIR env (override explícito)
+  2. Web (remoto): descarga desde RULES_REMOTE_URL usando checksums.json
+     → ~/.cache/ether-mcp/ (solo archivos nuevos o con hash distinto)
   3. Bundled: importlib.resources → data/ (snapshot empaquetado en el wheel)
+  4. MCP_ROOT / <dir> (clon local del repositorio)
 """
 
 import importlib.resources
+import json
 import os
 import shutil
 import sys
 import urllib.request
 from typing import Optional
 
+from ether_mcp_my_best_practices.lib.commons import content_hash
+
 ROOT = os.environ.get("MCP_ROOT", os.getcwd())
 CACHE_DIR = os.path.join(os.path.expanduser("~"), ".cache", "ether-mcp")
-SITE_BASE = "https://my-best-practice.rafex.io/ether-rules"
-
-DATA_DIRS = ["rules", "templates", "helpers", "docs"]
+REMOTE_BASE = os.environ.get(
+    "RULES_REMOTE_URL",
+    "https://my-best-practice.rafex.io/ether-rules",
+)
+MANIFEST_NAME = "checksums.json"
+HTTP_TIMEOUT = 8
+USER_AGENT = "ether-mcp/1.0"
 
 DATA_DIRS = ["rules", "templates", "helpers", "docs"]
 
@@ -35,30 +44,95 @@ def _try_bundled(dir_name: str) -> str | None:
     return None
 
 
-def _try_download(dir_name: str) -> str | None:
-    """Intenta descargar un directorio desde el sitio público a la cache local."""
-    dest = os.path.join(CACHE_DIR, dir_name)
-    if os.path.isdir(dest):
-        return dest
-    url = f"{SITE_BASE}/{dir_name}/"
+def _http_get(url: str) -> bytes:
+    """GET de una URL con timeout y headers. Lanza excepción si falla."""
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as resp:
+        if resp.status != 200:
+            raise RuntimeError(f"HTTP {resp.status} para {url}")
+        return resp.read()
+
+
+_MANIFEST_CACHE: Optional[dict[str, str]] = None
+
+
+def _fetch_manifest() -> dict[str, str]:
+    """Descarga checksums.json remoto y devuelve el mapa {rel_path: sha256}.
+
+    El resultado se memoiza a nivel de módulo: se descarga una sola vez por
+    proceso (las cuatro llamadas de _resolve_dir comparten el mismo manifest).
+    """
+    global _MANIFEST_CACHE
+    if _MANIFEST_CACHE is not None:
+        return _MANIFEST_CACHE
+    data = _http_get(f"{REMOTE_BASE}/{MANIFEST_NAME}")
+    obj = json.loads(data.decode("utf-8"))
+    _MANIFEST_CACHE = obj.get("files", {})
+    return _MANIFEST_CACHE
+
+
+def _safe_rel(rel_path: str) -> bool:
+    """Rechaza rutas con traversal o absolutas."""
+    if rel_path.startswith("/") or ".." in rel_path.split("/"):
+        return False
+    return True
+
+
+def _cache_path(rel_path: str) -> str:
+    return os.path.join(CACHE_DIR, rel_path)
+
+
+def _is_up_to_date(rel_path: str, expected: str) -> bool:
+    """True si el archivo en caché coincide con el hash esperado."""
+    dest = _cache_path(rel_path)
+    if not os.path.isfile(dest):
+        return False
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "ether-mcp/1.0"})
-        with urllib.request.urlopen(req, timeout=5) as resp:
-            if resp.status == 200:
-                os.makedirs(dest, exist_ok=True)
-                for path in DATA_DIRS:
-                    src_url = f"{SITE_BASE}/{path}/"
-                    dst = os.path.join(CACHE_DIR, path)
-                    if not os.path.isdir(dst):
-                        os.makedirs(dst, exist_ok=True)
-                return dest
+        with open(dest, "rb") as f:
+            local = f.read().decode("utf-8", errors="replace")
+    except OSError:
+        return False
+    return content_hash(rel_path, local) == expected
+
+
+def _try_download(dir_name: str) -> str | None:
+    """Sincroniza un directorio desde el remoto a la caché, por checksum.
+
+    Descarga el manifest y, para cada archivo bajo dir_name/, solo descarga
+    los que faltan o cuyo hash cambió. Devuelve la ruta cacheada si al final
+    hay al menos un archivo; si no, None (→ fallback a bundled).
+    """
+    try:
+        manifest = _fetch_manifest()
     except Exception:
-        pass
+        return None
+
+    prefix = f"{dir_name}/"
+    targets = [p for p in manifest if p.startswith(prefix) and _safe_rel(p)]
+    if not targets:
+        return None
+
+    for rel in targets:
+        expected = manifest[rel]
+        if _is_up_to_date(rel, expected):
+            continue
+        try:
+            data = _http_get(f"{REMOTE_BASE}/{rel}")
+        except Exception:
+            continue
+        dest = _cache_path(rel)
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        with open(dest, "wb") as f:
+            f.write(data)
+
+    dest_dir = os.path.join(CACHE_DIR, dir_name)
+    if os.path.isdir(dest_dir) and os.listdir(dest_dir):
+        return dest_dir
     return None
 
 
 def _resolve_dir(dir_name: str, env_name: str) -> str:
-    """Resuelve un directorio con jerarquía: env → web/cache → bundled."""
+    """Resuelve un directorio con jerarquía: env → web → bundled → MCP_ROOT."""
     env_val = os.environ.get(env_name, "")
     if env_val and os.path.isdir(env_val):
         return env_val
