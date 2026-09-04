@@ -64,7 +64,7 @@ download_wheel() {
 	if [[ -n "$sha_url" ]]; then
 		local sha_name="${wheel_name}.sha256"
 		curl -sL "$sha_url" -o "$tmp_dir/$sha_name"
-		if [[ -s "$tmp_dir/$sha_name" ]] && (cd "$tmp_dir" && sha256sum -c "$sha_name" 2>/dev/null); then
+		if [[ -s "$tmp_dir/$sha_name" ]] && (cd "$tmp_dir" && sha256sum -c "$sha_name" >/dev/null 2>&1); then
 			success "Checksum verificado."
 		else
 			error "Checksum NO coincide. Abortando instalación."
