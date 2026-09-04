@@ -3,7 +3,7 @@ id: githooks
 title: Git Hooks
 status: Definida
 tags: [git, hooks, pre-commit, pre-push, commit-msg, release, conventional-commits]
-checksum: a0e3c46e6153d477db237321afc17030f185f637c901ad623ba79481060554ee
+checksum: 1117beec75924585f8a81c3aa742c6ee7914a511b5f24215bd03dc217ab34290
 ---
 
 # Regla 10: Git Hooks
@@ -209,20 +209,20 @@ tags: [obligatorio]
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — `.githooks/` en el árbol del proyecto.
 - [Regla 11: Commitizen](11-commitizen.md) — asistente de commit + release (co-propietaria del objetivo).
 - [Regla 13: Gestión de Secretos](13-secrets.md) — gitleaks (pre-commit) + trufflehog (pre-push).
-- [templates/repository-structure/.githooks/](../templates/repository-structure/.githooks/) — dispatchers pre-commit, pre-push, commit-msg.
-- [templates/helpers/shell/hooks.sh.tmpl](../templates/repository-structure/helpers/shell/hooks.sh.tmpl)
-- [templates/helpers/shell/commit-msg.sh.tmpl](../templates/repository-structure/helpers/shell/commit-msg.sh.tmpl)
-- [templates/helpers/python/changelog.py.tmpl](../templates/repository-structure/helpers/python/changelog.py.tmpl)
-- [templates/helpers/python/version.py.tmpl](../templates/repository-structure/helpers/python/version.py.tmpl)
+- [templates/repository-structure/.githooks/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.githooks/) — dispatchers pre-commit, pre-push, commit-msg.
+- [templates/helpers/shell/hooks.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/hooks.sh.tmpl)
+- [templates/helpers/shell/commit-msg.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/commit-msg.sh.tmpl)
+- [templates/helpers/python/changelog.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/python/changelog.py.tmpl)
+- [templates/helpers/python/version.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/python/version.py.tmpl)
 
 tags: [obligatorio]
 
 ### Plantilla: Plantilla
 
-- [templates/repository-structure/.githooks/](../templates/repository-structure/.githooks/)
-- [templates/helpers/shell/hooks.sh.tmpl](../templates/repository-structure/helpers/shell/hooks.sh.tmpl)
-- [templates/helpers/shell/commit-msg.sh.tmpl](../templates/repository-structure/helpers/shell/commit-msg.sh.tmpl)
-- [templates/helpers/python/changelog.py.tmpl](../templates/repository-structure/helpers/python/changelog.py.tmpl)
-- [templates/helpers/python/version.py.tmpl](../templates/repository-structure/helpers/python/version.py.tmpl)
+- [templates/repository-structure/.githooks/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.githooks/)
+- [templates/helpers/shell/hooks.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/hooks.sh.tmpl)
+- [templates/helpers/shell/commit-msg.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/commit-msg.sh.tmpl)
+- [templates/helpers/python/changelog.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/python/changelog.py.tmpl)
+- [templates/helpers/python/version.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/python/version.py.tmpl)
 
 tags: [opcional]

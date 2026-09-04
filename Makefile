@@ -22,6 +22,7 @@ help:
 	@echo "  make checksums     - Generar checksums.json + incrustar hash en reglas"
 	@echo "  make publish-checksums - Publicar checksums.json + contenido raw en site/"
 	@echo "  make package       - Wheel del MCP (mcp/dist/*.whl)"
+	@echo "  make mcp-smoke     - Smoke test de imports y tools del MCP"
 	@echo "  make release       - Publicar GitHub Release"
 	@echo "  make deploy        - CI: validate + package + release"
 	@echo "  make check         - Gate de calidad: lint + validate"

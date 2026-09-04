@@ -3,7 +3,7 @@ id: build-tooling
 title: Herramientas de Construcción
 status: Definida
 tags: [build, tooling, makefile, justfile, helpers, shell, python]
-checksum: e77860828030401a22b9330da3320283c87a55a287223ae2160311d6f2faec01
+checksum: f8cdf2a17930a492541483fa380bedd686928a332cd082a6863286a4976b16fb
 ---
 
 # Regla 01: Herramientas de Construcción
@@ -14,7 +14,7 @@ checksum: e77860828030401a22b9330da3320283c87a55a287223ae2160311d6f2faec01
 
 Todo proyecto debe tener un sistema de construcción declarativo y reproducible, independientemente del lenguaje. La responsabilidad se separa en tres capas: **Makefile** (construcción, artefactos, derivados de compilación), **Justfile** (task manager — orquesta acciones que pueden envolver `make` + operativa del binario, y tareas de día a día), y **helpers** (scripts que contienen la lógica real). Makefile y Justfile tienen lógica casi 0: solo proveen variables y orquestan llamadas. El script es el que realmente ejecuta.
 
-> **Nota:** esta regla describe el `Makefile` y `Justfile` de **proyectos consumidores** — los que un agente genera copiando las plantillas de [templates/](../templates/). El `Makefile` y `Justfile` en la raíz de este repositorio (`ether-my-best-practice`) son puramente operativos: publicar el sitio, validar reglas, lint y format.
+> **Nota:** esta regla describe el `Makefile` y `Justfile` de **proyectos consumidores** — los que un agente genera copiando las plantillas de [templates/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/). El `Makefile` y `Justfile` en la raíz de este repositorio (`ether-my-best-practice`) son puramente operativos: publicar el sitio, validar reglas, lint y format.
 
 tags: [obligatorio]
 
@@ -276,11 +276,11 @@ tags: [obligatorio]
 
 - [Regla 06: CI](06-ci.md)
 - [Regla 08: Stack Tecnológico](08-stack.md)
-- [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl)
-- [templates/Justfile.tmpl](../templates/repository-structure/Justfile.tmpl)
-- [templates/helpers/shell/](../templates/repository-structure/helpers/shell/): `build.sh`, `test.sh`, `clean.sh`, `container.sh`, `docs.sh`, `github.sh`, `lint.sh`, `format.sh`, `java.sh`, `javascript.sh`, `python.sh`, `rust.sh`
-- [templates/helpers/mk/](../templates/repository-structure/helpers/mk/): `build.mk`, `container.mk`, `docs.mk`, `github.mk`, `lint.mk`, `format.mk`
-- [templates/helpers/just/app.just.tmpl](../templates/repository-structure/helpers/just/app.just.tmpl)
+- [templates/Makefile.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/Makefile.tmpl)
+- [templates/Justfile.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/Justfile.tmpl)
+- [templates/helpers/shell/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/): `build.sh`, `test.sh`, `clean.sh`, `container.sh`, `docs.sh`, `github.sh`, `lint.sh`, `format.sh`, `java.sh`, `javascript.sh`, `python.sh`, `rust.sh`
+- [templates/helpers/mk/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/): `build.mk`, `container.mk`, `docs.mk`, `github.mk`, `lint.mk`, `format.mk`
+- [templates/helpers/just/app.just.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/just/app.just.tmpl)
 
 - [Regla 15: Reutilización de Scripts](15-script-reuse.md) — librerías comunes en lib/.
 
@@ -288,14 +288,14 @@ tags: [obligatorio]
 
 ### Plantilla: Plantilla
 
-- [templates/Makefile.tmpl](../templates/repository-structure/Makefile.tmpl)
-- [templates/Justfile.tmpl](../templates/repository-structure/Justfile.tmpl)
-- [templates/helpers/mk/build.mk.tmpl](../templates/repository-structure/helpers/mk/build.mk.tmpl)
-- [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
-- [templates/helpers/mk/docs.mk.tmpl](../templates/repository-structure/helpers/mk/docs.mk.tmpl)
-- [templates/helpers/mk/github.mk.tmpl](../templates/repository-structure/helpers/mk/github.mk.tmpl)
-- [templates/helpers/mk/lint.mk.tmpl](../templates/repository-structure/helpers/mk/lint.mk.tmpl)
-- [templates/helpers/mk/format.mk.tmpl](../templates/repository-structure/helpers/mk/format.mk.tmpl)
-- [templates/helpers/just/app.just.tmpl](../templates/repository-structure/helpers/just/app.just.tmpl)
+- [templates/Makefile.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/Makefile.tmpl)
+- [templates/Justfile.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/Justfile.tmpl)
+- [templates/helpers/mk/build.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/build.mk.tmpl)
+- [templates/helpers/mk/container.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/container.mk.tmpl)
+- [templates/helpers/mk/docs.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/docs.mk.tmpl)
+- [templates/helpers/mk/github.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/github.mk.tmpl)
+- [templates/helpers/mk/lint.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/lint.mk.tmpl)
+- [templates/helpers/mk/format.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/format.mk.tmpl)
+- [templates/helpers/just/app.just.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/just/app.just.tmpl)
 
 tags: [opcional]

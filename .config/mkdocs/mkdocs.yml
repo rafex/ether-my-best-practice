@@ -1,7 +1,6 @@
 site_name: Ether My Best Practice
 site_description: Mejores prácticas y estándares para desarrollo de software
 site_author: Raúl González
-site_email: rafex@rafex.dev
 
 docs_dir: ../../docs
 site_dir: ../../site
@@ -39,6 +38,7 @@ nav:
       - Reutilización de Scripts: rules/15-script-reuse.md
       - Despliegue Continuo: rules/16-cd.md
       - Código Limpio: rules/17-code-clean-types-and-enums_draft.md
+      - Soporte Meson (beta): rules/18-meson-support.md
 
 plugins:
   - search:

@@ -1,0 +1,8 @@
+# meson.build — declaración genérica de build para un proyecto consumidor.
+# Sustituye PROJECT_NAME, PROJECT_VERSION y los archivos de fuentes por los del proyecto.
+
+project('PROJECT_NAME', 'c', version: 'PROJECT_VERSION',
+  default_options: ['warning_level=3'])
+
+sources = files('src/main.c')
+executable('PROJECT_NAME', sources, install: true)

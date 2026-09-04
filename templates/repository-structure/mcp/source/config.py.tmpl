@@ -15,11 +15,12 @@ import sys
 import urllib.request
 from typing import Optional
 
-ROOT = os.environ.get("MCP_ROOT", os.getcwd())
+ROOT = os.environ.get(
+    "MCP_ROOT",
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")),
+)
 CACHE_DIR = os.path.join(os.path.expanduser("~"), ".cache", "ether-mcp")
 SITE_BASE = "https://my-best-practice.rafex.io/ether-rules"
-
-DATA_DIRS = ["rules", "templates", "helpers", "docs"]
 
 DATA_DIRS = ["rules", "templates", "helpers", "docs"]
 
@@ -75,6 +76,8 @@ RULES_DIR = _resolve_dir("rules", "RULES_DIR")
 TEMPLATES_DIR = _resolve_dir("templates", "TEMPLATES_DIR")
 HELPERS_DIR = _resolve_dir("helpers", "HELPERS_DIR")
 DOCS_DIR = _resolve_dir("docs", "DOCS_DIR")
+GITIGNORE_DIR = os.path.join(TEMPLATES_DIR, "gitignore")
+REPO_STRUCTURE_DIR = os.path.join(TEMPLATES_DIR, "repository-structure")
 
 
 def resolve(relative: str) -> str:
@@ -87,7 +90,7 @@ def list_rules_files() -> list[str]:
     files = sorted(
         f
         for f in os.listdir(RULES_DIR)
-        if f.endswith(".md") and f[0].isdigit()
+        if f.endswith(".md") and f[0].isdigit() and f != "00-index.md"
     )
     return files
 

@@ -10,6 +10,8 @@ Los helpers (`helpers/`) constituyen la capa única de ejecución compartida: sc
 proyecto/
 ├── Makefile                         # orquestación: build, test, ci
 ├── Justfile                         # operativas: serve, login, create-user, ...
+├── meson.build                      # (opcional) build declarativo beta
+├── meson_options.txt                # (opcional) opciones propias de Meson
 ├── .gitignore
 ├── VERSION                          # versión actual (bumpeada en release)
 ├── CHANGELOG.md                     # generado en release desde Conventional Commits
@@ -69,9 +71,9 @@ proyecto/
 ├── mcp/                             # SUGERENCIA (opcional, regla 07) — servidor MCP
 │   ├── mcp-config.json              # configuración para clientes MCP
 │   └── source/                      # código del servidor (sugerido)
-│       ├── server.py                # MCPServer: resources, tools, prompts
+│       ├── server.py                # FastMCP: resources, tools, prompts
 │       ├── config.py                # rutas (RULES_DIR, TEMPLATES_DIR)
-│       └── requirements.txt         # mcp>=1.0, PyYAML>=6.0
+│       └── requirements.txt         # mcp>=1.12,<2.0, PyYAML>=6.0
 │
 │   🛈 Si tu proyecto no usa agentes MCP, puedes omitir esta carpeta.
 │
@@ -113,6 +115,10 @@ proyecto/
                 └── src/
 
 ```
+
+Cuando el proyecto elige el soporte beta de Meson, añade
+`helpers/shell/meson.sh` y usa `helpers/just/build.just` para delegar
+`setup`, `compile`, `test` e `install` en Meson/Ninja.
 
 ## Principios
 

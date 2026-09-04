@@ -3,7 +3,7 @@ id: architecture
 title: Arquitectura Hexagonal
 status: Borrador
 tags: [architecture, hexagonal, ports, adapters, ddd]
-checksum: 50e910e2a4988f352b4f241b365dbe29e5dc4558634b8375cc1202cc7b81dae0
+checksum: 976df6e6e1ed5d6f2dd564979d615ba4db68844501db65c397d30b91f3bf90b6
 ---
 
 # Regla 02: Arquitectura — ⚠️ *Borrador*
@@ -56,7 +56,7 @@ tags: [obligatorio]
 
 - Alistair Cockburn — Hexagonal Architecture
 - Domain Driven Design (DDD) — Eric Evans
-- [templates/repository-structure/README.md](../templates/repository-structure/README.md)
+- [templates/repository-structure/README.md](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/README.md)
 - [Regla 01: Build Tooling](01-build-tooling.md)
 - [Regla 03: Testing](03-testing_draft.md)
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md)
@@ -65,6 +65,6 @@ tags: [obligatorio]
 
 ### Estructura: Estructura
 
-Ver [templates/repository-structure/](../templates/repository-structure/) para la estructura completa de un proyecto generado.
+Ver [templates/repository-structure/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/) para la estructura completa de un proyecto generado.
 
 tags: [opcional]

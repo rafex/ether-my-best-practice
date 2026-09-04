@@ -3,7 +3,7 @@ id: code-clean-types-and-enums
 title: Código Limpio — Tipos Fuertes y Enums
 status: Borrador
 tags: [code-clean, types, enums, stringly-typed, lint, refactoring]
-checksum: e55cb0b7fb7714f0c2f82e47acec8b2fad874fdd73acc4966fbca15337edb123
+checksum: 9a4fcd96e0170dfedd6a794e28ff38100178b71dabb9d2dba6b16f07860ca077
 ---
 
 # Regla 17: Código Limpio — Tipos Fuertes y Enums — ⚠️ *Borrador*
@@ -140,6 +140,6 @@ tags: [obligatorio]
 
 ### Plantilla: Plantillas
 
-- [templates/rule-template.md.tmpl](../templates/rule-template.md.tmpl) — esqueleto para crear reglas con este esquema.
+- [templates/rule-template.md.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/rule-template.md.tmpl) — esqueleto para crear reglas con este esquema.
 
 tags: [opcional]

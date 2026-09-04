@@ -9,9 +9,18 @@ Para agentes de IA: usar mensajes estandarizados en vez de print()
 para mantener consistencia UI y auditoría.
 """
 
-import logging
-from lib.colors import colorize, COLOR_GREEN, COLOR_RED, COLOR_YELLOW, COLOR_BLUE, COLOR_CYAN, COLOR_BOLD
 import sys
+import logging
+
+from .colors import (
+    COLOR_BLUE,
+    COLOR_BOLD,
+    COLOR_CYAN,
+    COLOR_GREEN,
+    COLOR_RED,
+    COLOR_YELLOW,
+    colorize,
+)
 
 
 def _get_logger() -> logging.Logger:

@@ -3,7 +3,7 @@ id: agents-mcp
 title: Agentes de IA y Model Context Protocol
 status: Definida
 tags: [agents, ai, mcp, server, resources, tools, prompts]
-checksum: 8ac5529c3c0ade32017d72b000b511476d319ca9aff5a3d03121636875ebe4bb
+checksum: 1b6fa0e9f4d528d80df85e6c34c3e4a8d4ba67e02a4cac40ed3f44f2073abe92
 ---
 
 # Regla 07: Agentes de IA y Model Context Protocol (MCP)
@@ -25,9 +25,9 @@ tags: [obligatorio]
 ```
 mcp/
 ├── source/
-│   ├── server.py          # MCPServer: @mcp.resource, @mcp.tool, @mcp.prompt
+│   ├── server.py          # FastMCP: @mcp.resource, @mcp.tool, @mcp.prompt
 │   ├── config.py          # rutas (RULES_DIR, TEMPLATES_DIR)
-│   └── requirements.txt   # mcp>=1.0, PyYAML>=6.0
+│   └── requirements.txt   # mcp>=1.12,<2.0, PyYAML>=6.0
 └── .venv/                 # no trackeado (uv run)
 ```
 
@@ -53,7 +53,8 @@ mcp/
 | `list_templates()` | Lista todos los templates | `repository-structure/` |
 | `get_template(path)` | Lee un template por ruta | — |
 | `scaffold_project(slug, lang, dest)` | Genera cascarón: copia repository-structure + gitignore por lenguaje | `repository-structure/`, `gitignore/` |
-| `check_project(dir)` | Valida proyecto contra reglas (reusa validate-rules.sh) | `validate-rules.sh` |
+| `audit_project(dir_path, format)` | Audita adopción de reglas Definida en un proyecto consumidor | `audit.py` |
+| `check_project(dir_path)` | Valida proyecto contra reglas (reusa validate-rules.sh) | `validate-rules.sh` |
 | `list_helpers(lang)` | Lista helpers por lenguaje | `helpers/` |
 | `get_helper(lang, name)` | Lee un helper/lib | — |
 
@@ -149,17 +150,17 @@ tags: [obligatorio]
 - [Regla 15: Reutilización de Scripts](15-script-reuse.md) — libs comunes (logs, messages, colors, exceptions).
 - [Regla 14: Archivos de Configuración](14-config-files.md) — `.config/` por herramienta.
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers como capa única de ejecución.
-- [mcp/pyproject.toml](../mcp/pyproject.toml) — paquete Python distribuible (wheel).
-- [mcp/README.md](../mcp/README.md) — manual de instalación y uso.
-- [templates/repository-structure/mcp/](../templates/repository-structure/mcp/) — plantillas del servidor MCP.
+- [mcp/pyproject.toml](https://github.com/rafex/ether-my-best-practice/blob/main/mcp/pyproject.toml) — paquete Python distribuible (wheel).
+- [mcp/README.md](https://github.com/rafex/ether-my-best-practice/blob/main/mcp/README.md) — manual de instalación y uso.
+- [templates/repository-structure/mcp/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/mcp/) — plantillas del servidor MCP.
 
 tags: [obligatorio]
 
 ### Plantilla: Plantilla
 
-- [templates/repository-structure/mcp/mcp-config.json.tmpl](../templates/repository-structure/mcp/mcp-config.json.tmpl)
-- [templates/repository-structure/mcp/source/server.py.tmpl](../templates/repository-structure/mcp/source/server.py.tmpl)
-- [templates/repository-structure/mcp/source/config.py.tmpl](../templates/repository-structure/mcp/source/config.py.tmpl)
-- [templates/repository-structure/mcp/source/requirements.txt.tmpl](../templates/repository-structure/mcp/source/requirements.txt.tmpl)
+- [templates/repository-structure/mcp/mcp-config.json.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/mcp/mcp-config.json.tmpl)
+- [templates/repository-structure/mcp/source/server.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/mcp/source/server.py.tmpl)
+- [templates/repository-structure/mcp/source/config.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/mcp/source/config.py.tmpl)
+- [templates/repository-structure/mcp/source/requirements.txt.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/mcp/source/requirements.txt.tmpl)
 
 tags: [opcional]

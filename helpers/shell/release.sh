@@ -71,6 +71,14 @@ case "$action" in
 			fi
 		done
 
+		wheel="$(ls "$output_dir"/*.whl 2>/dev/null | head -1 || true)"
+		if [[ -n "$wheel" ]]; then
+			step 3 3 "Verificando wheel en aislamiento..."
+			RULES_REMOTE_URL="http://127.0.0.1:1/unavailable" uv run \
+				--isolated --no-project --with "$wheel" python -c \
+				'from ether_mcp_my_best_practices import server as s; assert len(s.list_rules()) == 18; assert hasattr(s, "check_project"); print("MCP wheel smoke test: OK")'
+		fi
+
 		success "Package generado en $output_dir/"
 		ls -la "$output_dir"/*.whl 2>/dev/null || die "Wheel no generado"
 		;;

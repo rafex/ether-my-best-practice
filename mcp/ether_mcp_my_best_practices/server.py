@@ -11,19 +11,17 @@ Config:   mcp-config.json → "ether-rules" server.
 
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import sys
 
 from ether_mcp_my_best_practices.lib.logs import get_logger
-from ether_mcp_my_best_practices.lib.messages import (
-    error as mcp_error,
-    info as mcp_info,
-    success as mcp_success,
-)
+from ether_mcp_my_best_practices.lib.messages import info as mcp_info
 
-from mcp.server import MCPServer
+from mcp.server.fastmcp import FastMCP
 from ether_mcp_my_best_practices.config import (
+    ROOT,
     RULES_DIR,
     TEMPLATES_DIR,
     GITIGNORE_DIR,
@@ -34,11 +32,21 @@ from ether_mcp_my_best_practices.config import (
     parse_frontmatter,
     list_all_templates,
     find_rule_by_id,
+    safe_path,
     templates_index,
 )
 
+SUPPORTED_LANGUAGES = {"java", "python", "rust", "nodejs"}
+GITIGNORE_CONTEXTS = {
+    "raiz", "java", "python", "rust", "nodejs", "container", "secretos",
+    "temporales", "mcp",
+}
+
 log = get_logger("mcp-ether-rules")
-mcp = MCPServer("ether-rules", version="1.0.0")
+mcp = FastMCP(
+    "ether-rules",
+    instructions="Consulta las reglas, templates y helpers de Ether Best Practices.",
+)
 
 # ═══════════════════════════════════════════════════════════════════
 # RESOURCES
@@ -47,9 +55,9 @@ mcp = MCPServer("ether-rules", version="1.0.0")
 @mcp.resource("rules://index")
 def resource_rules_index() -> str:
     """Índice completo de reglas con su estado y tema."""
-    path = os.path.join(RULES_DIR, "00-index.md")
-    if os.path.isfile(path):
-        with open(path) as f:
+    path = safe_path(RULES_DIR, "00-index.md")
+    if path and os.path.isfile(path):
+        with open(path, encoding="utf-8") as f:
             return f.read()
     return "Índice no encontrado."
 
@@ -58,8 +66,9 @@ def resource_rules_index() -> str:
 def resource_rule(rule_id: str) -> str:
     """Regla individual por ID (ej. build-tooling, 11-commitizen). Match exacto por frontmatter id, fallback a filename."""
     fname = find_rule_by_id(rule_id)
-    if fname:
-        with open(os.path.join(RULES_DIR, fname)) as f:
+    path = safe_path(RULES_DIR, fname) if fname else None
+    if path and os.path.isfile(path):
+        with open(path, encoding="utf-8") as f:
             return f.read()
     return f"No se encontró la regla '{rule_id}'."
 
@@ -73,9 +82,9 @@ def resource_templates_index() -> str:
 @mcp.resource("templates://{path}")
 def resource_template(path: str) -> str:
     """Template por ruta relativa global (ej. repository-structure/Makefile.tmpl, gitignore/.gitignore.java.tmpl, rule-template.md.tmpl)."""
-    full = os.path.join(TEMPLATES_DIR, path)
-    if os.path.isfile(full):
-        with open(full) as f:
+    full = safe_path(TEMPLATES_DIR, path)
+    if full and os.path.isfile(full):
+        with open(full, encoding="utf-8") as f:
             return f.read()
     return f"Template no encontrado: {path}"
 
@@ -83,10 +92,12 @@ def resource_template(path: str) -> str:
 @mcp.resource("gitignore://{context}")
 def resource_gitignore(context: str) -> str:
     """Template de .gitignore por contexto (raiz, java, python, rust, nodejs, container, secretos, temporales, mcp)."""
+    if context not in GITIGNORE_CONTEXTS:
+        return f"Gitignore '{context}' no encontrado. Contextos: {', '.join(sorted(GITIGNORE_CONTEXTS))}."
     fname = f".gitignore.{context}.tmpl"
-    full = os.path.join(GITIGNORE_DIR, fname)
-    if os.path.isfile(full):
-        with open(full) as f:
+    full = safe_path(GITIGNORE_DIR, fname)
+    if full and os.path.isfile(full):
+        with open(full, encoding="utf-8") as f:
             return f.read()
     return f"Gitignore '{context}' no encontrado. Contextos: raiz, java, python, rust, nodejs, container, secretos, temporales, mcp."
 
@@ -94,11 +105,14 @@ def resource_gitignore(context: str) -> str:
 @mcp.resource("helpers://{lang}/{name}")
 def resource_helper(lang: str, name: str) -> str:
     """Helper específico por lenguaje y nombre (ej. shell/lint, python/changelog)."""
-    for root, _dirs, files in os.walk(os.path.join(HELPERS_DIR, lang)):
+    lang_dir = safe_path(HELPERS_DIR, lang)
+    if not lang_dir or not os.path.isdir(lang_dir):
+        return f"Helper no encontrado: {lang}/{name}"
+    for root, _dirs, files in os.walk(lang_dir):
         for f in files:
             if name in f or f == f"{name}.sh" or f == f"{name}.py":
                 full = os.path.join(root, f)
-                with open(full) as fh:
+                with open(full, encoding="utf-8") as fh:
                     return fh.read()
     return f"Helper no encontrado: {lang}/{name}"
 
@@ -107,9 +121,9 @@ def resource_helper(lang: str, name: str) -> str:
 def resource_docs(page: str) -> str:
     """Página de documentación (ej. index, getting-started, contributing)."""
     fname = f"{page}.md"
-    full = os.path.join(DOCS_DIR, fname)
-    if os.path.isfile(full):
-        with open(full) as f:
+    full = safe_path(DOCS_DIR, fname)
+    if full and os.path.isfile(full):
+        with open(full, encoding="utf-8") as f:
             return f.read()
     return f"Página de documentación no encontrada: {page}"
 
@@ -182,9 +196,9 @@ def list_templates() -> list[str]:
 @mcp.tool()
 def get_template(path: str) -> str:
     """Obtiene un template por su ruta relativa global (repository-structure/..., gitignore/..., rule-template.md.tmpl)."""
-    full = os.path.join(TEMPLATES_DIR, path)
-    if os.path.isfile(full):
-        with open(full) as f:
+    full = safe_path(TEMPLATES_DIR, path)
+    if full and os.path.isfile(full):
+        with open(full, encoding="utf-8") as f:
             return f.read()
     return f"Template no encontrado: {path}"
 
@@ -198,7 +212,12 @@ def scaffold_project(slug: str, lang: str = "java", destination: str = "") -> st
         lang: Lenguaje principal (java, python, rust, nodejs).
         destination: Ruta destino (default: ./<slug> en workspace actual).
     """
-    dest = destination or os.path.join(os.getcwd(), slug)
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
+        return "El slug debe usar kebab-case (por ejemplo: mi-proyecto)."
+    if lang not in SUPPORTED_LANGUAGES:
+        return f"Lenguaje no soportado: {lang}. Usa: {', '.join(sorted(SUPPORTED_LANGUAGES))}."
+
+    dest = os.path.abspath(destination or os.path.join(ROOT, slug))
     if os.path.exists(dest):
         return f"El destino ya existe: {dest}. Elige otro nombre o ruta."
 
@@ -241,56 +260,60 @@ def audit_project(dir_path: str = ".", format: str = "markdown") -> str:
     """
     import subprocess
 
-    auditor = os.path.join(HELPERS_DIR, "python", "audit.py")
-    if not os.path.isfile(auditor):
+    if format not in {"markdown", "json"}:
+        return "Formato no soportado: usa 'markdown' o 'json'."
+
+    auditor = safe_path(HELPERS_DIR, "python/audit.py")
+    if not auditor or not os.path.isfile(auditor):
         return "No se encontró audit.py. El MCP debe ejecutarse desde el repositorio clonado."
 
+    target = ROOT if dir_path in ("", ".") else os.path.abspath(dir_path)
+    env = os.environ.copy()
+    env.update({"MCP_ROOT": ROOT, "RULES_DIR": RULES_DIR})
     result = subprocess.run(
-        [sys.executable, auditor, "--path", dir_path, "--format", format],
-        capture_output=True, text=True, timeout=30,
+        [sys.executable, auditor, "--path", target, "--format", format],
+        capture_output=True, text=True, timeout=30, env=env,
     )
     if result.returncode != 0:
         return f"Error en auditoría:\n{result.stderr}"
     return result.stdout.strip()
-    """Valida que un proyecto consumidor cumpla las reglas de Ether Best Practices.
-    Reutiliza validate-rules.sh adaptado al proyecto en dir_path.
 
-    Args:
-        dir_path: Ruta al directorio raíz del proyecto a validar.
+
+@mcp.tool()
+def check_project(dir_path: str = ".") -> str:
+    """Valida un proyecto contra el estándar o devuelve su auditoría de adopción.
+
+    Si el proyecto contiene su propio validador completo, lo ejecuta. Para un
+    consumidor generado sin copia de las reglas, usa la auditoría de adopción.
     """
-    import subprocess
-
-    target = os.path.abspath(dir_path)
+    target = ROOT if dir_path in ("", ".") else os.path.abspath(dir_path)
     if not os.path.isdir(target):
         return f"Directorio no encontrado: {target}"
 
-    # Ejecutar validate-rules.sh en el proyecto (si existe)
-    validator = os.path.join(ROOT, "helpers", "shell", "validate-rules.sh")
-    if not os.path.isfile(validator):
-        # Si no hay validator del repo MCP, hacemos chequeos básicos
-        return _basic_project_check(target)
-
-    old_cwd = os.getcwd()
-    try:
-        os.chdir(target)
+    validator = os.path.join(target, "helpers", "shell", "validate-rules.sh")
+    compiler = os.path.join(target, "helpers", "python", "rules_compiler.py")
+    rules_dir = os.path.join(target, "rules")
+    if os.path.isfile(validator) and os.path.isfile(compiler) and os.path.isdir(rules_dir):
         result = subprocess.run(
             ["bash", validator],
-            capture_output=True, text=True, timeout=30,
+            cwd=target,
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
-        os.chdir(old_cwd)
+        output = result.stdout or result.stderr
         if result.returncode == 0:
-            return f"Validación de reglas superada:\n{result.stdout}"
-        return f"Errores de validación:\n{result.stderr or result.stdout}"
-    except Exception as e:
-        os.chdir(old_cwd)
-        return f"Error al ejecutar validador: {e}"
+            return f"Validación de reglas superada:\n{output}"
+        return f"Errores de validación:\n{output}"
+
+    return audit_project(target, "markdown")
 
 
 @mcp.tool()
 def list_helpers(lang: str = "shell") -> list[str]:
     """Lista helpers disponibles por lenguaje (shell, python)."""
-    target = os.path.join(HELPERS_DIR, lang)
-    if not os.path.isdir(target):
+    target = safe_path(HELPERS_DIR, lang)
+    if not target or not os.path.isdir(target):
         return [f"Lenguaje no encontrado: {lang}"]
     result = []
     for root, dirs, files in os.walk(target):
@@ -303,11 +326,13 @@ def list_helpers(lang: str = "shell") -> list[str]:
 @mcp.tool()
 def get_helper(lang: str, name: str) -> str:
     """Obtiene contenido de un helper por lenguaje y nombre (ej. shell:lint, python:changelog)."""
-    target = os.path.join(HELPERS_DIR, lang)
+    target = safe_path(HELPERS_DIR, lang)
+    if not target or not os.path.isdir(target):
+        return f"Helper no encontrado: {lang}/{name}"
     for root, _dirs, files in os.walk(target):
         for f in files:
             if name in f or f == f"{name}.sh" or f == f"{name}.py":
-                with open(os.path.join(root, f)) as fh:
+                with open(os.path.join(root, f), encoding="utf-8") as fh:
                     return fh.read()
     return f"Helper no encontrado: {lang}/{name}"
 
@@ -416,9 +441,6 @@ Commit de release automático: "chore(release): vX.Y.Z" """
 # HELPERS
 # ═══════════════════════════════════════════════════════════════════
 
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-
 def _extract_context(content: str, query: str, window: int = 80) -> str:
     """Extrae snippet de contexto alrededor de la query."""
     lower = content.lower()
@@ -428,14 +450,6 @@ def _extract_context(content: str, query: str, window: int = 80) -> str:
     start = max(0, idx - window)
     end = min(len(content), idx + len(query) + window)
     return content[start:end] + ("..." if end < len(content) else "")
-
-
-def _basic_project_check(target: str) -> str:
-    """Chequeo básico de estructura si no existe validate-rules.sh."""
-    checks = []
-    for item in [".gitignore", "Makefile", "Justfile", "helpers/", "source/"]:
-        checks.append(f"  {'✓' if os.path.exists(os.path.join(target, item)) else '✗'} {item}")
-    return "Chequeo básico de estructura:\n" + "\n".join(checks)
 
 
 def main():

@@ -3,7 +3,7 @@ id: config-files
 title: Archivos de Configuración (.config)
 status: Definida
 tags: [config, dotfiles, organization, tools, structure]
-checksum: 727d3dbe8c3feeb6a7f7de7a4a36ff68448b9e46fcf4379734ba2da887578bb3
+checksum: 1738c88a5fe68d641674859cfe92c7790a097dae45d890f5cd9c412f62d15608
 ---
 
 # Regla 14: Archivos de Configuración (.config)
@@ -164,18 +164,18 @@ tags: [obligatorio]
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — `.config/` en el árbol del proyecto.
 - [Regla 11: Commitizen](11-commitizen.md) — `pyproject.toml` en `.config/commitizen/`.
 - [Regla 13: Gestión de Secretos](13-secrets.md) — `.sops.yaml` en `.config/sops/`.
-- [templates/repository-structure/.config/](../templates/repository-structure/.config/) — espejo de la estructura en templates.
-- [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](../templates/repository-structure/.config/commitizen/pyproject.toml.tmpl)
-- [templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl](../templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl)
-- [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
+- [templates/repository-structure/.config/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/) — espejo de la estructura en templates.
+- [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/commitizen/pyproject.toml.tmpl)
+- [templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl)
+- [templates/repository-structure/.config/sops/.sops.yaml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/sops/.sops.yaml.tmpl)
 
 tags: [obligatorio]
 
 ### Plantilla: Plantilla
 
-- [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](../templates/repository-structure/.config/commitizen/pyproject.toml.tmpl)
-- [templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl](../templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl)
-- [templates/repository-structure/.config/mkdocs/requirements.txt.tmpl](../templates/repository-structure/.config/mkdocs/requirements.txt.tmpl)
-- [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
+- [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/commitizen/pyproject.toml.tmpl)
+- [templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl)
+- [templates/repository-structure/.config/mkdocs/requirements.txt.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/mkdocs/requirements.txt.tmpl)
+- [templates/repository-structure/.config/sops/.sops.yaml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/sops/.sops.yaml.tmpl)
 
 tags: [opcional]

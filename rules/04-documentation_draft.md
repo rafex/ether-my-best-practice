@@ -3,7 +3,7 @@ id: documentation
 title: Documentación como Código
 status: Borrador
 tags: [documentation, markdown, mkdocs, adr]
-checksum: 9a7e44d8e7f274a0bbb0ff28865c875d38565ee892fdb24868bcace2183061d0
+checksum: a493ca476709cde2c1e2b25f304a1c5f52fb3be5a72a6c2b1307411593c91264
 ---
 
 # Regla 04: Documentación — ⚠️ *Borrador*
@@ -139,21 +139,21 @@ tags: [obligatorio]
 - [mkdocs-macros-plugin](https://mkdocs-macros-plugin.readthedocs.io/) — documentos relacionados por tag
 - [markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2) — lint de Markdown
 - [mdformat](https://github.com/executablebooks/mdformat) — format de Markdown
-- [mkdocs.yml](../.config/mkdocs/mkdocs.yml)
+- [mkdocs.yml](https://github.com/rafex/ether-my-best-practice/blob/main/.config/mkdocs/mkdocs.yml)
 - [Regla 01: Build Tooling](01-build-tooling.md) — `make docs`, `make serve`
 - [Regla 06: CI](06-ci.md) — publicación en Pages
-- [templates/helpers/shell/docs.sh.tmpl](../templates/repository-structure/helpers/shell/docs.sh.tmpl)
-- [templates/helpers/shell/lint.sh.tmpl](../templates/repository-structure/helpers/shell/lint.sh.tmpl)
-- [templates/helpers/shell/format.sh.tmpl](../templates/repository-structure/helpers/shell/format.sh.tmpl)
+- [templates/helpers/shell/docs.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/docs.sh.tmpl)
+- [templates/helpers/shell/lint.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/lint.sh.tmpl)
+- [templates/helpers/shell/format.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/format.sh.tmpl)
 
 tags: [obligatorio]
 
 ### Plantilla: Plantillas de documentación
 
-- [templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl](../templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl)
-- [templates/repository-structure/.config/mkdocs/requirements.txt.tmpl](../templates/repository-structure/.config/mkdocs/requirements.txt.tmpl)
-- [templates/repository-structure/helpers/shell/docs.sh.tmpl](../templates/repository-structure/helpers/shell/docs.sh.tmpl)
-- [templates/repository-structure/helpers/shell/lint.sh.tmpl](../templates/repository-structure/helpers/shell/lint.sh.tmpl)
-- [templates/repository-structure/helpers/shell/format.sh.tmpl](../templates/repository-structure/helpers/shell/format.sh.tmpl)
+- [templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/mkdocs/mkdocs.yml.tmpl)
+- [templates/repository-structure/.config/mkdocs/requirements.txt.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/mkdocs/requirements.txt.tmpl)
+- [templates/repository-structure/helpers/shell/docs.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/docs.sh.tmpl)
+- [templates/repository-structure/helpers/shell/lint.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/lint.sh.tmpl)
+- [templates/repository-structure/helpers/shell/format.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/format.sh.tmpl)
 
 tags: [opcional]

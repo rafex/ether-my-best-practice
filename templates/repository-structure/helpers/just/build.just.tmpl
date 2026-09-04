@@ -1,0 +1,13 @@
+# Operativas Meson. La lógica de ejecución vive en el helper shell.
+
+setup:
+    bash helpers/shell/meson.sh --goal setup
+
+build:
+    bash helpers/shell/meson.sh --goal compile
+
+test:
+    bash helpers/shell/meson.sh --goal test
+
+install:
+    bash helpers/shell/meson.sh --goal install

@@ -13,7 +13,7 @@ import argparse
 import json as mod_json
 import os
 import sys
-from typing import Optional
+from typing import Optional, Union
 
 # Resolver RULES_DIR desde el repo actual
 ROOT = os.environ.get("MCP_ROOT", os.getcwd())
@@ -70,11 +70,14 @@ def parse_frontmatter(filepath: str) -> dict:
 # ---------------------------------------------------------------------------
 # Matriz de auditoría: rule_id → lista de paths (relativos a la raíz del repo)
 # Solo reglas status=Definida.
-# Cada check es un path que DEBE existir para sumar puntos.
+# Cada check es un path que DEBE existir para sumar puntos. Una tupla expresa
+# alternativas equivalentes (por ejemplo, Makefile o meson.build).
 # ---------------------------------------------------------------------------
-AUDIT_MATRIX: dict[str, list[str]] = {
+AuditCheck = Union[str, tuple[str, ...]]
+
+AUDIT_MATRIX: dict[str, list[AuditCheck]] = {
     "build-tooling": [
-        "Makefile", "Justfile",
+        ("Makefile", "meson.build"), "Justfile",
         "helpers/mk", "helpers/shell", "helpers/just",
         "helpers/shell/lib",
     ],
@@ -115,6 +118,11 @@ AUDIT_MATRIX: dict[str, list[str]] = {
         "helpers/just/cd.just", "helpers/just/github.just",
         ".github/workflows/release.yml",
     ],
+    "meson-support": [
+        "meson.build",
+        "helpers/shell/meson.sh",
+        "helpers/just/build.just",
+    ],
 }
 
 # Labels for display
@@ -131,6 +139,7 @@ RULE_LABELS: dict[str, str] = {
     "config-files": "14 Archivos de Configuración",
     "script-reuse": "15 Reutilización de Scripts",
     "cd": "16 CD",
+    "meson-support": "18 Meson (beta)",
 }
 
 LEVEL_LABELS = {
@@ -195,12 +204,17 @@ def audit_dir(target: str, ids: Optional[list[str]] = None) -> dict:
             continue
         found = 0
         check_details = []
-        for path in checks:
-            full = os.path.join(target, path)
-            exists = os.path.isfile(full) or os.path.isdir(full)
+        for check in checks:
+            alternatives = check if isinstance(check, tuple) else (check,)
+            exists = any(
+                os.path.isfile(os.path.join(target, path))
+                or os.path.isdir(os.path.join(target, path))
+                for path in alternatives
+            )
             if exists:
                 found += 1
-            check_details.append((path, exists))
+            display = " o ".join(alternatives)
+            check_details.append((display, exists))
 
         ratio = found / len(checks) if checks else 0
         score = round(ratio * 3)  # 0-3

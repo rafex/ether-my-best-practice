@@ -3,7 +3,7 @@ id: repository-structure
 title: Estructura de Repositorio
 status: Definida
 tags: [structure, monorepo, backend, frontend, shared, multi-language, scaffolding]
-checksum: e346cfb1b33233be57af742306f877246bae14254510685316f2e167909d2476
+checksum: b42ab324d84ef1ffea8454c5263ee16333970fceac2066f731f0b672bd334da6
 ---
 
 # Regla 09: Estructura de Repositorio
@@ -202,19 +202,19 @@ tags: [obligatorio]
 - [Regla 08: Stack Tecnológico](08-stack.md) — versiones, Podman, Containerfile, Alpine.
 - [Regla 12: Gitignore](12-gitignore.md) — exclusión de archivos por contexto y plantillas.
 - [Regla 14: Archivos de Configuración](14-config-files.md) — `.config/` centraliza configuraciones de herramientas.
-- [templates/repository-structure/README.md](../templates/repository-structure/README.md) — documentación de la estructura junto al template.
-- [templates/helpers/mk/](../templates/repository-structure/helpers/mk/) y [templates/helpers/shell/](../templates/repository-structure/helpers/shell/) — origen de los helpers copiados a `helpers/`.
-- [templates/gitignore/](../templates/gitignore/) — biblioteca de `.gitignore` por contexto.
+- [templates/repository-structure/README.md](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/README.md) — documentación de la estructura junto al template.
+- [templates/helpers/mk/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/) y [templates/helpers/shell/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/) — origen de los helpers copiados a `helpers/`.
+- [templates/gitignore/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/) — biblioteca de `.gitignore` por contexto.
 
 tags: [obligatorio]
 
 ### Plantilla: Plantilla
 
-- [templates/repository-structure/](../templates/repository-structure/) — estructura completa con placeholders para copiar.
-- [templates/helpers/mk/](../templates/repository-structure/helpers/mk/) — módulos Makefile.
-- [templates/helpers/shell/](../templates/repository-structure/helpers/shell/) — scripts shell por lenguaje.
-- [templates/helpers/just/](../templates/repository-structure/helpers/just/) — operativas de aplicación.
-- [templates/Containerfile.tmpl](../templates/repository-structure/containers/Containerfile.tmpl) — definición de imagen CI.
-- [templates/gitignore/](../templates/gitignore/) — biblioteca de `.gitignore` por ubicación (raíz, java, python, rust, nodejs, container, secretos, temporales, mcp).
+- [templates/repository-structure/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/) — estructura completa con placeholders para copiar.
+- [templates/helpers/mk/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/) — módulos Makefile.
+- [templates/helpers/shell/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/) — scripts shell por lenguaje.
+- [templates/helpers/just/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/just/) — operativas de aplicación.
+- [templates/Containerfile.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/containers/Containerfile.tmpl) — definición de imagen CI.
+- [templates/gitignore/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/) — biblioteca de `.gitignore` por ubicación (raíz, java, python, rust, nodejs, container, secretos, temporales, mcp).
 
 tags: [opcional]

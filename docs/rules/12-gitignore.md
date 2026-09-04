@@ -3,7 +3,7 @@ id: gitignore
 title: Gitignore y Exclusión de Archivos
 status: Definida
 tags: [git, gitignore, secrets, artifacts, templates, security]
-checksum: 24413259f1cef02b46e1902918e28b98cb00cbff4fdc5c40276d2d54112a9bf1
+checksum: 239cc17800edbc0a779b35156808d54bafa894966706fbffcff2b89d2a7d34d8
 ---
 
 # Regla 12: Gitignore y Exclusión de Archivos
@@ -154,22 +154,22 @@ tags: [obligatorio]
 - [Regla 09: Estructura de Repositorio](09-repository-structure.md) — estructura `source/<rol>/<lenguaje>/<proyecto>/`.
 - [Regla 11: Commitizen](11-commitizen.md) — `.githooks/.tools/.commitizen-venv/` debe ignorarse.
 - [Regla 13: Gestión de Secretos](13-secrets.md) — `.secrets/*.enc.yaml` permitidos, `.env.*` ignorados.
-- [templates/gitignore/](../templates/gitignore/) — biblioteca de templates de `.gitignore` por contexto.
-- [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder del espejo.
+- [templates/gitignore/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/) — biblioteca de templates de `.gitignore` por contexto.
+- [templates/repository-structure/.gitignore.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.gitignore.tmpl) — placeholder del espejo.
 
 tags: [obligatorio]
 
 ### Plantilla: Plantilla
 
-- [templates/gitignore/.gitignore.raiz.tmpl](../templates/gitignore/.gitignore.raiz.tmpl)
-- [templates/gitignore/.gitignore.java.tmpl](../templates/gitignore/.gitignore.java.tmpl)
-- [templates/gitignore/.gitignore.python.tmpl](../templates/gitignore/.gitignore.python.tmpl)
-- [templates/gitignore/.gitignore.rust.tmpl](../templates/gitignore/.gitignore.rust.tmpl)
-- [templates/gitignore/.gitignore.nodejs.tmpl](../templates/gitignore/.gitignore.nodejs.tmpl)
-- [templates/gitignore/.gitignore.container.tmpl](../templates/gitignore/.gitignore.container.tmpl)
-- [templates/gitignore/.gitignore.secretos.tmpl](../templates/gitignore/.gitignore.secretos.tmpl)
-- [templates/gitignore/.gitignore.temporales.tmpl](../templates/gitignore/.gitignore.temporales.tmpl)
-- [templates/gitignore/.gitignore.mcp.tmpl](../templates/gitignore/.gitignore.mcp.tmpl)
-- [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder
+- [templates/gitignore/.gitignore.raiz.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.raiz.tmpl)
+- [templates/gitignore/.gitignore.java.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.java.tmpl)
+- [templates/gitignore/.gitignore.python.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.python.tmpl)
+- [templates/gitignore/.gitignore.rust.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.rust.tmpl)
+- [templates/gitignore/.gitignore.nodejs.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.nodejs.tmpl)
+- [templates/gitignore/.gitignore.container.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.container.tmpl)
+- [templates/gitignore/.gitignore.secretos.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.secretos.tmpl)
+- [templates/gitignore/.gitignore.temporales.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.temporales.tmpl)
+- [templates/gitignore/.gitignore.mcp.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.mcp.tmpl)
+- [templates/repository-structure/.gitignore.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.gitignore.tmpl) — placeholder
 
 tags: [opcional]

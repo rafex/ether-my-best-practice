@@ -27,7 +27,7 @@ El comando `ether-mcp` quedará disponible en el PATH.
 ### Ejecución directa sin instalar
 
 ```bash
-uvx ether-mcp-my-best-practices
+uvx --from ether-mcp-my-best-practices ether-mcp
 ```
 
 ## Configurar el cliente
@@ -81,7 +81,7 @@ Cada regla (`rules/*.md`) lleva su propio hash en el frontmatter (`checksum: <sh
 
 | Resource | Ejemplo |
 |---|---|
-| `rules://index` | Índice de las 16 reglas |
+| `rules://index` | Índice de las 18 reglas |
 | `rules://{rule_id}` | `rules://build-tooling` → regla 01 completa |
 | `templates://index` | Todos los templates (repository-structure, gitignore, rule-template) |
 | `templates://{path}` | `templates://gitignore/.gitignore.java.tmpl` |

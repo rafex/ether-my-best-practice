@@ -72,7 +72,8 @@ El servidor resuelve los datos de reglas y templates en este orden:
 | `list_templates()` | Lista todos los templates |
 | `get_template(path)` | Lee un template |
 | `scaffold_project(slug, lang, dest)` | Genera cascarón de proyecto |
-| `check_project(dir)` | Valida proyecto contra reglas |
+| `audit_project(dir_path, format)` | Audita adopción de reglas y devuelve Markdown o JSON |
+| `check_project(dir_path)` | Valida proyecto contra reglas o devuelve su auditoría |
 | `list_helpers(lang)` | Lista helpers por lenguaje |
 | `get_helper(lang, name)` | Lee un helper |
 

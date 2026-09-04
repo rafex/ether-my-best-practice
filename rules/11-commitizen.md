@@ -3,7 +3,7 @@ id: commitizen
 title: Commitizen — Commit Convencional y Release
 status: Definida
 tags: [commitizen, conventional-commits, release, changelog, versioning]
-checksum: c7905ba1841d34e6c3fef64d8c13ca57211ebad2ea113646faa8308ed7e991b2
+checksum: 78c3fb38f460af72d1aa1f1ddf2a27d452498ba7989531ebf9349a1d7c287ecb
 ---
 
 # Regla 11: Commitizen — Commit Convencional y Release
@@ -204,18 +204,18 @@ tags: [obligatorio]
 - [Regla 05: Control de Versiones](05-version-control_draft.md) — Conventional Commits.
 - [Regla 08: Stack Tecnológico](08-stack.md) — Python 3.12+, uv.
 - [Commitizen Documentation](https://commitizen-tools.github.io/commitizen/)
-- [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](../templates/repository-structure/.config/commitizen/pyproject.toml.tmpl) — configuración base.
-- [templates/helpers/shell/cz.sh.tmpl](../templates/repository-structure/helpers/shell/cz.sh.tmpl) — wrapper.
-- [templates/gitignore/.gitignore.raiz.tmpl](../templates/gitignore/.gitignore.raiz.tmpl) — incluye `.githooks/.tools/.commitizen-venv/`.
-- [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder del espejo.
+- [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/commitizen/pyproject.toml.tmpl) — configuración base.
+- [templates/helpers/shell/cz.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/cz.sh.tmpl) — wrapper.
+- [templates/gitignore/.gitignore.raiz.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.raiz.tmpl) — incluye `.githooks/.tools/.commitizen-venv/`.
+- [templates/repository-structure/.gitignore.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.gitignore.tmpl) — placeholder del espejo.
 
 tags: [obligatorio]
 
 ### Plantilla: Plantilla
 
-- [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](../templates/repository-structure/.config/commitizen/pyproject.toml.tmpl)
-- [templates/helpers/shell/cz.sh.tmpl](../templates/repository-structure/helpers/shell/cz.sh.tmpl)
-- [templates/gitignore/.gitignore.raiz.tmpl](../templates/gitignore/.gitignore.raiz.tmpl)
-- [templates/repository-structure/.gitignore.tmpl](../templates/repository-structure/.gitignore.tmpl) — placeholder
+- [templates/repository-structure/.config/commitizen/pyproject.toml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/commitizen/pyproject.toml.tmpl)
+- [templates/helpers/shell/cz.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/cz.sh.tmpl)
+- [templates/gitignore/.gitignore.raiz.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.raiz.tmpl)
+- [templates/repository-structure/.gitignore.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.gitignore.tmpl) — placeholder
 
 tags: [opcional]

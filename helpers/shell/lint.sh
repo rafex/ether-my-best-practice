@@ -71,6 +71,19 @@ for f in "$workspace"/helpers/python/lib/*.py; do
     checked=$((checked + 1))
 done
 
+header "Lint: MCP python"
+for f in "$workspace"/mcp/ether_mcp_my_best_practices/*.py "$workspace"/mcp/ether_mcp_my_best_practices/lib/*.py; do
+    [[ -f "$f" ]] || continue
+    name="${f#"$workspace"/}"
+    if python3 -m py_compile "$f" 2>/dev/null; then
+        log_info "  OK: $name"
+    else
+        error "  FAIL: $name"
+        failed=$((failed + 1))
+    fi
+    checked=$((checked + 1))
+done
+
 echo ""
 if [[ $failed -eq 0 ]]; then
     success "Lint superado: $checked archivos, 0 errores."

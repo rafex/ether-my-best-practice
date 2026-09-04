@@ -7,7 +7,7 @@
 
 ## Objetivo del repositorio
 
-- **`rules/`** (16 reglas con frontmatter YAML + bloques tipados) y **`templates/`** son el objetivo:
+- **`rules/`** (18 reglas con frontmatter YAML + bloques tipados) y **`templates/`** son el objetivo:
   definiciones que agentes de IA consumen para generar proyectos consistentes.
 - Lo demás (`helpers/`, `.config/`, `mcp/`, `Makefile`, `Justfile`, `.github/`) es infraestructura
   operativa del propio repositorio.

@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/logs.sh"
+source "$SCRIPT_DIR/lib/messages.sh"
+
+workspace="$(pwd)"
+goal="compile"
+builddir="${MESON_BUILDDIR:-builddir}"
+log_file=""
+log_level="INFO"
+
+usage() {
+  cat <<'EOF'
+Uso: bash helpers/shell/meson.sh [opciones]
+
+Opciones:
+  --goal <setup|compile|test|install>  Operación (por defecto: compile)
+  --builddir <ruta>                   Directorio de build (por defecto: builddir)
+  --workspace <ruta>                  Raíz del proyecto (por defecto: pwd)
+  --log-file <ruta>                   Archivo de log opcional
+  --log-level <nivel>                 Nivel del log (por defecto: INFO)
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --goal) goal="${2:?Falta el valor de --goal}"; shift 2 ;;
+    --builddir) builddir="${2:?Falta el valor de --builddir}"; shift 2 ;;
+    --workspace) workspace="${2:?Falta el valor de --workspace}"; shift 2 ;;
+    --log-file) log_file="${2:?Falta el valor de --log-file}"; shift 2 ;;
+    --log-level) log_level="${2:?Falta el valor de --log-level}"; shift 2 ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "Argumento no reconocido: $1" >&2; usage >&2; exit 2 ;;
+  esac
+done
+
+command -v meson >/dev/null 2>&1 || { echo "Meson no está instalado." >&2; exit 127; }
+workspace="$(cd "$workspace" && pwd)"
+if [[ "$builddir" != /* ]]; then
+  builddir="$workspace/$builddir"
+fi
+export LOG_FILE="$log_file"
+export LOG_LEVEL="${log_level,,}"
+init_log "meson"
+
+case "$goal" in
+  setup)
+    meson setup "$builddir" "$workspace"
+    ;;
+  compile)
+    [[ -d "$builddir" ]] || meson setup "$builddir" "$workspace"
+    meson compile -C "$builddir"
+    ;;
+  test)
+    [[ -d "$builddir" ]] || meson setup "$builddir" "$workspace"
+    meson test -C "$builddir"
+    ;;
+  install)
+    [[ -d "$builddir" ]] || meson setup "$builddir" "$workspace"
+    meson install -C "$builddir"
+    ;;
+  *)
+    echo "Goal no soportado: $goal" >&2
+    usage >&2
+    exit 2
+    ;;
+esac

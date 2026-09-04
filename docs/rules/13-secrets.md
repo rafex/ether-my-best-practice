@@ -3,7 +3,7 @@ id: secrets
 title: Gestión de Secretos
 status: Definida
 tags: [secrets, security, sops, age, encryption, gitleaks, trufflehog]
-checksum: f915ce0f59e20f78d9e9e897a16b43fba14113041a20651c7a0bf17fc8de2876
+checksum: 9bd26079526264d89a45cc462e44679f91c846d3d9a10942acf07189b78ecfa0
 ---
 
 # Regla 13: Gestión de Secretos
@@ -284,20 +284,20 @@ tags: [obligatorio]
 - [sops + age documentation](https://getsops.io/)
 - [gitleaks](https://github.com/gitleaks/gitleaks)
 - [trufflehog](https://github.com/trufflesecurity/trufflehog)
-- [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
-- [templates/helpers/shell/secrets.sh.tmpl](../templates/repository-structure/helpers/shell/secrets.sh.tmpl)
-- [templates/helpers/shell/env.sh.tmpl](../templates/repository-structure/helpers/shell/env.sh.tmpl)
-- [templates/gitignore/.gitignore.secretos.tmpl](../templates/gitignore/.gitignore.secretos.tmpl)
+- [templates/repository-structure/.config/sops/.sops.yaml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/sops/.sops.yaml.tmpl)
+- [templates/helpers/shell/secrets.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/secrets.sh.tmpl)
+- [templates/helpers/shell/env.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/env.sh.tmpl)
+- [templates/gitignore/.gitignore.secretos.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.secretos.tmpl)
 
 tags: [obligatorio]
 
 ### Plantilla: Plantilla
 
-- [templates/repository-structure/.config/sops/.sops.yaml.tmpl](../templates/repository-structure/.config/sops/.sops.yaml.tmpl)
-- [templates/repository-structure/.secrets/](../templates/repository-structure/.secrets/)
-- [templates/repository-structure/.enviroments/](../templates/repository-structure/.enviroments/)
-- [templates/helpers/shell/secrets.sh.tmpl](../templates/repository-structure/helpers/shell/secrets.sh.tmpl)
-- [templates/helpers/shell/env.sh.tmpl](../templates/repository-structure/helpers/shell/env.sh.tmpl)
-- [templates/gitignore/.gitignore.secretos.tmpl](../templates/gitignore/.gitignore.secretos.tmpl)
+- [templates/repository-structure/.config/sops/.sops.yaml.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.config/sops/.sops.yaml.tmpl)
+- [templates/repository-structure/.secrets/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.secrets/)
+- [templates/repository-structure/.enviroments/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/.enviroments/)
+- [templates/helpers/shell/secrets.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/secrets.sh.tmpl)
+- [templates/helpers/shell/env.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/env.sh.tmpl)
+- [templates/gitignore/.gitignore.secretos.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/gitignore/.gitignore.secretos.tmpl)
 
 tags: [opcional]

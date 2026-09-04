@@ -46,7 +46,7 @@ cp templates/repository-structure/Makefile.tmpl mi-proyecto/Makefile
 cp templates/repository-structure/Justfile.tmpl mi-proyecto/Justfile
 ```
 
-También puedes tomar [templates/repository-structure/README.md](../templates/repository-structure/README.md) como base de estructura para un servicio nuevo y complementar el proyecto con las reglas de [../rules/02-architecture_draft.md](rules/02-architecture_draft.md), [../rules/03-testing_draft.md](rules/03-testing_draft.md) y [../rules/07-agents-mcp.md](rules/07-agents-mcp.md).
+También puedes tomar [templates/repository-structure/README.md](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/README.md) como base de estructura para un servicio nuevo y complementar el proyecto con las reglas de [../rules/02-architecture_draft.md](rules/02-architecture_draft.md), [../rules/03-testing_draft.md](rules/03-testing_draft.md) y [../rules/07-agents-mcp.md](rules/07-agents-mcp.md).
 
 ## Generar Documentación
 
@@ -60,18 +60,18 @@ just serve
 
 Luego abre `http://localhost:8000`
 
-Si copias las plantillas de [templates](../templates) a otro proyecto, allí sí puedes exponer estos comandos mediante `make docs` o `just docs`.
+Si copias las plantillas de [templates](https://github.com/rafex/ether-my-best-practice/blob/main/templates/) a otro proyecto, allí sí puedes exponer estos comandos mediante `make docs` o `just docs`.
 
 ## Publicar en GitHub Pages
 
-El workflow de CI está en [.github/workflows/static.yml](../.github/workflows/static.yml):
+El workflow de CI está en [.github/workflows/static.yml](https://github.com/rafex/ether-my-best-practice/blob/main/.github/workflows/static.yml):
 
 ```bash
 make pages-build   # Validar reglas + generar sitio
 make pages         # Disparar el workflow de GitHub Pages
 ```
 
-El workflow invoca `make validate` + `make docs` como wrapper de los targets existentes. El directorio [site](../site/) no se sube al repositorio: se genera en el runner y se publica como artefacto de Pages.
+El workflow invoca `make validate` + `make docs` como wrapper de los targets existentes. El directorio `site/` no se sube al repositorio: se genera en el runner y se publica en [my-best-practice.rafex.io](https://my-best-practice.rafex.io/).
 
 ## Integrar en tu Proyecto
 
@@ -91,9 +91,9 @@ Si el proyecto va a trabajar con agentes de IA, expón también estas reglas por
 
 La forma mínima de integrar este repositorio con un agente es:
 
-1. Hacer disponible la carpeta [../rules/](rules/) como contexto.
+1. Hacer disponible la carpeta [../rules/](rules/00-index.md) como contexto.
 2. Indicar qué reglas son obligatorias para el proyecto consumidor.
-3. Permitir que el agente use [../templates/](../templates/) como punto de partida para generar el esqueleto de la API REST.
+3. Permitir que el agente use [../templates/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/) como punto de partida para generar el esqueleto de la API REST.
 
 El detalle de este enfoque está en [../rules/07-agents-mcp.md](rules/07-agents-mcp.md).
 
@@ -104,4 +104,4 @@ El detalle de este enfoque está en [../rules/07-agents-mcp.md](rules/07-agents-
 3. Configura CI según [Regla 06](rules/06-ci.md)
 4. Publica documentación en GitHub Pages
 
-> **Nota:** el `Makefile` y `Justfile` en la raíz de este repositorio son para operar el repositorio mismo (validar reglas, publicar sitio). Las plantillas de build/CI que los agentes deben copiar a proyectos consumidores están en [templates/](../templates/).
+> **Nota:** el `Makefile` y `Justfile` en la raíz de este repositorio son para operar el repositorio mismo (validar reglas, publicar sitio). Las plantillas de build/CI que los agentes deben copiar a proyectos consumidores están en [templates/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/).

@@ -7,7 +7,7 @@ Estándar de buenas prácticas multi-lenguaje con reglas versionadas consumibles
 Este repositorio define una base de trabajo para proyectos donde:
 
 - Las reglas de desarrollo viven como documentos versionados en [rules](rules) con frontmatter YAML, secciones estandarizadas y validación automática de estructura/enlaces.
-- Los agentes de IA pueden consultar esas reglas por lectura directa o mediante el [servidor MCP](mcp/source/server.py) (`resources`, `tools`, `prompts`).
+- Los agentes de IA pueden consultar esas reglas por lectura directa o mediante el [servidor MCP](mcp/ether_mcp_my_best_practices/server.py) (`resources`, `tools`, `prompts`).
 - Las plantillas en [templates](templates) funcionan como esqueletos que los agentes copian y adaptan para crear proyectos consistentes.
 
 La intención no es solo documentar estándares, sino permitir que un agente entienda cómo debe construir una API REST — o cualquier componente backend/frontend — siguiendo tu forma de trabajar.
@@ -16,10 +16,10 @@ La intención no es solo documentar estándares, sino permitir que un agente ent
 
 | Capa | Directorio | Contenido |
 |---|---|---|
-| **Definiciones** (objetivo) | [rules](rules) | 16 reglas con frontmatter — build tooling, arquitectura hexagonal, testing, documentación, version control, CI, agentes/MCP, stack, estructura de repo, githooks, commitizen, gitignore, secretos, .config, script reuse. Las marcadas `status: Definida` están completas; las `Borrador` contienen Premisa + Restricciones. |
+| **Definiciones** (objetivo) | [rules](rules) | 18 reglas con frontmatter — build tooling, arquitectura hexagonal, testing, documentación, version control, CI, agentes/MCP, stack, estructura de repo, githooks, commitizen, gitignore, secretos, .config, script reuse y Meson beta. Las marcadas `status: Definida` están completas; las `Borrador` contienen Premisa + Restricciones. |
 | **Definiciones** (objetivo) | [templates](templates) | [repository-structure/](templates/repository-structure) (espejo del proyecto consumidor: `helpers/`, `containers/`, `.config/`, `.githooks/`, `source/`, `Makefile`, `Justfile`), [gitignore/](templates/gitignore) (biblioteca de `.gitignore` por contexto), [rule-template.md.tmpl](templates/rule-template.md.tmpl). |
 | **Operativa** | [.config](.config) | Configuración centralizada de herramientas: commitizen (`pyproject.toml`), mkdocs (`mkdocs.yml` + `requirements.txt`), sops (`.sops.yaml`). |
-| **Operativa** | [mcp](mcp) | Servidor MCP `ether-rules`: expone `rules://`, `templates://`, `gitignore://`, `helpers://`, `docs://` como resources + 9 tools (`scaffold_project`, `search_rules`, …) + 5 prompts. Infraestructura opcional de este repositorio para disponibilizar las definiciones a agentes. [mcp-config.json](mcp-config.json) para clientes. |
+| **Operativa** | [mcp](mcp) | Servidor MCP `ether-rules`: expone `rules://`, `templates://`, `gitignore://`, `helpers://`, `docs://` como resources + 10 tools (`scaffold_project`, `search_rules`, `audit_project`, …) + 5 prompts. Infraestructura opcional de este repositorio para disponibilizar las definiciones a agentes. [mcp-config.json](mcp-config.json) para clientes. |
 | **Operativa** | [helpers](helpers) | [validate-rules.sh](helpers/shell/validate-rules.sh) (estructura + enlaces + sincronía rules↔docs/rules), [rules-link.sh](helpers/shell/rules-link.sh) (hard links para MkDocs), [serve.sh](helpers/shell/serve.sh) (node static server), [hooks.sh](helpers/shell/hooks.sh) (gates pre-commit/pre-push con gitleaks/trufflehog), [cz.sh](helpers/shell/cz.sh), [secrets.sh](helpers/shell/secrets.sh) (sops+age), [github.sh](helpers/shell/github.sh) (workflows). Librerías comunes en `lib/` (shell: commons, logs, colors, messages, try-catch; python: commons, logs, colors, messages, exceptions). |
 | **Operativa** | [docs](docs) | Documentación MkDocs: index, getting-started, contributing, `rules/` (hard links a las reglas). |
 | **Operativa** | raíz | [Makefile](Makefile) (orquestación: validate, link-rules, docs, pages-build, pages, clean) y [Justfile](Justfile) (operativas: serve, serve-dev, link-rules, hooks-install, commit, changelog, version, prepare-release, cz-init, edit-secrets, env, secrets-verify, keygen). |
@@ -41,14 +41,14 @@ También puede conectarse al servidor MCP configurando `mcp-config.json` en su c
   "mcpServers": {
     "ether-rules": {
       "command": "uv",
-      "args": ["run", "--directory", "mcp", "python", "source/server.py"],
+      "args": ["run", "--directory", "mcp", "python", "ether_mcp_my_best_practices/server.py"],
       "env": { "RULES_DIR": "rules", "TEMPLATES_DIR": "templates" }
     }
   }
 }
 ```
 
-O ejecutarlo directamente: `uv run --directory mcp python source/server.py`.
+O ejecutarlo directamente: `uv run --directory mcp python ether_mcp_my_best_practices/server.py`.
 
 ## Operar este repositorio
 

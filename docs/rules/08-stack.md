@@ -3,7 +3,7 @@ id: stack
 title: Stack Tecnológico Recomendado
 status: Definida
 tags: [stack, versions, java, nodejs, python, podman, containerfile, mermaid]
-checksum: c80034d7ed764da025c7ff82fa9af263b19f6d10abfe252a62a79a466a8f0cbc
+checksum: 119c917784b476719796ca2db561c9cc1ea576e38f5d09c6d360da38c1b46f84
 ---
 
 # Regla 08: Stack Tecnológico Recomendado
@@ -167,9 +167,9 @@ tags: [obligatorio]
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers por lenguaje, `container.mk`, `container.sh`
 - [Regla 04: Documentación](04-documentation_draft.md) — Markdown + MermaidJS + MkDocs
 - [Regla 06: CI](06-ci.md) — pipeline local en contenedor, `make image`, `make ci`
-- [templates/Containerfile.tmpl](../templates/repository-structure/containers/Containerfile.tmpl)
-- [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
-- [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)
+- [templates/Containerfile.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/containers/Containerfile.tmpl)
+- [templates/helpers/mk/container.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/container.mk.tmpl)
+- [templates/helpers/shell/container.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/container.sh.tmpl)
 - [Adoptium Temurin](https://adoptium.net/)
 - [Podman](https://podman.io/)
 - [MermaidJS](https://mermaid.js.org/)
@@ -178,8 +178,8 @@ tags: [obligatorio]
 
 ### Plantilla: Plantilla
 
-- [templates/Containerfile.tmpl](../templates/repository-structure/containers/Containerfile.tmpl)
-- [templates/helpers/mk/container.mk.tmpl](../templates/repository-structure/helpers/mk/container.mk.tmpl)
-- [templates/helpers/shell/container.sh.tmpl](../templates/repository-structure/helpers/shell/container.sh.tmpl)
+- [templates/Containerfile.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/containers/Containerfile.tmpl)
+- [templates/helpers/mk/container.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/container.mk.tmpl)
+- [templates/helpers/shell/container.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/container.sh.tmpl)
 
 tags: [opcional]

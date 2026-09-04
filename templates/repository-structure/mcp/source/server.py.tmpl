@@ -10,20 +10,15 @@ Config:   mcp-config.json → "ether-rules" server.
 """
 
 import argparse
+import logging
 import os
+import re
 import shutil
 import subprocess
 import sys
 
-from ether_mcp_my_best_practices.lib.logs import get_logger
-from ether_mcp_my_best_practices.lib.messages import (
-    error as mcp_error,
-    info as mcp_info,
-    success as mcp_success,
-)
-
-from mcp.server import MCPServer
-from ether_mcp_my_best_practices.config import (
+from mcp.server.fastmcp import FastMCP
+from config import (
     RULES_DIR,
     TEMPLATES_DIR,
     GITIGNORE_DIR,
@@ -37,8 +32,12 @@ from ether_mcp_my_best_practices.config import (
     templates_index,
 )
 
-log = get_logger("mcp-ether-rules")
-mcp = MCPServer("ether-rules", version="1.0.0")
+log = logging.getLogger("mcp-ether-rules")
+mcp = FastMCP(
+    "ether-rules",
+    instructions="Consulta las reglas, templates y helpers de Ether Best Practices.",
+)
+SUPPORTED_LANGUAGES = {"java", "python", "rust", "nodejs"}
 
 # ═══════════════════════════════════════════════════════════════════
 # RESOURCES
@@ -190,7 +189,12 @@ def scaffold_project(slug: str, lang: str = "java", destination: str = "") -> st
         lang: Lenguaje principal (java, python, rust, nodejs).
         destination: Ruta destino (default: ./<slug> en workspace actual).
     """
-    dest = destination or os.path.join(os.getcwd(), slug)
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
+        return "El slug debe usar kebab-case (por ejemplo: mi-proyecto)."
+    if lang not in SUPPORTED_LANGUAGES:
+        return f"Lenguaje no soportado: {lang}. Usa: {', '.join(sorted(SUPPORTED_LANGUAGES))}."
+
+    dest = os.path.abspath(destination or os.path.join(ROOT, slug))
     if os.path.exists(dest):
         return f"El destino ya existe: {dest}. Elige otro nombre o ruta."
 
@@ -231,51 +235,46 @@ def audit_project(dir_path: str = ".", format: str = "markdown") -> str:
         dir_path: Ruta al directorio raíz del proyecto a auditar.
         format: Formato de salida — markdown (por defecto, legible por humano/agente) o json.
     """
+    if format not in {"markdown", "json"}:
+        return "Formato no soportado: usa 'markdown' o 'json'."
+
     import subprocess
 
     auditor = os.path.join(HELPERS_DIR, "python", "audit.py")
     if not os.path.isfile(auditor):
         return "No se encontró audit.py. El MCP debe ejecutarse desde el repositorio clonado."
 
+    target = ROOT if dir_path in ("", ".") else os.path.abspath(dir_path)
     result = subprocess.run(
-        [sys.executable, auditor, "--path", dir_path, "--format", format],
+        [sys.executable, auditor, "--path", target, "--format", format],
         capture_output=True, text=True, timeout=30,
     )
     if result.returncode != 0:
         return f"Error en auditoría:\n{result.stderr}"
     return result.stdout.strip()
-    """Valida que un proyecto consumidor cumpla las reglas de Ether Best Practices.
-    Reutiliza validate-rules.sh adaptado al proyecto en dir_path.
 
-    Args:
-        dir_path: Ruta al directorio raíz del proyecto a validar.
-    """
-    import subprocess
 
-    target = os.path.abspath(dir_path)
+@mcp.tool()
+def check_project(dir_path: str = ".") -> str:
+    """Valida un proyecto consumidor o devuelve su auditoría de adopción."""
+    target = ROOT if dir_path in ("", ".") else os.path.abspath(dir_path)
     if not os.path.isdir(target):
         return f"Directorio no encontrado: {target}"
 
-    # Ejecutar validate-rules.sh en el proyecto (si existe)
-    validator = os.path.join(ROOT, "helpers", "shell", "validate-rules.sh")
-    if not os.path.isfile(validator):
-        # Si no hay validator del repo MCP, hacemos chequeos básicos
-        return _basic_project_check(target)
-
-    old_cwd = os.getcwd()
-    try:
-        os.chdir(target)
+    validator = os.path.join(target, "helpers", "shell", "validate-rules.sh")
+    compiler = os.path.join(target, "helpers", "python", "rules_compiler.py")
+    rules_dir = os.path.join(target, "rules")
+    if os.path.isfile(validator) and os.path.isfile(compiler) and os.path.isdir(rules_dir):
         result = subprocess.run(
-            ["bash", validator],
+            ["bash", validator], cwd=target,
             capture_output=True, text=True, timeout=30,
         )
-        os.chdir(old_cwd)
+        output = result.stdout or result.stderr
         if result.returncode == 0:
-            return f"Validación de reglas superada:\n{result.stdout}"
-        return f"Errores de validación:\n{result.stderr or result.stdout}"
-    except Exception as e:
-        os.chdir(old_cwd)
-        return f"Error al ejecutar validador: {e}"
+            return f"Validación de reglas superada:\n{output}"
+        return f"Errores de validación:\n{output}"
+
+    return audit_project(target, "markdown")
 
 
 @mcp.tool()
@@ -432,15 +431,13 @@ def _basic_project_check(target: str) -> str:
 
 def main():
     """Entry point for the installed package (ether-mcp command)."""
-    import ether_mcp_my_best_practices
-
     parser = argparse.ArgumentParser(prog="ether-mcp", description="MCP server ether-rules")
     parser.add_argument("--version", action="store_true", help="Muestra la versión y build")
     args = parser.parse_args()
     if args.version:
-        print(f"ether-mcp {ether_mcp_my_best_practices.__version__} (build {ether_mcp_my_best_practices.BUILD})")
+        print("ether-mcp 0.1.0 (build dev)")
         return
-    mcp_info(f"MCP server ether-rules v{ether_mcp_my_best_practices.__version__} iniciado")
+    log.info("MCP server ether-rules iniciado")
     mcp.run()
 
 

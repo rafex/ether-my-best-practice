@@ -45,7 +45,7 @@ graph TD
 Este repositorio combina dos piezas:
 
 - Reglas versionadas en [../rules/00-index.md](rules/00-index.md) para decirle a humanos y agentes cómo trabajar.
-- Plantillas en [../templates/](../templates/) para que un agente pueda generar el cascarón inicial de una API REST coherente con esas reglas.
+- Plantillas en [../templates/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/) para que un agente pueda generar el cascarón inicial de una API REST coherente con esas reglas.
 
 La combinación permite que un MCP o un agente local no solo lea normas, sino que también tenga una base estructural para crear archivos y carpetas siguiendo el estándar.
 
@@ -53,4 +53,4 @@ La combinación permite que un MCP o un agente local no solo lea normas, sino qu
 
 1. Lee [Getting Started](getting-started.md)
 2. Consulta las [Reglas](rules/00-index.md)
-3. Usa las [Plantillas](../templates/)
+3. Usa las [Plantillas](https://github.com/rafex/ether-my-best-practice/blob/main/templates/)

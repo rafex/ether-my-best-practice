@@ -47,8 +47,8 @@ def get_logger(name: str, level: str = "INFO") -> logging.Logger:
     ))
     logger.addHandler(handler)
 
-    # También a stdout para consistencia con shell (tee)
-    stream_handler = logging.StreamHandler(sys.stdout)
+    # Los logs van a stderr para no contaminar stdout de comandos o MCP stdio.
+    stream_handler = logging.StreamHandler(sys.stderr)
     stream_handler.setFormatter(logging.Formatter("%(message)s"))
     logger.addHandler(stream_handler)
 

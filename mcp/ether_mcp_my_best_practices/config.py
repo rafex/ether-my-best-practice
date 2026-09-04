@@ -12,6 +12,7 @@ Resolución de datos (jerarquía):
 
 import importlib.resources
 import json
+import ntpath
 import os
 import shutil
 import sys
@@ -20,7 +21,13 @@ from typing import Optional
 
 from ether_mcp_my_best_practices.lib.commons import content_hash
 
-ROOT = os.environ.get("MCP_ROOT", os.getcwd())
+PACKAGE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+DEFAULT_ROOT = (
+    PACKAGE_ROOT
+    if os.path.isdir(os.path.join(PACKAGE_ROOT, "rules"))
+    else os.getcwd()
+)
+ROOT = os.path.abspath(os.environ.get("MCP_ROOT", DEFAULT_ROOT))
 CACHE_DIR = os.path.join(os.path.expanduser("~"), ".cache", "ether-mcp")
 REMOTE_BASE = os.environ.get(
     "RULES_REMOTE_URL",
@@ -67,19 +74,54 @@ def _fetch_manifest() -> dict[str, str]:
         return _MANIFEST_CACHE
     data = _http_get(f"{REMOTE_BASE}/{MANIFEST_NAME}")
     obj = json.loads(data.decode("utf-8"))
-    _MANIFEST_CACHE = obj.get("files", {})
+    files = obj.get("files", {})
+    if not isinstance(files, dict):
+        files = {}
+    _MANIFEST_CACHE = {
+        path: checksum
+        for path, checksum in files.items()
+        if isinstance(path, str) and isinstance(checksum, str)
+    }
     return _MANIFEST_CACHE
 
 
 def _safe_rel(rel_path: str) -> bool:
     """Rechaza rutas con traversal o absolutas."""
-    if rel_path.startswith("/") or ".." in rel_path.split("/"):
+    if not isinstance(rel_path, str) or not rel_path:
+        return False
+    normalized = rel_path.replace("\\", "/")
+    drive, _tail = ntpath.splitdrive(rel_path)
+    if normalized.startswith("/") or ntpath.isabs(rel_path) or drive:
+        return False
+    if ".." in normalized.split("/"):
         return False
     return True
 
 
+def safe_path(root: str, relative: str) -> str | None:
+    """Resuelve una ruta relativa sin permitir salir de ``root``.
+
+    Además de rechazar segmentos ``..``, comprueba la ruta real para evitar
+    escapar mediante enlaces simbólicos o separadores de Windows recibidos
+    desde un cliente MCP.
+    """
+    if not _safe_rel(relative):
+        return None
+    root_real = os.path.realpath(root)
+    candidate = os.path.realpath(os.path.join(root_real, relative))
+    try:
+        if os.path.commonpath([root_real, candidate]) != root_real:
+            return None
+    except ValueError:
+        return None
+    return candidate
+
+
 def _cache_path(rel_path: str) -> str:
-    return os.path.join(CACHE_DIR, rel_path)
+    path = safe_path(CACHE_DIR, rel_path)
+    if path is None:
+        raise ValueError(f"Ruta de caché no válida: {rel_path}")
+    return path
 
 
 def _is_up_to_date(rel_path: str, expected: str) -> bool:
@@ -118,15 +160,20 @@ def _try_download(dir_name: str) -> str | None:
             continue
         try:
             data = _http_get(f"{REMOTE_BASE}/{rel}")
+            content = data.decode("utf-8")
         except Exception:
             continue
-        dest = _cache_path(rel)
+        if content_hash(rel, content) != expected:
+            continue
+        dest = safe_path(CACHE_DIR, rel)
+        if dest is None:
+            continue
         os.makedirs(os.path.dirname(dest), exist_ok=True)
         with open(dest, "wb") as f:
             f.write(data)
 
-    dest_dir = os.path.join(CACHE_DIR, dir_name)
-    if os.path.isdir(dest_dir) and os.listdir(dest_dir):
+    dest_dir = safe_path(CACHE_DIR, dir_name)
+    if dest_dir and all(_is_up_to_date(rel, manifest[rel]) for rel in targets):
         return dest_dir
     return None
 
@@ -134,8 +181,10 @@ def _try_download(dir_name: str) -> str | None:
 def _resolve_dir(dir_name: str, env_name: str) -> str:
     """Resuelve un directorio con jerarquía: env → web → bundled → MCP_ROOT."""
     env_val = os.environ.get(env_name, "")
-    if env_val and os.path.isdir(env_val):
-        return env_val
+    if env_val:
+        env_path = env_val if os.path.isabs(env_val) else os.path.join(ROOT, env_val)
+        if os.path.isdir(env_path):
+            return os.path.abspath(env_path)
     cached = _try_download(dir_name)
     if cached:
         return cached
@@ -149,6 +198,8 @@ RULES_DIR = _resolve_dir("rules", "RULES_DIR")
 TEMPLATES_DIR = _resolve_dir("templates", "TEMPLATES_DIR")
 HELPERS_DIR = _resolve_dir("helpers", "HELPERS_DIR")
 DOCS_DIR = _resolve_dir("docs", "DOCS_DIR")
+GITIGNORE_DIR = os.path.join(TEMPLATES_DIR, "gitignore")
+REPO_STRUCTURE_DIR = os.path.join(TEMPLATES_DIR, "repository-structure")
 
 
 def resolve(relative: str) -> str:
@@ -161,7 +212,7 @@ def list_rules_files() -> list[str]:
     files = sorted(
         f
         for f in os.listdir(RULES_DIR)
-        if f.endswith(".md") and f[0].isdigit()
+        if f.endswith(".md") and f[0].isdigit() and f != "00-index.md"
     )
     return files
 

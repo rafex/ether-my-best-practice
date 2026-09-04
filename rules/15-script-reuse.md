@@ -3,7 +3,7 @@ id: script-reuse
 title: Reutilización de Scripts (Librerías Comunes)
 status: Definida
 tags: [scripts, libraries, reuse, helpers, shell, python, commons]
-checksum: aecf8623247f6b20d7e6e53326062fe1a4652917d44661b967b0858bce609f20
+checksum: c325840f8d2ddda21ee11ed76bd1dcdfe394a1f4b30021101d11fb0ee3f1315e
 ---
 
 # Regla 15: Reutilización de Scripts (Librerías Comunes)
@@ -200,22 +200,22 @@ tags: [obligatorio]
 
 - [Regla 01: Build Tooling](01-build-tooling.md) — helpers como capa única de ejecución.
 - [Regla 14: Archivos de Configuración](14-config-files.md) — configuración de herramientas.
-- [templates/repository-structure/helpers/shell/lib/](../templates/repository-structure/helpers/shell/lib/)
-- [templates/repository-structure/helpers/python/lib/](../templates/repository-structure/helpers/python/lib/)
+- [templates/repository-structure/helpers/shell/lib/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/lib/)
+- [templates/repository-structure/helpers/python/lib/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/python/lib/)
 
 tags: [obligatorio]
 
 ### Plantilla: Plantilla
 
-- [templates/repository-structure/helpers/shell/lib/commons.sh.tmpl](../templates/repository-structure/helpers/shell/lib/commons.sh.tmpl)
-- [templates/repository-structure/helpers/shell/lib/logs.sh.tmpl](../templates/repository-structure/helpers/shell/lib/logs.sh.tmpl)
-- [templates/repository-structure/helpers/shell/lib/colors.sh.tmpl](../templates/repository-structure/helpers/shell/lib/colors.sh.tmpl)
-- [templates/repository-structure/helpers/shell/lib/messages.sh.tmpl](../templates/repository-structure/helpers/shell/lib/messages.sh.tmpl)
-- [templates/repository-structure/helpers/shell/lib/try-catch.sh.tmpl](../templates/repository-structure/helpers/shell/lib/try-catch.sh.tmpl)
-- [templates/repository-structure/helpers/python/lib/commons.py.tmpl](../templates/repository-structure/helpers/python/lib/commons.py.tmpl)
-- [templates/repository-structure/helpers/python/lib/logs.py.tmpl](../templates/repository-structure/helpers/python/lib/logs.py.tmpl)
-- [templates/repository-structure/helpers/python/lib/colors.py.tmpl](../templates/repository-structure/helpers/python/lib/colors.py.tmpl)
-- [templates/repository-structure/helpers/python/lib/messages.py.tmpl](../templates/repository-structure/helpers/python/lib/messages.py.tmpl)
-- [templates/repository-structure/helpers/python/lib/exceptions.py.tmpl](../templates/repository-structure/helpers/python/lib/exceptions.py.tmpl)
+- [templates/repository-structure/helpers/shell/lib/commons.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/lib/commons.sh.tmpl)
+- [templates/repository-structure/helpers/shell/lib/logs.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/lib/logs.sh.tmpl)
+- [templates/repository-structure/helpers/shell/lib/colors.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/lib/colors.sh.tmpl)
+- [templates/repository-structure/helpers/shell/lib/messages.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/lib/messages.sh.tmpl)
+- [templates/repository-structure/helpers/shell/lib/try-catch.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/lib/try-catch.sh.tmpl)
+- [templates/repository-structure/helpers/python/lib/commons.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/python/lib/commons.py.tmpl)
+- [templates/repository-structure/helpers/python/lib/logs.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/python/lib/logs.py.tmpl)
+- [templates/repository-structure/helpers/python/lib/colors.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/python/lib/colors.py.tmpl)
+- [templates/repository-structure/helpers/python/lib/messages.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/python/lib/messages.py.tmpl)
+- [templates/repository-structure/helpers/python/lib/exceptions.py.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/python/lib/exceptions.py.tmpl)
 
 tags: [opcional]
