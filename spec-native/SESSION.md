@@ -48,6 +48,8 @@
 
 ```bash
 make validate        # wrapper → rules_compiler.py --action validate --all
+make test            # pruebas unitarias e integración del compilador
+make check           # test + lint + validate
 make lint            # bash -n + py_compile + markdownlint
 make docs            # mkdocs build (docs_dir/site_dir ../../)
 make link-rules      # hard links rules/ → docs/rules/

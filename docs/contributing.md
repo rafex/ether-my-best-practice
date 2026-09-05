@@ -41,7 +41,7 @@ tags: [tag1, tag2]
 - `## Nombres Sugeridos` — convenciones de naming.
 - `## Plantilla` — enlace a los templates asociados.
 
-Usa [templates/rule-template.md.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/rule-template.md.tmpl) como punto de partida. Ejecuta `bash helpers/shell/validate-rules.sh` para validar la estructura antes de commitear.
+Usa [templates/rule-template.md.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/rule-template.md.tmpl) como punto de partida. Ejecuta `make test` para verificar el compilador y `make check` para validar pruebas, helpers y reglas antes de commitear.
 
 ### Nuevas Reglas
 

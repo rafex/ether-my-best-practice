@@ -26,6 +26,10 @@ from lib.messages import success, error, warning, info, die, step
 
 log = get_logger("rules-compiler")
 
+
+class RuleCompilerError(ValueError):
+    """Error determinista al leer o interpretar una regla."""
+
 RULES_DIR = os.environ.get("RULES_DIR", os.path.join(os.getcwd(), "rules"))
 TEMPLATE_PATH = os.path.join(os.environ.get("TEMPLATES_DIR", os.path.join(os.getcwd(), "templates")),
                              "rule-template.md.tmpl")
@@ -40,8 +44,34 @@ OPTIONAL_TYPES = {
 }
 ALL_TYPES = MANDATORY_TYPES | OPTIONAL_TYPES
 
-BLOCK_HEADER_RE = re.compile(r"^(#{2,6})\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)*):\s*(.+)$")
-TAGS_RE = re.compile(r"^tags:\s*\[(.+)\]$")
+BLOCK_HEADER_RE = re.compile(r"^(#{2,6})\s+([^:\n]+):\s*(.*)$")
+TAGS_RE = re.compile(r"^tags:\s*\[(.*)\]$")
+
+
+def _typed_header(line: str) -> Optional[tuple[str, str, str]]:
+    """Retorna un encabezado tipado solo si el tipo pertenece a la taxonomía."""
+    match = BLOCK_HEADER_RE.match(line)
+    if not match:
+        return None
+    level, block_type, name = match.groups()
+    block_type = block_type.strip()
+    if block_type not in ALL_TYPES:
+        return None
+    return level, block_type, name.strip()
+
+
+def _update_fence(line: str, fence: Optional[str]) -> Optional[str]:
+    """Actualiza el estado de un fence Markdown simple (``` o ~~~)."""
+    stripped = line.lstrip()
+    if fence is None:
+        if stripped.startswith("```"):
+            return "```"
+        if stripped.startswith("~~~"):
+            return "~~~"
+        return None
+    if stripped.startswith(fence):
+        return None
+    return fence
 
 # ---------------------------------------------------------------------------
 # AST
@@ -62,13 +92,27 @@ class RuleAST:
 def parse_frontmatter_and_heading(text: str) -> tuple[dict, str]:
     """Extrae frontmatter YAML y el heading (# Regla NN: ...)."""
     fm = {}
+    body = text
+    lines = text.splitlines(keepends=True)
+    if lines and lines[0].strip() == "---":
+        closing = next(
+            (index for index, line in enumerate(lines[1:], start=1) if line.strip() == "---"),
+            None,
+        )
+        if closing is None:
+            raise RuleCompilerError("frontmatter sin delimitador de cierre '---'")
+        raw_frontmatter = "".join(lines[1:closing])
+        try:
+            parsed = yaml.safe_load(raw_frontmatter)
+        except yaml.YAMLError as exc:
+            raise RuleCompilerError(f"frontmatter YAML inválido: {exc}") from exc
+        if parsed is not None and not isinstance(parsed, dict):
+            raise RuleCompilerError("frontmatter YAML debe ser un mapa")
+        fm = parsed or {}
+        body = "".join(lines[closing + 1:])
+
     heading = ""
-    if text.startswith("---"):
-        parts = text.split("---", 2)
-        if len(parts) >= 3:
-            fm = yaml.safe_load(parts[1]) or {}
-            text = parts[2]
-    m = re.search(r'^(# .+)', text, re.MULTILINE)
+    m = re.search(r"^(# .+)", body, re.MULTILINE)
     if m:
         heading = m.group(1).strip()
     return fm, heading
@@ -79,35 +123,40 @@ def parse_blocks(text: str) -> list[dict]:
     blocks = []
     lines = text.splitlines()
     i = 0
+    fence = None
     while i < len(lines):
-        m = BLOCK_HEADER_RE.match(lines[i])
-        if m:
-            level, block_type, name = m.groups()
-            if block_type not in ALL_TYPES:
-                i += 1
-                continue
+        if fence is not None:
+            fence = _update_fence(lines[i], fence)
+            i += 1
+            continue
+
+        header = _typed_header(lines[i])
+        if header:
+            level, block_type, name = header
             content_lines = []
             i += 1
             block_tags = []
+            block_fence = None
             while i < len(lines):
-                if BLOCK_HEADER_RE.match(lines[i]):
+                if block_fence is None and _typed_header(lines[i]):
                     break
-                tag_m = TAGS_RE.match(lines[i])
-                if tag_m:
+                tag_m = TAGS_RE.match(lines[i]) if block_fence is None else None
+                if tag_m and not block_fence:
                     block_tags = [t.strip() for t in tag_m.group(1).split(",") if t.strip()]
                     i += 1
                     break
                 content_lines.append(lines[i])
+                block_fence = _update_fence(lines[i], block_fence)
                 i += 1
             content = "\n".join(content_lines).strip()
-            if content:
-                blocks.append({
-                    "type": block_type,
-                    "name": name.strip(),
-                    "content": content,
-                    "tags": block_tags,
-                })
+            blocks.append({
+                "type": block_type,
+                "name": name,
+                "content": content,
+                "tags": block_tags,
+            })
         else:
+            fence = _update_fence(lines[i], fence)
             i += 1
     return blocks
 
@@ -116,7 +165,7 @@ def parse_rule(filepath: str) -> Optional[RuleAST]:
     """Parse un archivo de regla completo → AST."""
     if not os.path.isfile(filepath):
         return None
-    with open(filepath) as f:
+    with open(filepath, encoding="utf-8") as f:
         text = f.read()
     fm, heading = parse_frontmatter_and_heading(text)
     ast = RuleAST()
@@ -124,7 +173,7 @@ def parse_rule(filepath: str) -> Optional[RuleAST]:
     ast.id = fm.get("id", "")
     ast.title = fm.get("title", "")
     ast.status = fm.get("status", "")
-    ast.tags = fm.get("tags", [])
+    ast.tags = fm.get("tags")
     ast.heading = heading
     ast.blocks = parse_blocks(text)
     return ast
@@ -139,10 +188,18 @@ def validate_ast(ast: RuleAST) -> list[str]:
     errs = []
     base = os.path.basename(ast.filepath) if ast.filepath else "?"
 
-    if not ast.id:
+    if not isinstance(ast.id, str) or not ast.id.strip():
         errs.append(f"{base}: falta id en frontmatter")
+    if not isinstance(ast.title, str) or not ast.title.strip():
+        errs.append(f"{base}: falta title en frontmatter")
     if ast.status not in ("Definida", "Borrador"):
         errs.append(f"{base}: status inválido '{ast.status}'")
+    if not isinstance(ast.tags, list):
+        errs.append(f"{base}: tags debe ser una lista en frontmatter")
+    elif not all(isinstance(tag, str) for tag in ast.tags):
+        errs.append(f"{base}: todos los tags deben ser texto")
+    if not ast.heading:
+        errs.append(f"{base}: falta título H1")
 
     # Warnings de convención para reglas Borrador
     # Solo se aplican si el archivo es una regla (no 00-index ni DEFINITION)
@@ -223,6 +280,16 @@ def render_rule(ast: RuleAST) -> str:
 
 def create_new_rule(slug: str, title: str, log_file: str = "") -> str:
     """Genera una regla nueva desde la plantilla."""
+    if (
+        not slug
+        or os.path.isabs(slug)
+        or "/" in slug
+        or "\\" in slug
+        or os.path.normpath(slug) != slug
+        or slug in {".", ".."}
+    ):
+        raise RuleCompilerError(f"slug inseguro: {slug!r}")
+
     num = slug.split("-")[0] if "-" in slug else slug
     dest = os.path.join(RULES_DIR, f"{slug}.md")
     if os.path.exists(dest):
@@ -230,7 +297,7 @@ def create_new_rule(slug: str, title: str, log_file: str = "") -> str:
 
     template_content = ""
     if os.path.isfile(TEMPLATE_PATH):
-        with open(TEMPLATE_PATH) as f:
+        with open(TEMPLATE_PATH, encoding="utf-8") as f:
             template_content = f.read()
     else:
         template_content = f"""---
@@ -275,7 +342,7 @@ tags: [obligatorio]
     content = content.replace(f"id: nn-topic", f"id: {slug}")
 
     os.makedirs(os.path.dirname(dest), exist_ok=True)
-    with open(dest, "w") as f:
+    with open(dest, "w", encoding="utf-8") as f:
         f.write(content)
 
     return f"Regla {slug} creada en {dest}"
@@ -307,7 +374,10 @@ def main():
         targets = [args.rule_id]
 
     if args.action == "new":
-        result = create_new_rule(args.slug or "nn-topic", args.title or "Título")
+        try:
+            result = create_new_rule(args.slug or "nn-topic", args.title or "Título")
+        except (OSError, RuleCompilerError) as exc:
+            die(f"No se pudo crear la regla: {exc}")
         print(result)
         return
 
@@ -331,7 +401,12 @@ def main():
                     error(f"No se encontró la regla: {rid}")
                     continue
 
-        ast = parse_rule(filepath)
+        try:
+            ast = parse_rule(filepath)
+        except (OSError, UnicodeError, RuleCompilerError) as exc:
+            error(f"No se pudo parsear {filepath}: {exc}")
+            total_errors += 1
+            continue
         if ast is None:
             error(f"No se pudo parsear: {filepath}")
             total_errors += 1
@@ -347,9 +422,10 @@ def main():
             }, indent=2, ensure_ascii=False))
         elif args.action == "validate":
             errs = validate_ast(ast)
-            if errs:
-                for e in errs:
-                    error(e)
+            fatal = [e for e in errs if not e.startswith("WARNING ")]
+            for e in errs:
+                (warning if e.startswith("WARNING ") else error)(e)
+            if fatal:
                 total_errors += 1
             else:
                 info(f"  {os.path.basename(filepath)}: OK")

@@ -36,8 +36,8 @@ jobs:
           pip install -r .config/mkdocs/requirements.txt
           pip install PyYAML
 
-      - name: Validate rules
-        run: make validate
+      - name: Run quality gate
+        run: make check
 
       - name: Build site
         run: make docs

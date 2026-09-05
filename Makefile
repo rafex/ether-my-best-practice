@@ -23,14 +23,15 @@ help:
 	@echo "  make publish-checksums - Publicar checksums.json + contenido raw en site/"
 	@echo "  make package       - Wheel del MCP (mcp/dist/*.whl)"
 	@echo "  make mcp-smoke     - Smoke test de imports y tools del MCP"
+	@echo "  make test          - Ejecutar pruebas unitarias e integración"
 	@echo "  make release       - Publicar GitHub Release"
-	@echo "  make deploy        - CI: validate + package + release"
-	@echo "  make check         - Gate de calidad: lint + validate"
+	@echo "  make deploy        - CI: check + package + release"
+	@echo "  make check         - Gate de calidad: test + lint + validate"
 	@echo ""
 	@echo "Operativas → Justfile: just <recipe> (repository.just, app.just)"
 
-check: lint validate
+check: test lint validate
 
-deploy: validate package release
+deploy: check package release
 	@echo "Deploy completo."
 	@echo "  Portal: https://github.com/rafex/ether-my-best-practice/releases/latest"

@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.5.1 (2026-09-05)
+
+### Fix
+
+- **compiler**: robustecer el parseo de frontmatter y bloques Markdown.
+- **compiler**: validar metadatos obligatorios, errores YAML y slugs inseguros.
+- **ci**: ejecutar pruebas del compilador en `make check`, documentación y releases.
+
+### Test
+
+- Añadir 26 pruebas unitarias e integración para el compilador y su CLI.
+
 ## [0.1.0] — 2026-08-07
 
 ### Added

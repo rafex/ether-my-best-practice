@@ -28,8 +28,8 @@ jobs:
       - name: Install deps
         run: pip install PyYAML
 
-      - name: Validate rules
-        run: make validate
+      - name: Run quality gate
+        run: make check
 
       - name: Package MCP (uv build)
         run: make package

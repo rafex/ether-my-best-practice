@@ -60,9 +60,10 @@ tags: [obligatorio, build]
 
 ### Reglas de parseo (deterministas)
 
-1. **Encabezado**: `^#{2,6}\s+([A-Z][a-z]+(?:\s[A-Z][a-z]+)*):\s+(.+)$` — el tipo DEBE ser canónico (capitalizado, palabra exacta de la taxonomía), seguido de `:` y un nombre no vacío.
-2. **Contenido**: todo entre este encabezado y el siguiente encabezado de tipo (o el final del archivo, o un `##`/`#`) es contenido del bloque.
-3. **Tags**: opcionales, al final del bloque: `^tags:\s*\[(.+)\]$`. Valores separados por coma. Si no hay tags, se considera implícito.
+1. **Encabezado**: `^#{2,6}\s+([^:\n]+):\s*(.*)$` — el tipo debe ser canónico (capitalizado, palabra exacta de la taxonomía), seguido de `:`; el nombre puede quedar vacío para que el validador lo reporte.
+2. **Contenido**: todo entre este encabezado y el siguiente encabezado tipado válido es contenido del bloque. Los subtítulos no tipados se conservan dentro del contenido.
+3. **Fences**: los encabezados dentro de fences Markdown (` ``` ` o `~~~`) no se interpretan como bloques.
+4. **Tags**: opcionales, al final del bloque: `^tags:\s*\[(.*)\]$`. Valores separados por coma. `tags: []` representa una lista vacía.
 4. **Nivel**: recomendado uniforme `###` (H3) para consistencia, pero el patrón funciona con cualquier nivel `##`–`####`.
 
 ### Bloque sin tags
@@ -82,7 +83,7 @@ El compilador `rules_compiler.py` produce este AST al parsear una regla:
   "heading": "Regla 01: Herramientas de Construcción",
   "blocks": [
     {
-      "type": "premisa",
+      "type": "Premisa",
       "name": "El Makefile orquesta la construcción",
       "content": "> El Makefile es la **puerta de entrada universal**...\n\n```shell\nmake build LANG=java BUILD_TOOL=maven\n```",
       "tags": ["obligatorio", "build"]
@@ -98,7 +99,7 @@ El compilador `rules_compiler.py` produce este AST al parsear una regla:
 | `id` | Identificador único (`frontmatter → id`) |
 | `title` | Título descriptivo (`frontmatter → title`) |
 | `status` | `Definida` o `Borrador` |
-| `tags` | Tags del frontmatter |
+| `tags` | Lista de tags del frontmatter; el campo debe existir, aunque puede estar vacío |
 | `heading` | Título H1 de la regla (`# Regla NN: Título`) |
 | `blocks[]` | Lista de bloques tipados: `{type, name, content, tags}` |
 
@@ -166,8 +167,9 @@ Estas convenciones las aplica el compilador en `--action render` y están docume
 
 ### Chequeos del validador
 
-1. **Tipo válido**: cada bloque debe usar uno de los 14 tipos de la taxonomía (error si no).
-2. **Nombre presente**: el nombre tras `:` no puede estar vacío.
-3. **Contenido no vacío**: entre encabezado y siguiente tipo debe haber contenido (texto, código, tabla…).
-4. **Tags válidos**: si hay línea `tags:`, los valores deben estar en `obligatorio|opcional|recomendado|deprecado` o ser temáticos libres (warning si ambiguo).
-5. **Presencia de tipos obligatorios**: deben existir al menos los requeridos por la madurez.
+1. **Frontmatter y título**: `id`, `title`, `status`, `tags` y el H1 son obligatorios; `tags` debe ser una lista de texto.
+2. **Tipo válido**: los bloques reconocidos usan uno de los 14 tipos de la taxonomía; los encabezados no tipados permanecen como contenido.
+3. **Nombre presente**: el nombre tras `:` no puede estar vacío.
+4. **Contenido no vacío**: entre encabezado y siguiente tipo debe haber contenido (texto, código, tabla…).
+5. **Tags válidos**: los tags estructurales usan `obligatorio|opcional|recomendado|deprecado`; los tags temáticos son libres.
+6. **Presencia de tipos obligatorios**: deben existir al menos los requeridos por la madurez.

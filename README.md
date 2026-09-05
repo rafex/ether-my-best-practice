@@ -56,6 +56,8 @@ O ejecutarlo directamente: `uv run --directory mcp python ether_mcp_my_best_prac
 
 ```bash
 make validate      # Estructura, enlaces y sincronía rules↔docs/rules (0 errores)
+make test          # Pruebas unitarias e integración del compilador
+make check         # test + lint + validate (gate completo)
 make link-rules    # Hard links rules/ → docs/rules/ (necesario para MkDocs)
 make docs          # Generar sitio estático (.config/mkdocs/mkdocs.yml)
 make pages-build   # validate + link-rules + docs
