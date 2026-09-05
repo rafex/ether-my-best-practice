@@ -52,13 +52,13 @@ O en un clon del repositorio: `just app-install`.
 
     ```bash
     # Claude Code
-    claude mcp add --scope user ether-rules -- uvx ether-mcp
+    claude mcp add --scope user ether-rules -- ether-mcp
 
     # Codex
-    codex mcp add ether-rules -- uvx ether-mcp
+    codex mcp add ether-rules -- ether-mcp
 
     # opencode
-    opencode mcp add ether-rules -- uvx ether-mcp
+    opencode mcp add ether-rules -- ether-mcp
     ```
 
     ### 4. Verificar
@@ -94,13 +94,13 @@ O en un clon del repositorio: `just app-install`.
 
     ```bash
     # Claude Code
-    claude mcp add --scope user ether-rules -- uvx ether-mcp
+    claude mcp add --scope user ether-rules -- ether-mcp
 
     # Codex
-    codex mcp add ether-rules -- uvx ether-mcp
+    codex mcp add ether-rules -- ether-mcp
 
     # opencode
-    opencode mcp add ether-rules -- uvx ether-mcp
+    opencode mcp add ether-rules -- ether-mcp
     ```
 
     ### 4. Verificar
@@ -146,13 +146,13 @@ O en un clon del repositorio: `just app-install`.
 
     ```powershell
     # Claude Code
-    claude mcp add --scope user ether-rules -- uvx ether-mcp
+    claude mcp add --scope user ether-rules -- ether-mcp
 
     # Codex
-    codex mcp add ether-rules -- uvx ether-mcp
+    codex mcp add ether-rules -- ether-mcp
 
     # opencode
-    opencode mcp add ether-rules -- uvx ether-mcp
+    opencode mcp add ether-rules -- ether-mcp
     ```
 
     ### 4. Verificar
@@ -180,8 +180,7 @@ Si los comandos CLI no están disponibles, edita los archivos de configuración 
     {
       "mcpServers": {
         "ether-rules": {
-          "command": "uvx",
-          "args": ["ether-mcp"]
+          "command": "ether-mcp"
         }
       }
     }
@@ -193,8 +192,7 @@ Si los comandos CLI no están disponibles, edita los archivos de configuración 
 
     ```toml
     [mcp_servers.ether-rules]
-    command = "uvx"
-    args = ["ether-mcp"]
+    command = "ether-mcp"
     ```
 
 === "opencode"
@@ -206,7 +204,7 @@ Si los comandos CLI no están disponibles, edita los archivos de configuración 
       "mcp": {
         "ether-rules": {
           "type": "local",
-          "command": ["uvx", "ether-mcp"],
+          "command": ["ether-mcp"],
           "enabled": true
         }
       }

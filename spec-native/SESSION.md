@@ -38,7 +38,7 @@
 
 ## MCP (servidor `ether-rules`)
 
-- `mcp/ether_mcp_my_best_practices/` — paquete Python instalable (`uvx ether-mcp`).
+- `mcp/ether_mcp_my_best_practices/` — paquete Python instalable (`ether-mcp` después de `uv tool install`).
 - Resources (7), Tools (10 incl. `audit_project`, `scaffold_project`, `check_project`), Prompts (5).
 - Estrategia de datos: env `MCP_ROOT` → web (`/ether-rules/`) → bundled (`data/`).
 - Instalador `helpers/shell/mcp-install.sh` (Claude/Codex/opencode, checksum, idempotente).

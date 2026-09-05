@@ -4,7 +4,8 @@ MCP Server ether-rules — expone reglas, templates y herramientas
 del estándar Ether Best Practices como Resources, Tools y Prompts
 para agentes de IA (Claude, opencode, Copilot).
 
-Paquete instalable: uvx ether-mcp
+Paquete instalable: uv tool install ether_mcp_my_best_practices-<version>-py3-none-any.whl
+Ejecución sin instalación: uvx --from ether-mcp-my-best-practices ether-mcp
 Ejecutar en sitio: uv run python mcp/ether_mcp_my_best_practices/server.py
 Config:   mcp-config.json → "ether-rules" server.
 """

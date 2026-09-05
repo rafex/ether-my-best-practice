@@ -10,7 +10,7 @@
 # Contrato:
 #   --action install|install-client <name>|status|uninstall
 #
-# Server: ether-rules → comando: uvx ether-mcp
+# Server: ether-rules → comando: ether-mcp
 # ------------------------------------------------------------------
 set -euo pipefail
 
@@ -84,9 +84,9 @@ configure_client() {
 
 	if client_present "$name"; then
 		case "$name" in
-			claude)  "$name" mcp add --scope user ether-rules -- uvx ether-mcp 2>&1 && return ;;
-			codex)   "$name" mcp add ether-rules -- uvx ether-mcp 2>&1 && return ;;
-			opencode) "$name" mcp add ether-rules -- uvx ether-mcp 2>&1 && return ;;
+			claude)  "$name" mcp add --scope user ether-rules -- ether-mcp 2>&1 && return ;;
+			codex)   "$name" mcp add ether-rules -- ether-mcp 2>&1 && return ;;
+			opencode) "$name" mcp add ether-rules -- ether-mcp 2>&1 && return ;;
 		esac
 		info "CLI falló para $name — configurando manualmente..."
 	fi
@@ -112,19 +112,19 @@ configure_client() {
 				python3 -c "
 import json, sys
 with open('$cfg_json') as f: cfg = json.load(f)
-cfg.setdefault('mcpServers', {})['ether-rules'] = {'command': 'uvx', 'args': ['ether-mcp']}
+cfg.setdefault('mcpServers', {})['ether-rules'] = {'command': 'ether-mcp'}
 with open('$cfg_json', 'w') as f: json.dump(cfg, f, indent=2)
 " 2>/dev/null && return
 			fi
 			python3 -c "
 import json
-cfg = {'mcpServers': {'ether-rules': {'command': 'uvx', 'args': ['ether-mcp']}}}
+cfg = {'mcpServers': {'ether-rules': {'command': 'ether-mcp'}}}
 with open('$cfg_json', 'w') as f: json.dump(cfg, f, indent=2)
 " 2>/dev/null || true
 			;;
 		opencode)
 			local cfg_json="$cfg_file"
-			local entry='{"type": "local", "command": ["uvx", "ether-mcp"], "enabled": true}'
+			local entry='{"type": "local", "command": ["ether-mcp"], "enabled": true}'
 			if [[ -f "$cfg_json" ]]; then
 				python3 -c "
 import json, sys
@@ -148,12 +148,10 @@ with open('$cfg_json', 'w') as f: json.dump(cfg, f, indent=2)
 			if [[ -f "$cfg_toml" ]]; then
 				echo '' >> "$cfg_toml"
 				echo '[mcp_servers.ether-rules]' >> "$cfg_toml"
-				echo 'command = "uvx"' >> "$cfg_toml"
-				echo 'args = ["ether-mcp"]' >> "$cfg_toml"
+				echo 'command = "ether-mcp"' >> "$cfg_toml"
 			else
 				echo '[mcp_servers.ether-rules]' > "$cfg_toml"
-				echo 'command = "uvx"' >> "$cfg_toml"
-				echo 'args = ["ether-mcp"]' >> "$cfg_toml"
+				echo 'command = "ether-mcp"' >> "$cfg_toml"
 			fi
 			;;
 	esac

@@ -30,8 +30,7 @@ Añadir al archivo `mcp-config.json` de tu cliente (Claude Desktop, opencode, et
 {
   "mcpServers": {
     "ether-rules": {
-      "command": "uvx",
-      "args": ["ether-mcp"],
+      "command": "ether-mcp",
       "env": {
         "RULES_REMOTE_URL": "https://my-best-practice.rafex.io/ether-rules"
       }
@@ -40,7 +39,7 @@ Añadir al archivo `mcp-config.json` de tu cliente (Claude Desktop, opencode, et
 }
 ```
 
-> Si has instalado con `uv tool install`, usa `"command": "ether-mcp"` en lugar de `uvx`.
+> Para ejecutar sin instalación usa `uvx --from ether-mcp-my-best-practices ether-mcp`; con el instalador automático se usa directamente `ether-mcp`.
 
 ## Estrategia de datos (resources)
 

@@ -38,8 +38,7 @@ Añade al archivo `mcp-config.json` de tu cliente:
 {
   "mcpServers": {
     "ether-rules": {
-      "command": "uvx",
-      "args": ["ether-mcp"],
+      "command": "ether-mcp",
       "env": {
         "RULES_REMOTE_URL": "https://my-best-practice.rafex.io/ether-rules"
       }
@@ -48,7 +47,7 @@ Añade al archivo `mcp-config.json` de tu cliente:
 }
 ```
 
-> Si instalaste con `uv tool install`, cambia `"command": "uvx"` por `"command": "ether-mcp"` y quita `"args"`.
+> Para ejecutar sin instalación usa `uvx --from ether-mcp-my-best-practices ether-mcp`; con el instalador automático se usa directamente `ether-mcp`.
 
 ## Resolución de las reglas (remoto → empaquetado)
 

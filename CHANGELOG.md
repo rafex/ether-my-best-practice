@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.5.2 (2026-09-05)
+
+### Fix
+
+- **mcp-install**: configurar el ejecutable instalado `ether-mcp` en los clientes, en lugar de invocar `uvx ether-mcp`.
+- **docs**: alinear los comandos de configuración con la instalación mediante `uv tool install`.
+
 ## v0.5.1 (2026-09-05)
 
 ### Fix
