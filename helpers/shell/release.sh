@@ -61,6 +61,8 @@ case "$action" in
 		done
 
 		step 2 3 "Construyendo wheel con uv build..."
+		mkdir -p "$output_dir"
+		rm -f "$output_dir"/*.whl "$output_dir"/*.whl.sha256 "$output_dir"/*.tar.gz
 		(cd "$mcp_dir" && uv build --out-dir dist)
 
 		# Generar checksum
@@ -90,17 +92,18 @@ case "$action" in
 
 		version="$(cat VERSION 2>/dev/null || echo "0.0.0")"
 		tag="v${version}"
-		wheel="$(ls "$output_dir"/*.whl 2>/dev/null | head -1)"
-		if [[ -z "$wheel" ]]; then
-			die "No se encontró wheel en $output_dir/. Ejecuta make package primero."
+		wheel="$(find "$output_dir" -maxdepth 1 -type f -name "*-${version}-*.whl" -print -quit 2>/dev/null || true)"
+		checksum="${wheel}.sha256"
+		if [[ -z "$wheel" || ! -f "$checksum" ]]; then
+			die "No se encontró el wheel ${version} y su checksum en $output_dir/. Ejecuta make package primero."
 		fi
 
 		step 1 1 "Creando GitHub Release $tag con assets..."
 		gh release create "$tag" \
 			--title "$tag — Ether Best Practices" \
 			--generate-notes \
-			"$output_dir"/*.whl \
-			"$output_dir"/*.whl.sha256
+			"$wheel" \
+			"$checksum"
 
 		success "Release $tag publicado. Descargar en:"
 		success "  https://github.com/rafex/ether-my-best-practice/releases/tag/$tag"
