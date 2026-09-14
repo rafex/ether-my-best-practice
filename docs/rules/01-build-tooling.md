@@ -3,7 +3,7 @@ id: build-tooling
 title: Herramientas de Construcción
 status: Definida
 tags: [build, tooling, makefile, justfile, helpers, shell, python]
-checksum: 921cf66f9d1bde0a52dd368fa8c6f5eba73332f88132baf1b19ceaf80d2bee60
+checksum: c35b4447418756d3b829091ea823044cabec42c9a6b0a392e04db77dfb966943
 ---
 
 # Regla 01: Herramientas de Construcción
@@ -319,6 +319,8 @@ tags: [obligatorio]
 - **El helper nunca embebe el texto del manual en el propio script** (nada de heredocs largos ni bloques de `echo` con la ayuda completa). Siempre lee y muestra el archivo Markdown de `docs/` — la fuente de verdad es un único archivo reutilizado por `--man`, por `make man` y por cualquier otro consumidor (por ejemplo MkDocs).
 - **Si `docs/man_<tarea>.md` no existe, el helper falla explícitamente** indicando la ruta esperada. No debe fallar en silencio ni inventar contenido.
 - La visualización (`show_man`) es una función compartida en `lib/` (regla 15), no lógica duplicada en cada helper.
+- **`--man` se resuelve antes de inicializar el log de auditoría (`init_log`).** `init_log` hace `exec > >(tee -a "$log_file") 2>&1`, y eso convierte stdout en un pipe **antes** de que un renderer como `bat`/`less` pueda detectar una terminal real — el manual saldría siempre sin color, incluso en una sesión interactiva. Mostrar un manual no es una acción auditable: revisa `--man` (o cualquier salida anticipada tipo `--help`) primero, y llama a `init_log` después.
+- **`show_man` fuerza color y desactiva el paginador propio del renderer** (`bat --color=always --paging=never`, `less -R`): sin `--color=always`, un stdout heredado como pipe (logging, `just`, redirecciones) desactiva el color; sin `--paging=never`, `bat` puede invocar su propio pager y quedarse esperando entrada en vez de imprimir y salir.
 
 ### Estándares de implementación
 

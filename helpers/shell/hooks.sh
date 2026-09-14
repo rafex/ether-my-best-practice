@@ -3,7 +3,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib/logs.sh"
 source "$SCRIPT_DIR/lib/messages.sh"
-init_log "hooks"
+# init_log se llama después de resolver --man (más abajo): init_log hace
+# `exec > >(tee ...)`, y eso convierte stdout en un pipe antes de tiempo,
+# rompiendo la detección de TTY que usan bat/less/glow para colorear.
 
 
 # ------------------------------------------------------------------
@@ -70,6 +72,8 @@ if [[ "$man" == "true" ]]; then
 	esac
 	exit 0
 fi
+
+init_log "hooks"
 
 if [[ -z "$action" ]]; then
 	echo "Missing required flag --action" >&2

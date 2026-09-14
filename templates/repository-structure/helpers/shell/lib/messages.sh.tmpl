@@ -68,9 +68,9 @@ show_man() {
 	if command -v glow >/dev/null 2>&1; then
 		glow "$man_file"
 	elif command -v bat >/dev/null 2>&1; then
-		bat --plain --language markdown "$man_file"
+		bat --plain --language markdown --color=always --paging=never "$man_file"
 	elif [[ -t 1 ]] && command -v less >/dev/null 2>&1; then
-		less "$man_file"
+		less -R "$man_file"
 	else
 		cat "$man_file"
 	fi

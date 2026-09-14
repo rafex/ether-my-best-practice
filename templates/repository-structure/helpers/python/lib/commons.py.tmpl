@@ -44,10 +44,19 @@ def show_man(task: str, workspace: str = PROJECT_ROOT) -> None:
     if not os.path.isfile(man_file):
         print(f"No existe manual para '{task}'. Esperado: docs/man_{task}.md", file=sys.stderr)
         sys.exit(1)
-    for pager in ("glow", "bat"):
-        if shutil.which(pager):
-            subprocess.run([pager, man_file], check=False)
-            sys.exit(0)
+    if shutil.which("glow"):
+        subprocess.run(["glow", man_file], check=False)
+        sys.exit(0)
+    if shutil.which("bat"):
+        # --color=always y --paging=never: sin esto, cuando stdout no es un
+        # TTY real (p.ej. heredado tras un exec > >(tee ...) de auditoría),
+        # bat detecta "no terminal" y no colorea; --paging=never evita que
+        # bat invoque su propio pager y se quede esperando input.
+        subprocess.run(
+            ["bat", "--plain", "--language", "markdown", "--color=always", "--paging=never", man_file],
+            check=False,
+        )
+        sys.exit(0)
     with open(man_file, encoding="utf-8") as fh:
         print(fh.read())
     sys.exit(0)
