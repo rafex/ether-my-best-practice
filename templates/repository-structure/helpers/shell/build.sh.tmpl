@@ -10,6 +10,7 @@ project_name=""
 workspace="$(pwd)"
 command_line=""
 log_file=""
+man="false"
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -21,11 +22,18 @@ while [[ $# -gt 0 ]]; do
 			command_line="${2:-}"; shift 2 ;;
 		--log-file)
 			log_file="${2:-}"; shift 2 ;;
+		--man)
+			man="true"; shift ;;
 		*)
 			echo "Unknown flag: $1" >&2
 			exit 1 ;;
 	esac
 done
+
+if [[ "$man" == "true" ]]; then
+	WORKSPACE="$workspace" show_man "build"
+	exit 0
+fi
 
 if [[ -z "$command_line" ]]; then
 	echo "Missing required flag --command" >&2

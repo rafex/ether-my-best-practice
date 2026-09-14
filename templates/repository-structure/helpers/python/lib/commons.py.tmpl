@@ -11,6 +11,7 @@ Python para obtener el entorno base y evitar duplicación.
 
 import argparse
 import os
+import shutil
 import subprocess
 import sys
 
@@ -27,6 +28,29 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--log-file", help="Ruta del log de auditoría")
     parser.add_argument("--log-level", default="info", help="Nivel de log (info, debug)")
     parser.add_argument("--workspace", default=PROJECT_ROOT, help="Directorio del proyecto")
+    parser.add_argument(
+        "--man",
+        action="store_true",
+        help="Muestra docs/man_<tarea>.md y termina sin ejecutar la acción (regla 01)",
+    )
+
+
+def show_man(task: str, workspace: str = PROJECT_ROOT) -> None:
+    """Muestra docs/man_<task>.md y termina el proceso (exit 0).
+
+    El manual vive siempre en docs/, nunca embebido en el helper.
+    """
+    man_file = os.path.join(workspace, "docs", f"man_{task}.md")
+    if not os.path.isfile(man_file):
+        print(f"No existe manual para '{task}'. Esperado: docs/man_{task}.md", file=sys.stderr)
+        sys.exit(1)
+    for pager in ("glow", "bat"):
+        if shutil.which(pager):
+            subprocess.run([pager, man_file], check=False)
+            sys.exit(0)
+    with open(man_file, encoding="utf-8") as fh:
+        print(fh.read())
+    sys.exit(0)
 
 
 def resolve_path(relative: str) -> str:

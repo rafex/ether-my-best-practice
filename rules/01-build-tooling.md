@@ -3,7 +3,7 @@ id: build-tooling
 title: Herramientas de Construcción
 status: Definida
 tags: [build, tooling, makefile, justfile, helpers, shell, python]
-checksum: f8cdf2a17930a492541483fa380bedd686928a332cd082a6863286a4976b16fb
+checksum: 921cf66f9d1bde0a52dd368fa8c6f5eba73332f88132baf1b19ceaf80d2bee60
 ---
 
 # Regla 01: Herramientas de Construcción
@@ -30,6 +30,7 @@ tags: [obligatorio]
     │   ├── container.mk      # targets runtime, image, ci
     │   ├── docs.mk           # targets docs, pages-build
     │   ├── github.mk         # target pages
+    │   ├── help.mk           # target man (manual de tareas)
     │   ├── lint.mk           # target lint
     │   ├── format.mk         # target format
     │   ├── java.mk
@@ -49,6 +50,7 @@ tags: [obligatorio]
     │   ├── github.sh
     │   ├── lint.sh
     │   ├── format.sh
+    │   ├── man.sh             # muestra docs/man_<tarea>.md
     │   ├── java.sh
     │   ├── python.sh
     │   ├── javascript.sh
@@ -56,6 +58,8 @@ tags: [obligatorio]
     └── python/
         └── *.py
 ```
+
+**Manuales de tareas:** cada target de Makefile, receta de Justfile o `--goal`/`--action` de un helper tiene su manual en `docs/man_<tarea>.md` (Markdown, formato tipo `man`). Viven siempre en `docs/`, nunca en `helpers/` — ver "Manual de tareas (`--man`)" en Comandos y Restricciones.
 
 **Flujo de delegación entre capas:**
 
@@ -100,6 +104,7 @@ PROFILE    → dev | ci | prod
 SITE_DIR   → directorio de salida del sitio (por defecto site)
 PAGES_WORKFLOW → static.yml
 PAGES_REF      → main
+TARGET         → nombre del target a documentar (uso: make man TARGET=build)
 ```
 
 ### Targets Makefile y helpers
@@ -109,6 +114,7 @@ PAGES_REF      → main
 | `build` | `helpers/mk/build.mk` | `helpers/shell/{lang}.sh --goal build` |
 | `test` | `helpers/mk/build.mk` | `helpers/shell/{lang}.sh --goal test` |
 | `clean` | `helpers/mk/build.mk` | `helpers/shell/{lang}.sh --goal clean` |
+| `man` | `helpers/mk/help.mk` | `helpers/shell/man.sh --target $(TARGET)` |
 | `runtime` | `helpers/mk/container.mk` | `helpers/shell/container.sh --action runtime` |
 | `image` | `helpers/mk/container.mk` | `helpers/shell/container.sh --action image` |
 | `ci` | `helpers/mk/container.mk` | `helpers/shell/container.sh --action ci` |
@@ -160,6 +166,15 @@ make pages            # Disparar workflow de GitHub Pages
 ```bash
 make lint
 make format
+```
+
+### Manual de tareas (`--man`)
+
+```bash
+make man TARGET=build                            # Muestra docs/man_build.md (Makefile no reenvía flags a un target)
+just commit-msg --man                             # Justfile sí reenvía flags: la receta pasa --man al helper
+bash helpers/shell/build.sh --command "x" --man   # Uso directo del helper: --man corta antes de ejecutar
+bash helpers/shell/man.sh --target lint           # Uso directo del helper dedicado de manuales
 ```
 
 ### Inclusión modular (Makefile)
@@ -232,6 +247,45 @@ Política de ruta:
 1. `/var/log/<nombre-proyecto>/log-<script>-<timestamp>.log`
 2. Fallback: `/tmp/<nombre-proyecto>/log-<script>-<timestamp>.log`
 
+### Manual de una tarea (`docs/man_build.md`)
+
+```markdown
+# build
+
+## Nombre
+build — compila el proyecto y genera artefactos
+
+## Sinopsis
+make build LANG=<lang> BUILD_TOOL=<tool> MODULE=<module> PROFILE=<profile>
+just build --man
+
+## Descripción
+Delega en `helpers/shell/{lang}.sh --goal build`, que resuelve el comando
+nativo (`mvn package`, `npm run build`, `cargo build`, ...) según `--tool`.
+
+## Opciones
+- LANG        java | python | javascript | rust
+- BUILD_TOOL  maven | gradle | uv | poetry | npm | pnpm | yarn | cargo
+- MODULE      módulo/subproyecto (por defecto .)
+- PROFILE     dev | ci | prod
+
+## Ejemplos
+make build LANG=java BUILD_TOOL=maven MODULE=api PROFILE=dev
+```
+
+### `show_man` reutilizado por Makefile, Justfile y el helper directo
+
+```bash
+# helpers/shell/man.sh (invocado por `make man TARGET=build`)
+show_man "$target"
+
+# helpers/shell/build.sh (invocado por `just build --man` o directamente)
+if [[ "$man" == "true" ]]; then
+  show_man "build"
+  exit 0
+fi
+```
+
 tags: [obligatorio]
 
 ### Restriccion: Restricciones
@@ -256,6 +310,15 @@ tags: [obligatorio]
 | `--log-file` | Sí | Ruta del log de auditoría |
 | `--log-level` | No | Nivel de log (info por defecto) |
 | `--command` | No | Comando directo (sobreescribe goal) |
+| `--man` | Sí | Muestra `docs/man_<tarea>.md` y termina (exit 0) sin ejecutar `--action`/`--goal`/`--command` |
+
+### Manual obligatorio por tarea (`--man`)
+
+- **Todo target de Makefile, receta de Justfile y helper nuevo debe exponer su manual.** En Makefile, vía el target genérico `make man TARGET=<target>` (Make no reenvía flags a un target, así que `--man` no es viable ahí). En Justfile y en los helpers, vía el flag `--man`, porque `just` sí reenvía argumentos a la receta y esta los reenvía al helper.
+- **El manual vive en `docs/man_<tarea>.md`, nunca en `helpers/`.** `<tarea>` coincide con el nombre del target de Makefile, la receta de Justfile o el valor de `--goal`/`--action` del helper. Ejemplo: el target `build` documenta en `docs/man_build.md`.
+- **El helper nunca embebe el texto del manual en el propio script** (nada de heredocs largos ni bloques de `echo` con la ayuda completa). Siempre lee y muestra el archivo Markdown de `docs/` — la fuente de verdad es un único archivo reutilizado por `--man`, por `make man` y por cualquier otro consumidor (por ejemplo MkDocs).
+- **Si `docs/man_<tarea>.md` no existe, el helper falla explícitamente** indicando la ruta esperada. No debe fallar en silencio ni inventar contenido.
+- La visualización (`show_man`) es una función compartida en `lib/` (regla 15), no lógica duplicada en cada helper.
 
 ### Estándares de implementación
 
@@ -278,9 +341,10 @@ tags: [obligatorio]
 - [Regla 08: Stack Tecnológico](08-stack.md)
 - [templates/Makefile.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/Makefile.tmpl)
 - [templates/Justfile.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/Justfile.tmpl)
-- [templates/helpers/shell/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/): `build.sh`, `test.sh`, `clean.sh`, `container.sh`, `docs.sh`, `github.sh`, `lint.sh`, `format.sh`, `java.sh`, `javascript.sh`, `python.sh`, `rust.sh`
-- [templates/helpers/mk/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/): `build.mk`, `container.mk`, `docs.mk`, `github.mk`, `lint.mk`, `format.mk`
+- [templates/helpers/shell/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/): `build.sh`, `test.sh`, `clean.sh`, `container.sh`, `docs.sh`, `github.sh`, `lint.sh`, `format.sh`, `man.sh`, `java.sh`, `javascript.sh`, `python.sh`, `rust.sh`
+- [templates/helpers/mk/](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/): `build.mk`, `container.mk`, `docs.mk`, `github.mk`, `help.mk`, `lint.mk`, `format.mk`
 - [templates/helpers/just/app.just.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/just/app.just.tmpl)
+- [templates/repository-structure/docs/man_build.md.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/docs/man_build.md.tmpl) — ejemplo de manual de tarea.
 
 - [Regla 15: Reutilización de Scripts](15-script-reuse.md) — librerías comunes en lib/.
 
@@ -294,8 +358,11 @@ tags: [obligatorio]
 - [templates/helpers/mk/container.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/container.mk.tmpl)
 - [templates/helpers/mk/docs.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/docs.mk.tmpl)
 - [templates/helpers/mk/github.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/github.mk.tmpl)
+- [templates/helpers/mk/help.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/help.mk.tmpl)
 - [templates/helpers/mk/lint.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/lint.mk.tmpl)
 - [templates/helpers/mk/format.mk.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/mk/format.mk.tmpl)
+- [templates/helpers/shell/man.sh.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/shell/man.sh.tmpl)
 - [templates/helpers/just/app.just.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/helpers/just/app.just.tmpl)
+- [templates/repository-structure/docs/man_build.md.tmpl](https://github.com/rafex/ether-my-best-practice/blob/main/templates/repository-structure/docs/man_build.md.tmpl)
 
 tags: [opcional]

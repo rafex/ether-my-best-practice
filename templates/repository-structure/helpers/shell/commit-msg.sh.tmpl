@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/messages.sh"
 
 # ------------------------------------------------------------------
 # Validador de Conventional Commits para git hook commit-msg.
@@ -14,9 +16,15 @@ set -euo pipefail
 #
 # Uso:
 #   bash helpers/shell/commit-msg.sh <archivo-del-mensaje>
+#   bash helpers/shell/commit-msg.sh --man   # Manual (docs/man_commit-msg.md)
 #   exit 0 → commit válido
 #   exit 1 → commit rechazado
 # ------------------------------------------------------------------
+
+if [[ "${1:-}" == "--man" ]]; then
+	show_man "commit-msg"
+	exit 0
+fi
 
 msg_file="${1:-}"
 if [[ -z "$msg_file" || ! -f "$msg_file" ]]; then

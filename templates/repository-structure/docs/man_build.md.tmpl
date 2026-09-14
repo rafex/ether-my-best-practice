@@ -1,0 +1,37 @@
+# build
+
+## Nombre
+
+build — compila el proyecto y genera artefactos
+
+## Sinopsis
+
+```
+make build LANG=<lang> BUILD_TOOL=<tool> MODULE=<module> PROFILE=<profile>
+make man TARGET=build
+```
+
+## Descripción
+
+Delega en `helpers/shell/{lang}.sh --goal build`, que resuelve el comando
+nativo (`mvn package`, `npm run build`, `cargo build`, ...) según `--tool`.
+El Makefile no ejecuta el comando directamente (regla 01): solo provee
+variables y delega en `helpers/mk/build.mk` → `helpers/shell/{lang}.sh`.
+
+## Opciones
+
+- `LANG`        — `java` \| `python` \| `javascript` \| `rust`
+- `BUILD_TOOL`  — `maven` \| `gradle` \| `uv` \| `poetry` \| `npm` \| `pnpm` \| `yarn` \| `cargo`
+- `MODULE`      — módulo/subproyecto (por defecto `.`)
+- `PROFILE`     — `dev` \| `ci` \| `prod`
+
+## Ejemplos
+
+```bash
+make build LANG=java BUILD_TOOL=maven MODULE=api PROFILE=dev
+bash helpers/shell/build.sh --command "mvn package" --log-file /tmp/proyecto/log-build.log
+```
+
+## Véase también
+
+- [Regla 01: Herramientas de Construcción](https://github.com/rafex/ether-my-best-practice/blob/main/rules/01-build-tooling.md)

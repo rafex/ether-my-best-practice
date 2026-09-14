@@ -2,6 +2,10 @@
 # Las tareas de construcción/artefactos están en el Makefile.
 # Justfile orquesta acciones compuestas, captura parámetros y organiza por dominio.
 # Justfile → Makefile está permitido cuando se necesiten artefactos.
+#
+# Manual de tareas (regla 01): toda receta reenvía sus argumentos al helper
+# (`*args` → `{{args}}`), y el helper reconoce `--man` para mostrar su manual
+# en docs/man_<receta>.md sin ejecutar la acción. Ver helpers/just/hooks.just.
 
 set dotenv-load
 
