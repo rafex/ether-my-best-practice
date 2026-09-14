@@ -54,3 +54,24 @@ header() {
 	echo "$(colorize COLOR_BOLD "$msg")"
 	echo "$(colorize COLOR_BOLD "$line")"
 }
+
+# show_man <tarea>  → muestra docs/man_<tarea>.md y termina la llamada (regla 01).
+# El manual vive siempre en docs/, nunca embebido en el helper.
+show_man() {
+	local task="$1"
+	local root="${WORKSPACE:-$(pwd)}"
+	local man_file="$root/docs/man_${task}.md"
+	if [[ ! -f "$man_file" ]]; then
+		error "No existe manual para '$task'. Esperado: docs/man_${task}.md"
+		exit 1
+	fi
+	if command -v glow >/dev/null 2>&1; then
+		glow "$man_file"
+	elif command -v bat >/dev/null 2>&1; then
+		bat --plain --language markdown "$man_file"
+	elif [[ -t 1 ]] && command -v less >/dev/null 2>&1; then
+		less "$man_file"
+	else
+		cat "$man_file"
+	fi
+}

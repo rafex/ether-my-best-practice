@@ -45,8 +45,9 @@
     bash helpers/shell/secrets.sh --action verify
 
 # --- Git hooks (regla 10) ---
-@hooks-install:
-    bash helpers/shell/hooks.sh --action install
+# *args se reenvía al helper: `just hooks-install --man` muestra docs/man_hooks-install.md
+@hooks-install *args:
+    bash helpers/shell/hooks.sh --action install {{args}}
 
 # --- Commitizen (regla 11) ---
 @commit:

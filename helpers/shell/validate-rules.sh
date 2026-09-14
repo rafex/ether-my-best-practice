@@ -6,6 +6,14 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib/messages.sh"
+
+if [[ "${1:-}" == "--man" ]]; then
+	show_man "validate"
+	exit 0
+fi
+
 RULES_DIR="./rules"
 TEMPLATES_DIR="./templates"
 ERRORS=0

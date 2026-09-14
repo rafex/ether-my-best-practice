@@ -38,6 +38,7 @@ message_file=""
 log_file=""
 log_level="info"
 workspace="$(pwd)"
+man="false"
 
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -49,6 +50,8 @@ while [[ $# -gt 0 ]]; do
 			log_file="${2:-}"; shift 2 ;;
 		--log-level)
 			log_level="${2:-}"; shift 2 ;;
+		--man)
+			man="true"; shift ;;
 		*)
 			if [[ -z "$message_file" && "$action" == "commit-msg" ]]; then
 				message_file="$1"; shift
@@ -59,6 +62,14 @@ while [[ $# -gt 0 ]]; do
 			;;
 	esac
 done
+
+if [[ "$man" == "true" ]]; then
+	case "$action" in
+		install) WORKSPACE="$workspace" show_man "hooks-install" ;;
+		*)       WORKSPACE="$workspace" show_man "hooks" ;;
+	esac
+	exit 0
+fi
 
 if [[ -z "$action" ]]; then
 	echo "Missing required flag --action" >&2

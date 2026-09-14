@@ -28,6 +28,8 @@ help:
 	@echo "  make deploy        - CI: check + package + release"
 	@echo "  make check         - Gate de calidad: test + lint + validate"
 	@echo ""
+	@echo "  make man TARGET=<tarea>  - Manual de una tarea (docs/man_<tarea>.md)"
+	@echo ""
 	@echo "Operativas → Justfile: just <recipe> (repository.just, app.just)"
 
 check: test lint validate
