@@ -65,7 +65,9 @@ show_man() {
 		error "No existe manual para '$task'. Esperado: docs/man_${task}.md"
 		exit 1
 	fi
-	if command -v glow >/dev/null 2>&1; then
+	if command -v mdcat >/dev/null 2>&1; then
+		mdcat --ansi --no-pager "$man_file"
+	elif command -v glow >/dev/null 2>&1; then
 		glow "$man_file"
 	elif command -v bat >/dev/null 2>&1; then
 		bat --plain --language markdown --color=always --paging=never "$man_file"

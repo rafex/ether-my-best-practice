@@ -44,6 +44,11 @@ def show_man(task: str, workspace: str = PROJECT_ROOT) -> None:
     if not os.path.isfile(man_file):
         print(f"No existe manual para '{task}'. Esperado: docs/man_{task}.md", file=sys.stderr)
         sys.exit(1)
+    if shutil.which("mdcat"):
+        # --ansi fuerza el color aunque stdout no sea un TTY real (regla 01);
+        # --no-pager es el default de mdcat, pero se deja explícito.
+        subprocess.run(["mdcat", "--ansi", "--no-pager", man_file], check=False)
+        sys.exit(0)
     if shutil.which("glow"):
         subprocess.run(["glow", man_file], check=False)
         sys.exit(0)
