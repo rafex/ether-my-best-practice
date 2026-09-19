@@ -14,7 +14,7 @@
 # ------------------------------------------------------------------
 set -euo pipefail
 
-action=""
+action="install"
 client=""
 workspace="$(pwd)"
 
@@ -174,9 +174,9 @@ do_install() {
 
 	info "Instalando MCP..."
 	if command -v uv >/dev/null 2>&1; then
-		uv tool install "$wheel_path"
+		uv tool install --force "$wheel_path"
 	else
-		pip install --user "$wheel_path"
+		pip install --user --upgrade "$wheel_path"
 	fi
 	success "MCP ether-rules instalado (comando: ether-mcp)."
 
